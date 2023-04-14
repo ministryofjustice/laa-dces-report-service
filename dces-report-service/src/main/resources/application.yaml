@@ -1,0 +1,22 @@
+server:
+  port: 8088
+
+management:
+  server:
+    port: 8099
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+springdoc:
+  packagesToScan: uk.gov.justice.laa.crime.dces.report
+  show-actuator: true
+  api-docs:
+    path: /dces-report-service
+    enabled: true
+
+  swagger-ui:
+    path: /open-api/docs.html
+    enabled: true
+    operationsSorter: method

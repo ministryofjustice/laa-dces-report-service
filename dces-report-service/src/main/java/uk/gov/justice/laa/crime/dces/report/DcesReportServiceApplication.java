@@ -1,13 +1,13 @@
-package uk.gov.justice.laa.crime.microservice;
+package uk.gov.justice.laa.crime.dces.report;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MicroserviceTemplateApplication {
+public class DcesReportServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MicroserviceTemplateApplication.class, args);
+		SpringApplication.run(DcesReportServiceApplication.class, args);
 	}
 
 }

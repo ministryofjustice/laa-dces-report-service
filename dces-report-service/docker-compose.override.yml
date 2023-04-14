@@ -1,0 +1,15 @@
+version: "3.2"
+
+services:
+  app:
+    environment:
+      - SENTRY_ENV=development
+      - SENTRY_DSN=https://161f19830a974af4b9bf316d67c20c42@o345774.ingest.sentry.io/4505007689039872
+
+
+
+    ports:
+      - "8081:8081"
+    command: java -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:8081 -jar app.jar
+
+
