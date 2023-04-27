@@ -1,0 +1,70 @@
+# Default values for laa-dces-report-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+
+image:
+  repository: 754256621582.dkr.ecr.eu-west-2.amazonaws.com/laa-crime-apps-team/laa-dces-report-service-dev-ecr
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  # tag: latest
+
+sentry_dsn:
+aws_region: eu-west-2
+
+java:
+  host_env: staging
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: false
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: "circleci"
+
+service:
+  type: ClusterIP
+  port: 8089
+
+ingress:
+  enabled: true
+  annotations:
+    external-dns.alpha.kubernetes.io/aws-weight: "100"
+    external-dns.alpha.kubernetes.io/set-identifier: "laa-dces-report-service-laa-dces-report-service-staging-green"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-max-age: "300"
+  externalAnnotations: {}
+  hosts:
+    - host: laa-dces-report-service-staging.apps.live.cloud-platform.service.justice.gov.uk
+      paths: ["/"]
+  tls: []
+  className: default
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+actuator:
+  metrics:
+    enabled: true
+    scrapeInterval: 15s
+    path: /actuator/prometheus
+  health:
+    path: /actuator/health
+  port: 8188
+  liveness:
+    initialDelaySeconds: 45
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 5
+  readiness:
+    initialDelaySeconds: 45
+    periodSeconds: 10
+    timeoutSeconds: 10
+    failureThreshold: 5

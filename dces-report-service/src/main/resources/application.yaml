@@ -1,9 +1,9 @@
 server:
-  port: 8088
+  port: 8089
 
 management:
   server:
-    port: 8099
+    port: 8188
   endpoints:
     web:
       exposure:

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "laa-dces-report-service.fullname" . }}-test-connection"
+  labels:
+    {{- include "laa-dces-report-service.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test-success
+spec:
+  containers:
+    - name: wget
+      image: busybox
+      command: ['wget']
+      args: ['{{ include "laa-dces-report-service.fullname" . }}:{{ .Values.service.port }}']
+  restartPolicy: Never

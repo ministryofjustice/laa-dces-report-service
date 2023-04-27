@@ -1,1 +1,2 @@
 docker-compose.override.yml filter=git-crypt diff=git-crypt
+helm_deploy/**/values-*.yaml filter=git-crypt diff=git-crypt
