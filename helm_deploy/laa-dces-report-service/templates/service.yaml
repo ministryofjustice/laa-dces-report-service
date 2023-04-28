@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "laa-dces-report-service.fullname" . }}
+  labels:
+    {{- include "laa-dces-report-service.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+    {{- if not (eq (toString .Values.actuator.port) "http") }}
+    - port: {{ .Values.actuator.port }}
+      targetPort: actuator
+      protocol: TCP
+      name: actuator
+    {{- end }}
+  selector:
+    {{- include "laa-dces-report-service.selectorLabels" . | nindent 4 }}
