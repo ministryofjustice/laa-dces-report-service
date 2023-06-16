@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.client.HttpServerErrorException;
@@ -92,10 +93,10 @@ public class MaatApiAuthorizationService {
 
     private ExchangeFilterFunction errorResponse() {
         return ExchangeFilterFunctions.statusError(
-            httpStatusCode -> httpStatusCode.isError(),
-            clientResponse -> {
+                HttpStatusCode::isError, clientResponse -> {
                 HttpStatus httpStatus =  HttpStatus.resolve(clientResponse.statusCode().value());
-                String errorMessage = String.format("Received error %d due to %s",
+                    assert httpStatus != null;
+                    String errorMessage = String.format("Received error %s due to %s",
                     clientResponse.statusCode(), httpStatus.getReasonPhrase()
                 );
 
