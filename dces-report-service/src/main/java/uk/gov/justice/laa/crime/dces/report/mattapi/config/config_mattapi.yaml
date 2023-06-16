@@ -1,0 +1,25 @@
+maatApi:
+  oAuthEnabled: true
+  baseUrl: ${MAAT_API_BASE_URL_2}
+  assessments-domain: /api/internal/v1/assessment
+
+means-assessment:
+  security:
+    issuer-uri: http://localhost:${server.port}
+
+spring:
+  security:
+    oauth2:
+      client:
+        provider:
+          maatapi:
+            token-uri: ${MAAT_API_OAUTH_URL}
+        registration:
+          maatapi:
+            client-id: ${MAAT_API_OAUTH_CLIENT_ID}
+            client-secret: ${MAAT_API_OAUTH_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+
+      resourceserver:
+        jwt:
+          issuer-uri: ${means-assessment.security.issuer-uri}
