@@ -1,7 +1,6 @@
 maatApi:
   oAuthEnabled: true
   baseUrl: ${MAAT_API_BASE_URL}
-  assessments-domain: /api/internal/v1/assessment/dos
 
 spring:
   security:

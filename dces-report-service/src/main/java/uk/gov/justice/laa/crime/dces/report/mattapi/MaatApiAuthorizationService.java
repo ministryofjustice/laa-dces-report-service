@@ -26,12 +26,12 @@ import org.springframework.security.oauth2.client.web.reactive.function.client.S
  */
 @Configuration
 @Slf4j
-public class MattApiAuthorizationService {
+public class MaatApiAuthorizationService {
     private final MaatApiConfiguration config;
     private final RetryConfiguration retryConfiguration;
     private static final String REGISTERED_ID = "maatapi";
 
-    public MattApiAuthorizationService(MaatApiConfiguration config, RetryConfiguration retryConfiguration) {
+    public MaatApiAuthorizationService(MaatApiConfiguration config, RetryConfiguration retryConfiguration) {
         this.config = config;
         this.retryConfiguration = retryConfiguration;
     }
@@ -107,7 +107,7 @@ public class MattApiAuthorizationService {
                    return WebClientResponseException.create(httpStatus.value(), httpStatus.getReasonPhrase(), null, null, null);
                 }
 
-                return new MattApiClientException(errorMessage);
+                return new MaatApiClientException(errorMessage);
             }
         );
     }
@@ -126,7 +126,7 @@ public class MattApiAuthorizationService {
                                 (throwable instanceof WebClientRequestException && throwable.getCause() instanceof TimeoutException)
                 )
                 .onRetryExhaustedThrow(
-                    (retryBackoffSpec, retrySignal) ->new MattApiClientException(
+                    (retryBackoffSpec, retrySignal) ->new MaatApiClientException(
                             String.format("Call to Court Data API failed. Retries exhausted: %d/%d.",
                                             retryConfiguration.getMaxRetries(),
                                             retryConfiguration.getMaxRetries()

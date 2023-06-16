@@ -1,21 +1,21 @@
 package uk.gov.justice.laa.crime.dces.report.mattapi;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-//import javax.validation.constraints.NotNull;
 
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "retry-config")
 public class RetryConfiguration {
-//    @NotNull
+    @NotNull
     private Integer maxRetries;
 
-//    @NotNull
+    @NotNull
     private Integer minBackOffPeriod;
 
-//    @NotNull
+    @NotNull
     private Double jitterValue;
 }

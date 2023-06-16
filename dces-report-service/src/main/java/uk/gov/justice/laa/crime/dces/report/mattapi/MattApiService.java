@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.mattapi;
 
-// TODO (): solve Sentry import issue
-//import io.sentry.Sentry;
+import io.sentry.Sentry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -30,22 +29,15 @@ public class MattApiService {
                 .bodyToMono(responseClass)
                 .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Mono.empty())
                 .onErrorMap(this::handleClientError)
-                // TODO () Replace to use Sentry :: .doOnError(Sentry::captureException)
-//                .doOnError(this::handleError)
+                .doOnError(Sentry::captureException)
                 .block();
     }
 
     private Throwable handleClientError(Throwable error) {
-        if (error instanceof MattApiClientException) {
+        if (error instanceof MaatApiClientException) {
             return error;
         }
-        return new MattApiClientException("Call to Court Data API failed, invalid response.", error);
-    }
-
-    // TODO (): replace this to use Sentry
-    // Sentry::captureException
-    private Throwable handleError(Throwable error) {
-        return new RuntimeException("Call to Court Data API failed, invalid response.", error);
+        return new MaatApiClientException("Call to Court Data API failed, invalid response.", error);
     }
 
     // TODO (): Add support for POST requests
