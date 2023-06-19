@@ -1,3 +1,4 @@
+# Copy this into resources/application.yaml file
 maatApi:
   oAuthEnabled: true
   baseUrl: ${MAAT_API_BASE_URL}
