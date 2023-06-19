@@ -9,10 +9,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class MattApiServiceTest {
+class MaatApiServiceTest {
     @Autowired
     @MockBean
-    private MattApiService mattApiService;
+    private MaatApiService maatApiService;
 
     @BeforeAll
     public void setup() {
