@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Data
 @Configuration
-@ConfigurationProperties(prefix = "retry-config")
+@ConfigurationProperties(prefix = "maat-retry-config")
 public class RetryConfiguration {
     @NotNull
     private Integer maxRetries;

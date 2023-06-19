@@ -24,11 +24,11 @@ springdoc:
 maatApi:
   oAuthEnabled: true
   baseUrl: ${MAAT_API_BASE_URL}
-  assessments-domain: /api/internal/v1/assessment
 
-means-assessment:
-  security:
-    issuer-uri: http://localhost:${server.port}
+maat-retry-config:
+  max-retries: 2
+  min-back-off-period: 3
+  jitter-value: 0.5
 
 spring:
   security:

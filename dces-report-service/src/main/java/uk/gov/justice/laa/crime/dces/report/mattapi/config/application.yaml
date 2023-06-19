@@ -19,3 +19,8 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${means-assessment.security.issuer-uri}
+
+maat-retry-config:
+  max-retries: 2
+  min-back-off-period: 3
+  jitter-value: 0.5
