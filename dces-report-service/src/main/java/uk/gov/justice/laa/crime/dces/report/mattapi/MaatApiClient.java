@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.*;
 import reactor.core.publisher.Mono;
@@ -25,14 +26,15 @@ import org.springframework.security.oauth2.client.web.reactive.function.client.S
 /**
  * <code>MattApiAuthorizationService.java</code>
  */
-@Configuration
+@Service
 @Slf4j
-public class MaatApiAuthorizationService {
+public class MaatApiClient {
     private final MaatApiConfiguration config;
     private final RetryConfiguration retryConfiguration;
     private static final String REGISTERED_ID = "maatapi";
 
-    public MaatApiAuthorizationService(MaatApiConfiguration config, RetryConfiguration retryConfiguration) {
+
+    public MaatApiClient(MaatApiConfiguration config, RetryConfiguration retryConfiguration) {
         this.config = config;
         this.retryConfiguration = retryConfiguration;
     }
@@ -41,8 +43,6 @@ public class MaatApiAuthorizationService {
     public WebClient webClient(
             ClientRegistrationRepository clientRegistrations, OAuth2AuthorizedClientRepository authorizedClients
     ) {
-        ServletOAuth2AuthorizedClientExchangeFilterFunction oauth =
-            new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations, authorizedClients);
 
         ConnectionProvider provider = ConnectionProvider.builder("custom")
             .maxConnections(500)
@@ -52,8 +52,8 @@ public class MaatApiAuthorizationService {
             .evictInBackground(Duration.ofSeconds(120))
             .build();
 
-        oauth.setDefaultClientRegistrationId(REGISTERED_ID);
-        WebClient.Builder client = WebClient.builder()
+
+        WebClient.Builder clientBuilder = WebClient.builder()
             .baseUrl(config.getBaseUrl())
             .filter(retryFilter())
             .filter(loggingRequest())
@@ -69,10 +69,14 @@ public class MaatApiAuthorizationService {
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
         if (config.isOAuthEnabled()) {
-            client.filter(oauth);
+            ServletOAuth2AuthorizedClientExchangeFilterFunction oauth =
+                    new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations, authorizedClients);
+            oauth.setDefaultClientRegistrationId(REGISTERED_ID);
+
+            clientBuilder.filter(oauth);
         }
 
-        return client.build();
+        return clientBuilder.build();
     }
 
     private ExchangeFilterFunction loggingRequest() {
