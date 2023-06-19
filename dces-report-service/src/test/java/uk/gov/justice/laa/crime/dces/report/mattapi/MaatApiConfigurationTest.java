@@ -31,7 +31,6 @@ public class MaatApiConfigurationTest {
 
     @Test
     public void givenDefinedBasedURL_whenGetBaseUrlIsInvoked_thenCorrectBaseURLIsReturned() {
-        // TODO (DCES-25): update expected value to what it is supposed to be resolved
-        assertThat(configuration.getBaseUrl()).isEqualTo("${MAAT_API_BASE_URL}");
+        assertThat(configuration.getBaseUrl()).isEqualTo("http://localhost:8090");
     }
 }
