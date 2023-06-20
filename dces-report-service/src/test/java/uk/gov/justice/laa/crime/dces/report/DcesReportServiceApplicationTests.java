@@ -10,7 +10,6 @@ class DcesReportServiceApplicationTests {
 
 
 	@Test
-	void contextLoads() {
-	}
+	void contextLoads() {}
 
 }

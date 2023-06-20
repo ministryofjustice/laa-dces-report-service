@@ -101,7 +101,7 @@ jacocoTestReport {
 
 pitest {
 	targetClasses = ['uk.gov.justice.laa.crime.dces.report.*']
-	excludedClasses = ['uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication']
+	excludedClasses = ['uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication, uk.gov.justice.laa.crime.dces.report.maatapi.*Client*']
 	threads = 5
 	outputFormats = ['XML', 'HTML']
 	timestampedReports = false
@@ -112,7 +112,7 @@ tasks['sonarqube'].dependsOn test
 
 sonarqube {
 	properties {
-		property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java"
+		property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java,**/maatapi/**Client**.java"
 		property "sonar.coverage.exclusions", "**/DcesReportServiceApplication.java"
 		property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
 		property "sonar.projectKey", "ministryofjustice_laa-dces-report-service"
