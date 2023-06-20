@@ -33,57 +33,18 @@ import static org.mockito.Mockito.when;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class MaatApiClientTest {
 
-    @Autowired
     @Mock
     private MaatApiClient maatApiClient;
 
-//    @Mock
-    private ExchangeFunction mockedRequestCall;
-
-//    @Autowired
     @MockBean
     private ClientRegistrationRepository registrationRepository;
 
-//    @Autowired
     @MockBean
     private OAuth2AuthorizedClientRepository authoriationRepository;
 
     @BeforeAll
     public void setup() {
-//        maatApiClient = new MaatApiClient(new MaatApiConfiguration(), new RetryConfiguration());
-//        MockitoAnnotations.openMocks(this);
-//        Mockito.when(maatApiClient.webClient(any(ClientRegistrationRepository.class), any(OAuth2AuthorizedClientRepository.class)))
-//            .thenReturn(
-//                WebClient
-//                    .builder()
-//                    .baseUrl("http://localhost:1234")
-//                    .filter(ExchangeFilterFunctions.statusError(
-//                                HttpStatusCode::is4xxClientError,
-//                                r -> {
-//                                    HttpStatus status = HttpStatus.valueOf(r.statusCode().value());
-//                                    return WebClientResponseException.create(
-//                                            status.value(),
-//                                            status.getReasonPhrase(),
-//                                            null,
-//                                            null,
-//                                            null
-//                                    );
-//                                }
-//                        )
-//                    )
-//                    .exchangeFunction(mockedRequestCall)
-//                    .build()
-//            );
-//        maatApiClient = Mockito.spy(maatApiClient);
     }
-//    @Component
-//    public static class MaatApiClientFactory {
-//        public MaatApiClient getAuthorizationServiceService(
-//                MaatApiConfiguration configuration,
-//                RetryConfiguration retryconfiguration) {
-//            return new MaatApiClient(configuration, retryconfiguration);
-//        }
-//    }
 
     @BeforeEach
     public void prepareTest() {
@@ -97,30 +58,11 @@ class MaatApiClientTest {
 
     @Test
     public void givenAnyParameters_whenWebClientIsInvoked_thenTheCorrectClientShouldBeReturned() {
-//        WebClient actualWebClient = maatApiClient.webClient(any(), any());
-//        assertThat(actualWebClient).isInstanceOf(WebClient.class);
-
-//        MockitoAnnotations.openMocks(this);
         when(maatApiClient.webClient(any(ClientRegistrationRepository.class), any(OAuth2AuthorizedClientRepository.class)))
             .thenReturn(
                 WebClient
                     .builder()
                     .baseUrl("http://localhost:1234")
-//                    .filter(ExchangeFilterFunctions.statusError(
-//                                HttpStatusCode::is4xxClientError,
-//                                r -> {
-//                                    HttpStatus status = HttpStatus.valueOf(r.statusCode().value());
-//                                    return WebClientResponseException.create(
-//                                            status.value(),
-//                                            status.getReasonPhrase(),
-//                                            null,
-//                                            null,
-//                                            null
-//                                    );
-//                                }
-//                        )
-//                    )
-//                    .exchangeFunction(mockedRequestCall)
                     .build()
             );
 

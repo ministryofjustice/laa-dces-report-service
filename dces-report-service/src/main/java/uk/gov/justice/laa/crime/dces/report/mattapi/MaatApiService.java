@@ -19,7 +19,7 @@ public class MaatApiService {
     @Qualifier("maatApiAuthorizationClient")
     private final WebClient mattApiWebClient;
 
-    public <T> T getApiResponseViaGET(Class<T> responseClass, String url, Map<String, String> headers, Object... urlVariables) {
+    public <T> T sendApiRequestViaGET(Class<T> responseClass, String url, Map<String, String> headers, Object... urlVariables) {
         return mattApiWebClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(url)
@@ -37,7 +37,7 @@ public class MaatApiService {
         if (error instanceof MaatApiClientException) {
             return error;
         }
-        return new MaatApiClientException("Call to Court Data API failed, invalid response.", error);
+        return new MaatApiClientException("Call to MAAT API failed, invalid response.", error);
     }
 
     // TODO (): Add support for POST requests

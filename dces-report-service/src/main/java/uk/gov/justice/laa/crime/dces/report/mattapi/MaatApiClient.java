@@ -52,7 +52,6 @@ public class MaatApiClient {
             .evictInBackground(Duration.ofSeconds(120))
             .build();
 
-
         WebClient.Builder clientBuilder = WebClient.builder()
             .baseUrl(config.getBaseUrl())
             .filter(retryFilter())
