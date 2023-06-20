@@ -51,18 +51,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    50%
+    71.4%
   </span>
   <span class="absValue">
-    (7/14)
+    (10/14)
   </span>
 </td>
 <td class="coverageStat">
   <span class="percent">
-    46.3%
+    68.7%
   </span>
   <span class="absValue">
-    (31/67)
+    (46/67)
   </span>
 </td>
 </tr>
@@ -159,17 +159,17 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    private ExchangeFilterFunction loggingRequest() {
 <b class="fc">&nbsp;        return (clientRequest, next) -&gt; {</b>
-<b class="nc">&nbsp;            log.info(&quot;Request: {} {}&quot;, clientRequest.method(), clientRequest.url());</b>
-<b class="nc">&nbsp;            clientRequest.headers()</b>
-<b class="nc">&nbsp;                    .forEach((name, values) -&gt; values.forEach(value -&gt; log.info(&quot;{}={}&quot;, name, value)));</b>
-<b class="nc">&nbsp;            return next.exchange(clientRequest);</b>
+<b class="fc">&nbsp;            log.info(&quot;Request: {} {}&quot;, clientRequest.method(), clientRequest.url());</b>
+<b class="fc">&nbsp;            clientRequest.headers()</b>
+<b class="fc">&nbsp;                    .forEach((name, values) -&gt; values.forEach(value -&gt; log.info(&quot;{}={}&quot;, name, value)));</b>
+<b class="fc">&nbsp;            return next.exchange(clientRequest);</b>
 &nbsp;        };
 &nbsp;    }
 &nbsp;
 &nbsp;    private ExchangeFilterFunction loggingResponse() {
 <b class="fc">&nbsp;        return ExchangeFilterFunction.ofResponseProcessor(clientResponse -&gt; {</b>
-<b class="nc">&nbsp;            log.info(&quot;Response status: {}&quot;, clientResponse.statusCode());</b>
-<b class="nc">&nbsp;            return Mono.just(clientResponse);</b>
+<b class="fc">&nbsp;            log.info(&quot;Response status: {}&quot;, clientResponse.statusCode());</b>
+<b class="fc">&nbsp;            return Mono.just(clientResponse);</b>
 &nbsp;        });
 &nbsp;    }
 &nbsp;
@@ -197,18 +197,18 @@ Current scope:     <a href="../../index.html">all classes</a>
 &nbsp;
 &nbsp;    private ExchangeFilterFunction retryFilter() {
 <b class="fc">&nbsp;        return (request, next) -&gt;</b>
-<b class="nc">&nbsp;            next.exchange(request)</b>
-<b class="nc">&nbsp;            .retryWhen(</b>
-<b class="nc">&nbsp;                Retry.backoff(</b>
-<b class="nc">&nbsp;                    retryConfiguration.getMaxRetries(),</b>
-<b class="nc">&nbsp;                    Duration.ofSeconds(retryConfiguration.getMinBackOffPeriod())</b>
+<b class="fc">&nbsp;            next.exchange(request)</b>
+<b class="fc">&nbsp;            .retryWhen(</b>
+<b class="fc">&nbsp;                Retry.backoff(</b>
+<b class="fc">&nbsp;                    retryConfiguration.getMaxRetries(),</b>
+<b class="fc">&nbsp;                    Duration.ofSeconds(retryConfiguration.getMinBackOffPeriod())</b>
 &nbsp;                )
-<b class="nc">&nbsp;                .jitter(retryConfiguration.getJitterValue())</b>
-<b class="nc">&nbsp;                .filter(</b>
+<b class="fc">&nbsp;                .jitter(retryConfiguration.getJitterValue())</b>
+<b class="fc">&nbsp;                .filter(</b>
 <b class="nc">&nbsp;                    throwable -&gt;throwable instanceof HttpServerErrorException ||</b>
 <b class="nc">&nbsp;                                (throwable instanceof WebClientRequestException &amp;&amp; throwable.getCause() instanceof TimeoutException)</b>
 &nbsp;                )
-<b class="nc">&nbsp;                .onRetryExhaustedThrow(</b>
+<b class="fc">&nbsp;                .onRetryExhaustedThrow(</b>
 <b class="nc">&nbsp;                    (retryBackoffSpec, retrySignal) -&gt;new MaatApiClientException(</b>
 <b class="nc">&nbsp;                            String.format(&quot;Call to Court Data API failed. Retries exhausted: %d/%d.&quot;,</b>
 <b class="nc">&nbsp;                                            retryConfiguration.getMaxRetries(),</b>
@@ -217,7 +217,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 <b class="nc">&nbsp;                            retrySignal.failure()</b>
 &nbsp;                    )
 &nbsp;                )
-<b class="nc">&nbsp;                .doBeforeRetry(doBeforeRetry -&gt; log.warn(</b>
+<b class="fc">&nbsp;                .doBeforeRetry(doBeforeRetry -&gt; log.warn(</b>
 <b class="nc">&nbsp;                    String.format(&quot;Call to Court Data API failed, retrying: %d/%d&quot;,</b>
 <b class="nc">&nbsp;                        doBeforeRetry.totalRetries(), retryConfiguration.getMaxRetries()</b>
 &nbsp;                    )
@@ -248,7 +248,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2023-06-20 18:11</div>
+    <div style="float:right;">generated on 2023-06-20 19:34</div>
 </div>
 </body>
 </html>
