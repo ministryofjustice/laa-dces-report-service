@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
+<xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:element name="contribution_file">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="header">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="filename" type="xsd:string" />
+                            <xsd:element name="dateGenerated" type="xsd:date" />
+                            <xsd:element name="recordCount" type="xsd:unsignedByte" />
+                            <xsd:element name="formatVersion" type="xsd:string" />
+                        </xsd:sequence>
+                        <xsd:attribute name="id" type="xsd:unsignedInt" use="required" />
+                    </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="CONTRIBUTIONS_LIST">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="CONTRIBUTIONS" maxOccurs="unbounded" minOccurs="0">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element type="xsd:int" name="maat_id"/>
+                                        <xsd:element name="applicant">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element type="xsd:string" name="firstName"/>
+                                                    <xsd:element type="xsd:string" name="lastName"/>
+                                                    <xsd:element type="xsd:date" name="dob"/>
+                                                    <xsd:element type="xsd:string" name="ni_number"/>
+                                                    <xsd:element type="xsd:string" name="landline"/>
+                                                    <xsd:element type="xsd:string" name="mobile"/>
+                                                    <xsd:element type="xsd:string" name="email"/>
+                                                    <xsd:element type="xsd:byte" name="preferredPaymentDay"/>
+                                                    <xsd:element name="preferredPaymentMethod">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="code"/>
+                                                                <xsd:element type="xsd:string" name="description"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element type="xsd:string" name="noFixedAbode"/>
+                                                    <xsd:element type="xsd:string" name="specialInvestigation"/>
+                                                    <xsd:element name="homeAddress">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="detail">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element type="xsd:string" name="line1"/>
+                                                                            <xsd:element type="xsd:string" name="line2"/>
+                                                                            <xsd:element type="xsd:string" name="line3"/>
+                                                                            <xsd:element type="xsd:string" name="city"/>
+                                                                            <xsd:element type="xsd:string" name="country"/>
+                                                                            <xsd:element type="xsd:string" name="postcode"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="postalAddress">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="detail">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element type="xsd:string" name="line1"/>
+                                                                            <xsd:element type="xsd:string" name="line2"/>
+                                                                            <xsd:element type="xsd:string" name="line3"/>
+                                                                            <xsd:element type="xsd:string" name="city"/>
+                                                                            <xsd:element type="xsd:string" name="country"/>
+                                                                            <xsd:element type="xsd:string" name="postcode"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="employmentStatus">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="code"/>
+                                                                <xsd:element type="xsd:string" name="description"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="bankDetails">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:int" name="sortCode"/>
+                                                                <xsd:element type="xsd:int" name="accountNo"/>
+                                                                <xsd:element type="xsd:string" name="accountName"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="partner">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="hasPartner"/>
+                                                                <xsd:element type="xsd:string" name="contraryInterest"/>
+                                                                <xsd:element name="ciDetails">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element type="xsd:string" name="code"/>
+                                                                            <xsd:element type="xsd:string" name="description"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="partnerDetails">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="firstName"/>
+                                                                <xsd:element type="xsd:string" name="lastName"/>
+                                                                <xsd:element type="xsd:date" name="dob"/>
+                                                                <xsd:element type="xsd:string" name="niNumber"/>
+                                                                <xsd:element name="employmentStatus">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element type="xsd:string" name="code"/>
+                                                                            <xsd:element type="xsd:string" name="description"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="disabilitySummary">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="declaration"/>
+                                                                <xsd:element name="disabilities">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element name="disability">
+                                                                                <xsd:complexType>
+                                                                                    <xsd:sequence>
+                                                                                        <xsd:element type="xsd:string" name="code"/>
+                                                                                        <xsd:element type="xsd:string" name="description"/>
+                                                                                    </xsd:sequence>
+                                                                                </xsd:complexType>
+                                                                            </xsd:element>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                                <xsd:attribute type="xsd:int" name="id"/>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="application">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="offenceType">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="code"/>
+                                                                <xsd:element type="xsd:string" name="description"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="caseType">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="code"/>
+                                                                <xsd:element type="xsd:string" name="description"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="repStatus">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="status"/>
+                                                                <xsd:element type="xsd:string" name="description"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="magsCourt">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:short" name="court"/>
+                                                                <xsd:element type="xsd:string" name="description"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element type="xsd:date" name="repStatusDate"/>
+                                                    <xsd:element type="xsd:string" name="arrestSummonsNumber"/>
+                                                    <xsd:element type="xsd:string" name="inCourtCustody"/>
+                                                    <xsd:element type="xsd:string" name="imprisoned"/>
+                                                    <xsd:element type="xsd:date" name="repOrderWithdrawalDate"/>
+                                                    <xsd:element type="xsd:date" name="committalDate"/>
+                                                    <xsd:element type="xsd:date" name="sentenceDate"/>
+                                                    <xsd:element name="appealType">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="code"/>
+                                                                <xsd:element type="xsd:string" name="description"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="ccHardship">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:date" name="reviewDate"/>
+                                                                <xsd:element type="xsd:string" name="reviewResult"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="solicitor">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="accountCode"/>
+                                                                <xsd:element type="xsd:string" name="name"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="assessment">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element type="xsd:date" name="effectiveDate"/>
+                                                    <xsd:element type="xsd:short" name="monthlyContribution"/>
+                                                    <xsd:element type="xsd:short" name="upfrontContribution"/>
+                                                    <xsd:element type="xsd:short" name="incomeContributionCap"/>
+                                                    <xsd:element name="assessmentReason">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="code"/>
+                                                                <xsd:element type="xsd:string" name="description"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element type="xsd:date" name="assessmentDate"/>
+                                                    <xsd:element type="xsd:date" name="upliftAppliedDate"/>
+                                                    <xsd:element type="xsd:date" name="upliftRemovedDate"/>
+                                                    <xsd:element name="incomeEvidenceList">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="incomeEvidence">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element type="xsd:string" name="evidence"/>
+                                                                            <xsd:element type="xsd:string" name="mandatory"/>
+                                                                            <xsd:element type="xsd:date" name="dateReceived"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element type="xsd:string" name="sufficientDeclaredEquity"/>
+                                                    <xsd:element type="xsd:string" name="sufficientVerifiedEquity"/>
+                                                    <xsd:element type="xsd:string" name="sufficientCapitalandEquity"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="passported">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="result">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="code"/>
+                                                                <xsd:element type="xsd:string" name="description"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element type="xsd:date" name="date_completed"/>
+                                                    <xsd:element name="reason">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="code"/>
+                                                                <xsd:element type="xsd:string" name="description"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="equity">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element type="xsd:string" name="undeclaredProperty"/>
+                                                    <xsd:element type="xsd:string" name="equityVerified"/>
+                                                    <xsd:element type="xsd:string" name="equityVerifiedBy"/>
+                                                    <xsd:element type="xsd:date" name="equityVerifiedDate"/>
+                                                    <xsd:element name="propertyDescriptor">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:byte" name="bedRoomCount"/>
+                                                                <xsd:element name="residentialStatus">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element type="xsd:string" name="code"/>
+                                                                            <xsd:element type="xsd:string" name="description"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                                <xsd:element name="propertyType">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element type="xsd:string" name="code"/>
+                                                                            <xsd:element type="xsd:string" name="description"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                                <xsd:element name="address">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element name="detail">
+                                                                                <xsd:complexType>
+                                                                                    <xsd:sequence>
+                                                                                        <xsd:element type="xsd:string" name="line1"/>
+                                                                                        <xsd:element type="xsd:string" name="line2"/>
+                                                                                        <xsd:element type="xsd:string" name="line3"/>
+                                                                                        <xsd:element type="xsd:string" name="city"/>
+                                                                                        <xsd:element type="xsd:string" name="country"/>
+                                                                                        <xsd:element type="xsd:string" name="postcode"/>
+                                                                                    </xsd:sequence>
+                                                                                </xsd:complexType>
+                                                                            </xsd:element>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                                <xsd:element type="xsd:byte" name="percentageApplicantOwned"/>
+                                                                <xsd:element type="xsd:byte" name="percentagePartnerOwned"/>
+                                                                <xsd:element type="xsd:float" name="applicantEquityAmount"/>
+                                                                <xsd:element type="xsd:byte" name="partnerEquityAmount"/>
+                                                                <xsd:element type="xsd:byte" name="declaredMortgage"/>
+                                                                <xsd:element type="xsd:float" name="declaredValue"/>
+                                                                <xsd:element type="xsd:byte" name="verifiedMortgage"/>
+                                                                <xsd:element type="xsd:float" name="verifiedValue"/>
+                                                                <xsd:element type="xsd:string" name="tenantInPlace"/>
+                                                                <xsd:element name="thirdPartyList">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element name="thirdParty">
+                                                                                <xsd:complexType>
+                                                                                    <xsd:sequence>
+                                                                                        <xsd:element type="xsd:string" name="name"/>
+                                                                                        <xsd:element name="relationship">
+                                                                                            <xsd:complexType>
+                                                                                                <xsd:sequence>
+                                                                                                    <xsd:element type="xsd:string" name="code"/>
+                                                                                                    <xsd:element type="xsd:string" name="description"/>
+                                                                                                </xsd:sequence>
+                                                                                            </xsd:complexType>
+                                                                                        </xsd:element>
+                                                                                        <xsd:element type="xsd:string" name="otherDescription"/>
+                                                                                        <xsd:element type="xsd:date" name="dateCreated"/>
+                                                                                        <xsd:element type="xsd:date" name="dateDeleted"/>
+                                                                                    </xsd:sequence>
+                                                                                </xsd:complexType>
+                                                                            </xsd:element>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="capitalSummary">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element type="xsd:date" name="allEvidenceDate"/>
+                                                    <xsd:element type="xsd:int" name="totalCapitalAssets"/>
+                                                    <xsd:element type="xsd:string" name="noCapitalDeclared"/>
+                                                    <xsd:element type="xsd:date" name="capAllowanceWithheld"/>
+                                                    <xsd:element type="xsd:date" name="capAllowanceRestore"/>
+                                                    <xsd:element name="motorVehicleOwnership">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="Owner"/>
+                                                                <xsd:element name="RegistrationList">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element type="xsd:string" name="Registration"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="assetList">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="asset">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element name="type">
+                                                                                <xsd:complexType>
+                                                                                    <xsd:sequence>
+                                                                                        <xsd:element type="xsd:string" name="code"/>
+                                                                                        <xsd:element type="xsd:string" name="description"/>
+                                                                                    </xsd:sequence>
+                                                                                </xsd:complexType>
+                                                                            </xsd:element>
+                                                                            <xsd:element type="xsd:short" name="amount"/>
+                                                                            <xsd:element type="xsd:string" name="verified"/>
+                                                                            <xsd:element type="xsd:string" name="otherDescription"/>
+                                                                            <xsd:element type="xsd:date" name="dateVerified"/>
+                                                                            <xsd:element type="xsd:date" name="evidenceReceivedDate"/>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                    <xsd:element name="propertyList">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element name="property" maxOccurs="unbounded" minOccurs="0">
+                                                                    <xsd:complexType>
+                                                                        <xsd:sequence>
+                                                                            <xsd:element type="xsd:byte" name="bedRoomCount"/>
+                                                                            <xsd:element name="propertyType">
+                                                                                <xsd:complexType>
+                                                                                    <xsd:sequence>
+                                                                                        <xsd:element type="xsd:string" name="code"/>
+                                                                                        <xsd:element type="xsd:string" name="description"/>
+                                                                                    </xsd:sequence>
+                                                                                </xsd:complexType>
+                                                                            </xsd:element>
+                                                                            <xsd:element name="address">
+                                                                                <xsd:complexType>
+                                                                                    <xsd:sequence>
+                                                                                        <xsd:element name="detail">
+                                                                                            <xsd:complexType>
+                                                                                                <xsd:sequence>
+                                                                                                    <xsd:element type="xsd:string" name="line1"/>
+                                                                                                    <xsd:element type="xsd:string" name="line2"/>
+                                                                                                    <xsd:element type="xsd:string" name="line3"/>
+                                                                                                    <xsd:element type="xsd:string" name="city"/>
+                                                                                                    <xsd:element type="xsd:string" name="country"/>
+                                                                                                    <xsd:element type="xsd:string" name="postcode"/>
+                                                                                                </xsd:sequence>
+                                                                                            </xsd:complexType>
+                                                                                        </xsd:element>
+                                                                                    </xsd:sequence>
+                                                                                </xsd:complexType>
+                                                                            </xsd:element>
+                                                                            <xsd:element type="xsd:byte" name="percentageApplicantOwned"/>
+                                                                            <xsd:element type="xsd:byte" name="percentagePartnerOwned"/>
+                                                                            <xsd:element type="xsd:short" name="applicantEquityAmount"/>
+                                                                            <xsd:element type="xsd:byte" name="partnerEquityAmount"/>
+                                                                            <xsd:element type="xsd:int" name="declaredMortgage"/>
+                                                                            <xsd:element type="xsd:int" name="declaredValue"/>
+                                                                            <xsd:element type="xsd:byte" name="verifiedMortgage"/>
+                                                                            <xsd:element type="xsd:float" name="verifiedValue"/>
+                                                                            <xsd:element type="xsd:string" name="tenantInPlace"/>
+                                                                            <xsd:element name="thirdPartyList">
+                                                                                <xsd:complexType>
+                                                                                    <xsd:sequence>
+                                                                                        <xsd:element name="thirdParty">
+                                                                                            <xsd:complexType>
+                                                                                                <xsd:sequence>
+                                                                                                    <xsd:element type="xsd:string" name="name"/>
+                                                                                                    <xsd:element name="relationship">
+                                                                                                        <xsd:complexType>
+                                                                                                            <xsd:sequence>
+                                                                                                                <xsd:element type="xsd:string" name="code"/>
+                                                                                                                <xsd:element type="xsd:string" name="description"/>
+                                                                                                            </xsd:sequence>
+                                                                                                        </xsd:complexType>
+                                                                                                    </xsd:element>
+                                                                                                    <xsd:element type="xsd:string" name="otherDescription"/>
+                                                                                                    <xsd:element type="xsd:date" name="dateCreated"/>
+                                                                                                    <xsd:element type="xsd:date" name="dateDeleted"/>
+                                                                                                </xsd:sequence>
+                                                                                            </xsd:complexType>
+                                                                                        </xsd:element>
+                                                                                    </xsd:sequence>
+                                                                                </xsd:complexType>
+                                                                            </xsd:element>
+                                                                        </xsd:sequence>
+                                                                    </xsd:complexType>
+                                                                </xsd:element>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="ccOutcomes">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="ccOutcome" maxOccurs="unbounded" minOccurs="0">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="code"/>
+                                                                <xsd:element type="xsd:date" name="date"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="correspondence">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="letter" maxOccurs="unbounded" minOccurs="0">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:string" name="Ref"/>
+                                                                <xsd:element type="xsd:int" name="id"/>
+                                                                <xsd:element type="xsd:string" name="type"/>
+                                                                <xsd:element type="xsd:date" name="created"/>
+                                                                <xsd:element type="xsd:date" name="printed"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                        <xsd:element name="breathingSpaceInfo">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="breathingSpace">
+                                                        <xsd:complexType>
+                                                            <xsd:sequence>
+                                                                <xsd:element type="xsd:byte" name="ID"/>
+                                                                <xsd:element type="xsd:string" name="type"/>
+                                                                <xsd:element type="xsd:string" name="status"/>
+                                                                <xsd:element type="xsd:date" name="bsStartDate"/>
+                                                                <xsd:element type="xsd:date" name="bsEndDate"/>
+                                                                <xsd:element type="xsd:int" name="debtAmt"/>
+                                                                <xsd:element type="xsd:string" name="debtRefNo"/>
+                                                                <xsd:element type="xsd:string" name="dateModified"/>
+                                                            </xsd:sequence>
+                                                        </xsd:complexType>
+                                                    </xsd:element>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                    <xsd:attribute type="xsd:int" name="id"/>
+                                    <xsd:attribute type="xsd:string" name="flag"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
