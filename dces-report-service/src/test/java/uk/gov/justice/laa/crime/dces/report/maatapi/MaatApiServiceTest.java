@@ -8,11 +8,16 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.reactive.function.client.*;
-import reactor.core.publisher.Mono;
-import reactor.test.StepVerifier;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import uk.gov.justice.laa.crime.dces.report.maatapi.config.MaatApiConfiguration;
+import uk.gov.justice.laa.crime.dces.report.maatapi.config.RetryConfiguration;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 
@@ -32,6 +37,15 @@ class MaatApiServiceTest {
     private static MockWebServer mockWebServer;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+    @Mock
+    private MaatApiConfiguration configuration;
+    @MockBean
+    private RetryConfiguration retryConfiguration;
+    @MockBean
+    private ClientRegistrationRepository clientRegistrationRepo;
+    @MockBean
+    private OAuth2AuthorizedClientRepository authorizationRepo;
+
     private final String MOCK_TRANSACTION_ID = "MockedTransactionId";
     private final Integer MOCK_REPORT_ID = 20230701;
     private static final String MOCK_ENDPOINT_URL_GET = "mock/api/get/";
@@ -43,7 +57,10 @@ class MaatApiServiceTest {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
 
-        maatApiService = new MaatApiService(webClientMockFactory(mockWebServer.getPort()));
+        MaatApiClient maatApiClient = maatApiClientMockFactory(mockWebServer.getPort());
+        maatApiService = new MaatApiService(
+                maatApiClient.webClient(clientRegistrationRepo, authorizationRepo)
+        );
     }
 
     @AfterAll
@@ -51,8 +68,11 @@ class MaatApiServiceTest {
         mockWebServer.shutdown();
     }
 
-    private WebClient webClientMockFactory(Integer port) {
-        return WebClient.create(String.format("http://localhost:%s", port));
+    private MaatApiClient maatApiClientMockFactory(Integer port) {
+        configuration = new MaatApiConfiguration();
+        configuration.setBaseUrl(String.format("http://localhost:%s", port));
+        configuration.setOAuthEnabled(false);
+        return new MaatApiClient(configuration, retryConfiguration);
     }
 
     @Test
@@ -96,20 +116,6 @@ class MaatApiServiceTest {
                         MOCK_REPORT_ID
                 )
         ).isInstanceOf(MaatApiClientException.class).cause().isInstanceOf(WebClientResponseException.class);
-
-//        StepVerifier.create(Mono.(maatApiService.sendApiRequestViaGET(
-//                        MaatApiResponseModel.class,
-//                        MOCK_ENDPOINT_URL_GET,
-//                        Map.of("LAA_TRANSACTION_ID", MOCK_TRANSACTION_ID),
-//                        MOCK_REPORT_ID
-//                ))
-//                .expectError(RuntimeException.class)
-//                .verify();
-
-//        StepVerifier.create(employeeMono)
-//                .expectNextMatches(employee -> employee.getRole()
-//                        .equals(Role.LEAD_ENGINEER))
-//                .verifyComplete();
     }
 
     private <T> void setupValidGetResponse(T returnBody) throws JsonProcessingException {

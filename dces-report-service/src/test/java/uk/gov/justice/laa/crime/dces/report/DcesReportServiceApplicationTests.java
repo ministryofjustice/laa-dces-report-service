@@ -7,8 +7,7 @@ import org.springframework.test.annotation.DirtiesContext;
 @SpringBootTest
 @DirtiesContext
 class DcesReportServiceApplicationTests {
-
-
+	
 	@Test
 	void contextLoads() {}
 

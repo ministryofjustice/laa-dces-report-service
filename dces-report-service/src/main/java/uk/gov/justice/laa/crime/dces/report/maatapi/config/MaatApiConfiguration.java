@@ -6,7 +6,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 
-// TODO (DCES-25): make it possible to load configuration values from own config file
 @Data
 @Configuration
 @ConfigurationProperties(prefix = "maat-api")

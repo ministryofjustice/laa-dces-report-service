@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
-import org.junit.jupiter.api.*;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -58,14 +60,13 @@ class MaatApiClientTest {
 
     private MaatApiClient mockApiClientFactory() {
         configuration = new MaatApiConfiguration();
-        configuration.setBaseUrl(convertMockWebServerBaseUrl());
+        configuration.setBaseUrl(convertMockWebServerBaseUrl(mockWebServer.getPort()));
         configuration.setOAuthEnabled(false);
         System.out.println(configuration.getBaseUrl());
         return new MaatApiClient(configuration, retryConfiguration);
     }
 
-    private String convertMockWebServerBaseUrl() {
-        int port = (mockWebServer != null) ? mockWebServer.getPort() : 9123;
+    private String convertMockWebServerBaseUrl(int port) {
         return String.format("http://localhost:%s", port);
     }
 
