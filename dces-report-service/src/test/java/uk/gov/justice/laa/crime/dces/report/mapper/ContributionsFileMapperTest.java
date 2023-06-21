@@ -29,11 +29,13 @@ public class ContributionsFileMapperTest {
 
     @Test
     void testMultipleContributions(){
-        File f = new File(getClass().getClassLoader().getResource("contributions/MULTIPLE_CONTRIBUTIONS.xml").getFile());
+        var classLoader = getClass().getClassLoader();
+        // check 1
+        File f = new File(classLoader.getResource("contributions/MULTIPLE_CONTRIBUTIONS.xml").getFile());
         var contributionsFile = ContributionsFileMapper.mapContributionsXMLFileToObject(f);
         softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()==2);
-
-        f = new File(getClass().getClassLoader().getResource("contributions/CONTRIBUTIONS_201809271933.xml").getFile());
+        // check2
+        f = new File(classLoader.getResource("contributions/CONTRIBUTIONS_201809271933.xml").getFile());
         contributionsFile = ContributionsFileMapper.mapContributionsXMLFileToObject(f);
         softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()==16);
         softly.assertAll();
