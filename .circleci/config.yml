@@ -86,8 +86,8 @@ jobs:
           name: Install Dependencies
           command: ./gradlew build -x test
       - run:
-          name: Run SonarQube
-          command: ./gradlew sonarqube -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.organization=${SONAR_ORG}
+          name: Run Sonar
+          command: ./gradlew sonar
       - save_cache:
           paths:
             - ~/.gradle/wrapper
@@ -221,6 +221,7 @@ workflows:
             branches:
               only:
                 - main
+          context: SonarCloud
 
       - scan_app:
           requires:
@@ -276,6 +277,7 @@ workflows:
             branches:
               ignore:
                 - main
+          context: SonarCloud
 
       - scan_app:
           requires:
