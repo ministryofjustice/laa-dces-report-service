@@ -29,14 +29,8 @@ public class ContributionsFileMapperTest {
 
     @Test
     void testMultipleContributions(){
-        var classLoader = getClass().getClassLoader();
-        // check 1
-        File f = new File(classLoader.getResource("contributions/MULTIPLE_CONTRIBUTIONS.xml").getFile());
+        File f = new File(getClass().getClassLoader().getResource("contributions/multiple_contributions.xml").getFile());
         var contributionsFile = ContributionsFileMapper.mapContributionsXMLFileToObject(f);
-        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()==2);
-        // check2
-        f = new File(classLoader.getResource("contributions/CONTRIBUTIONS_201809271933.xml").getFile());
-        contributionsFile = ContributionsFileMapper.mapContributionsXMLFileToObject(f);
         softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()==16);
         softly.assertAll();
     }
@@ -45,7 +39,7 @@ public class ContributionsFileMapperTest {
     void testFieldMappingForCSV(){
         //MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date
         // TODO: Need to finish test once ccOutcome date, and CorrespondenceSentDate mappings are understood.
-        File f = new File(getClass().getClassLoader().getResource("contributions/CONTRIBUTIONS_202102122031_ForReport.xml").getFile());
+        File f = new File(getClass().getClassLoader().getResource("contributions/report_values_filled.xml").getFile());
         var contributionsFile = ContributionsFileMapper.mapContributionsXMLFileToObject(f);
         softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()==1);
 
