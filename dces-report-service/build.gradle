@@ -113,12 +113,19 @@ pitest {
 	mutationThreshold = 60
 }
 
-sonar {
+tasks['sonarqube'].dependsOn test
+
+sonarqube {
 	properties {
-		property "sonar.projectName", "laa-dces-report-service"
-		property "sonar.host.url", "https://sonarcloud.io"
-		property "sonar.organization", "ministryofjustice"
+		property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java"
+		property "sonar.coverage.exclusions", "**/DcesReportServiceApplication.java"
+		property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
 		property "sonar.projectKey", "ministryofjustice_laa-dces-report-service"
+		property "sonar.organization", "ministryofjustice"
+		property "sonar.host.url", "https://sonarcloud.io"
+		property "sonar.projectName", "laa-dces-report-service"
+		property "sonar.pitest.mode", "reuseReport"
+		property "sonar.pitest.reportsDirectory", "build/reports/pitest"
 	}
 }
 
