@@ -11,7 +11,7 @@ import java.io.File;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(SoftAssertionsExtension.class)
-public class ContributionsFileMapperTest {
+class ContributionsFileMapperTest {
 
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -23,7 +23,7 @@ public class ContributionsFileMapperTest {
         softly.assertThat(contributionsFile).isNotNull();
         var contributions = contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().get(0);
         softly.assertThat(contributions.getFlag()).isEqualTo("update");
-        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()==1);
+        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()).isEqualTo(1);
         softly.assertAll();
     }
 
@@ -31,7 +31,7 @@ public class ContributionsFileMapperTest {
     void testMultipleContributions(){
         File f = new File(getClass().getClassLoader().getResource("contributions/multiple_contributions.xml").getFile());
         var contributionsFile = ContributionsFileMapper.mapContributionsXMLFileToObject(f);
-        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()==16);
+        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()).isEqualTo(16);
         softly.assertAll();
     }
 
@@ -41,7 +41,7 @@ public class ContributionsFileMapperTest {
         // TODO: Need to finish test once ccOutcome date, and CorrespondenceSentDate mappings are understood.
         File f = new File(getClass().getClassLoader().getResource("contributions/report_values_filled.xml").getFile());
         var contributionsFile = ContributionsFileMapper.mapContributionsXMLFileToObject(f);
-        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()==1);
+        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()).isEqualTo(1);
 
         var contributions = contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().get(0);
         softly.assertThat(contributions.getMaatId()).isEqualTo(5635978);
