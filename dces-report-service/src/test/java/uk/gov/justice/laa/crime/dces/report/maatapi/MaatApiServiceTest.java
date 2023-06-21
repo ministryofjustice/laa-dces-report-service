@@ -11,6 +11,8 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.*;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 
@@ -94,6 +96,20 @@ class MaatApiServiceTest {
                         MOCK_REPORT_ID
                 )
         ).isInstanceOf(MaatApiClientException.class).cause().isInstanceOf(WebClientResponseException.class);
+
+//        StepVerifier.create(Mono.(maatApiService.sendApiRequestViaGET(
+//                        MaatApiResponseModel.class,
+//                        MOCK_ENDPOINT_URL_GET,
+//                        Map.of("LAA_TRANSACTION_ID", MOCK_TRANSACTION_ID),
+//                        MOCK_REPORT_ID
+//                ))
+//                .expectError(RuntimeException.class)
+//                .verify();
+
+//        StepVerifier.create(employeeMono)
+//                .expectNextMatches(employee -> employee.getRole()
+//                        .equals(Role.LEAD_ENGINEER))
+//                .verifyComplete();
     }
 
     private <T> void setupValidGetResponse(T returnBody) throws JsonProcessingException {

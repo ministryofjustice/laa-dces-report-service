@@ -31,7 +31,29 @@ public class MaatApiService {
                 .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Mono.empty())
                 .onErrorMap(this::handleClientError)
                 .doOnError(Sentry::captureException)
-                .block();
+                .block()
+                ;
+    }
+
+    public <T> T sendGETRequest(Class<T> responseClass, String url, Map<String, String> headers, Object... urlVariables) {
+        Mono<T> mono = mattApiWebClient
+                .get()
+                .uri(uriBuilder -> uriBuilder.path(url)
+                        .build(urlVariables))
+                .headers(httpHeaders -> httpHeaders.setAll(headers))
+                .retrieve()
+                .bodyToMono(responseClass)
+                .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Mono.empty())
+                .onErrorMap(this::handleClientError)
+                .doOnError(Sentry::captureException)
+                ;
+        return mono.block();
+//        return mono
+//                .onErrorResume(WebClientResponseException.NotFound.class, notFound -> Mono.empty())
+//                .onErrorMap(this::handleClientError)
+//                .doOnError(Sentry::captureException)
+//                .block()
+//                ;
     }
 
     private Throwable handleClientError(Throwable error) {
