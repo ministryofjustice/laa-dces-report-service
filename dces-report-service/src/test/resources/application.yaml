@@ -25,11 +25,6 @@ maatApi:
   oAuthEnabled: false
   baseUrl: http://localhost:8090
 
-maat-retry-config:
-  max-retries: 2
-  min-back-off-period: 3
-  jitter-value: 0.5
-
 means-assessment:
   security:
     issuer-uri: http://localhost:${server.port}
