@@ -8,7 +8,7 @@ import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 public class MaatApiClientFactory {
 
     @Bean
-    <T> T maatApiClient(WebClient maatApiWebClient, Class<T> returnClass) {
+    public <T> T maatApiClient(WebClient maatApiWebClient, Class<T> returnClass) {
         HttpServiceProxyFactory httpServiceProxyFactory =
                 HttpServiceProxyFactory.builder(WebClientAdapter.forClient(maatApiWebClient))
                         .build();
