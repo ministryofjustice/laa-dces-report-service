@@ -43,7 +43,7 @@ class MaatApiClientFactoryTest {
 
     @Test
     public void givenAnyParameters_whenMaatApiClientIsInvoked_thenTheCorrectClientShouldBeReturned() throws JsonProcessingException {
-        MaatApiClient actualMaatApiClient = maatApiClientFactory.maatApiClient(maatApiWebClient);
+        MaatApiClient actualMaatApiClient = maatApiClientFactory.maatApiClient(maatApiWebClient, MaatApiClient.class);
         assertThat(actualMaatApiClient).isNotNull();
         assertThat(actualMaatApiClient).isInstanceOf(MaatApiClient.class);
     }
