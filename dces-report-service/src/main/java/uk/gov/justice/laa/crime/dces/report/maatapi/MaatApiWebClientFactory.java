@@ -32,7 +32,7 @@ public class MaatApiWebClientFactory {
     private static final String REGISTERED_ID = "maatapi";
 
 
-    @Bean()
+    @Bean("maatApiWebClient")
     public WebClient maatApiWebClient(
             MaatApiConfiguration configuration,
             ClientRegistrationRepository clientRegistrations, OAuth2AuthorizedClientRepository authorizedClients

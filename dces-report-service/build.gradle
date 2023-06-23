@@ -10,19 +10,20 @@ plugins {
 group = 'uk.gov.justice.laa.crime'
 
 def versions = [
-		pitestVersion                      : "1.4.10",
-		sentryVersion                      : '6.15.0',
-		springdocVersion                   : '1.6.15',
-		okhttpVersion                      : "4.9.3",
-		mockwebserverVersion               : "4.9.3",
-		reactorTestVersion                 : "3.2.3",
-		springauthserverVersion            : "1.0.1",
-		jaxbXjc                            : '4.0.0',
-		jaxbImpl                           : '4.0.0',
-		jaxbCore                           : '4.0.0',
-		jakartaActivation                  : '2.0.1',
-		jakartaXmlBindApi                  : '4.0.0',
-		glassfishJaxb                      : '4.0.2'
+		pitestVersion              : "1.4.10",
+		sentryVersion              : '6.15.0',
+		springdocVersion           : '1.6.15',
+		okhttpVersion              : "4.9.3",
+		mockwebserverVersion       : "4.9.3",
+		reactorTestVersion         : "3.2.3",
+		springauthserverVersion    : "1.0.1",
+		jaxbXjc                    : '4.0.0',
+		jaxbImpl                   : '4.0.0',
+		jaxbCore                   : '4.0.0',
+		jakartaActivation          : '2.0.1',
+		jakartaXmlBindApi          : '4.0.0',
+		glassfishJaxb              : '4.0.2',
+		resilience4jVersion        : "2.0.2"
 ]
 
 dependencyManagement {
@@ -75,6 +76,7 @@ dependencies {
 
 
 	implementation "org.springdoc:springdoc-openapi-ui:$versions.springdocVersion"
+	implementation "io.github.resilience4j:resilience4j-spring-boot3:$versions.resilience4jVersion"
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
