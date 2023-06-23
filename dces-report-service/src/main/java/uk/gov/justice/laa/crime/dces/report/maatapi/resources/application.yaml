@@ -1,34 +1,7 @@
-server:
-  port: 8089
-
-management:
-  server:
-    port: 8188
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics,prometheus
-
-springdoc:
-  packagesToScan: uk.gov.justice.laa.crime.dces.report
-  show-actuator: true
-  api-docs:
-    path: /dces-report-service
-    enabled: true
-
-  swagger-ui:
-    path: /open-api/docs.html
-    enabled: true
-    operationsSorter: method
-
+# Copy this into resources/application.yaml file
 maatApi:
   oAuthEnabled: true
   baseUrl: ${MAAT_API_BASE_URL}
-
-maat-retry-config:
-  max-retries: 2
-  min-back-off-period: 3
-  jitter-value: 0.5
 
 means-assessment:
   security:

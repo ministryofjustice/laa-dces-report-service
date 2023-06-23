@@ -10,16 +10,19 @@ plugins {
 group = 'uk.gov.justice.laa.crime'
 
 def versions = [
+		pitestVersion                      : "1.4.10",
 		sentryVersion                      : '6.15.0',
 		springdocVersion                   : '1.6.15',
+		okhttpVersion                      : "4.9.3",
+		mockwebserverVersion               : "4.9.3",
+		reactorTestVersion                 : "3.2.3",
+		springauthserverVersion            : "1.0.1",
 		jaxbXjc                            : '4.0.0',
 		jaxbImpl                           : '4.0.0',
 		jaxbCore                           : '4.0.0',
 		jakartaActivation                  : '2.0.1',
 		jakartaXmlBindApi                  : '4.0.0',
 		glassfishJaxb                      : '4.0.2'
-
-
 ]
 
 dependencyManagement {
@@ -52,18 +55,38 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation platform('io.sentry:sentry-bom:6.17.0')
+	implementation('io.sentry:sentry-spring-boot-starter')
+	implementation('io.sentry:sentry-logback')
+
+	// Spring
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// oAuth
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+	implementation 'org.springframework.security:spring-security-oauth2-jose'
+
 	implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
 	implementation "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
 
+
 	implementation "org.springdoc:springdoc-openapi-ui:$versions.springdocVersion"
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
-
+	testImplementation 'org.mockito:mockito-inline'
+	testImplementation "org.pitest:pitest:$versions.pitestVersion"
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+	testImplementation "com.squareup.okhttp3:okhttp:$versions.okhttpVersion"
+	testImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserverVersion"
+//	testImplementation "io.projectreactor:reactor-test"
 	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.2'
 
 	xsd2java "com.sun.xml.bind:jaxb-xjc:$versions.jaxbXjc"
@@ -83,10 +106,12 @@ test {
 jacoco {
 	toolVersion = "0.8.8"
 }
+
 tasks.named('test') {
 	useJUnitPlatform()
 	finalizedBy jacocoTestReport
 }
+
 jacocoTestReport {
 	dependsOn test
 	reports {
@@ -106,7 +131,7 @@ jacocoTestReport {
 
 pitest {
 	targetClasses = ['uk.gov.justice.laa.crime.dces.report.*']
-	excludedClasses = ['uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication']
+	excludedClasses = ['uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication, uk.gov.justice.laa.crime.dces.report.maatapi.*Client*']
 	threads = 5
 	outputFormats = ['XML', 'HTML']
 	timestampedReports = false
@@ -119,10 +144,11 @@ sonar {
 		property "sonar.host.url", "https://sonarcloud.io"
 		property "sonar.organization", "ministryofjustice"
 		property "sonar.projectKey", "ministryofjustice_laa-dces-report-service"
+
+		property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java,**/maatapi/**Client**.java"
+		property "sonar.coverage.exclusions", "**/DcesReportServiceApplication.java"
 		property "sonar.coverage.jacoco.xmlReportPaths",
 				"${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-		property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/exception/**.java"
-		property "sonar.coverage.exclusions", "**/DcesReportServiceApplication.java"
 	}
 }
 
