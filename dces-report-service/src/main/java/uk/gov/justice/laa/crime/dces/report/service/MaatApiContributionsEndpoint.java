@@ -11,15 +11,16 @@ import uk.gov.justice.laa.crime.dces.report.maatapi.MaatApiClient;
 import uk.gov.justice.laa.crime.dces.report.maatapi.MaatApiClientFactory;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @HttpExchange()
 public interface MaatApiContributionsEndpoint extends MaatApiClient {
+    public static final String DATE_FORMAT = "dd-MM-yyyy";
 
     @GetExchange("/getContributions/{startDate}/{finishDate}")
     MaatApiResponseModel sendGetRequest(
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date startDate,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date finishDate);
+            @PathVariable @DateTimeFormat(pattern = DATE_FORMAT) LocalDate startDate,
+            @PathVariable @DateTimeFormat(pattern = DATE_FORMAT) LocalDate finishDate);
 
     @Component
     class MaatApiContributionsEndpointFactory {

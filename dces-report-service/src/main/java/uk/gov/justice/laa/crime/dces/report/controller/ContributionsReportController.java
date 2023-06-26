@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesReportService;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Slf4j
 @RestController
@@ -45,10 +45,10 @@ public class ContributionsReportController {
         )
     )
     public void getContributionFiles(
-            @PathVariable("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start,
-            @PathVariable("finish") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date finish) {
-        log.info("Get applicant details from Crime Apply datastore");
-
+            @PathVariable("start") @DateTimeFormat(pattern = ContributionFilesReportService.DATE_FORMAT)
+                LocalDate start,
+            @PathVariable("finish") @DateTimeFormat(pattern = ContributionFilesReportService.DATE_FORMAT)
+                LocalDate finish) {
         MaatApiResponseModel contributionFiles = contributionFilesService.getContributionFiles(start, finish);
         System.out.println(contributionFiles.toString());
     }

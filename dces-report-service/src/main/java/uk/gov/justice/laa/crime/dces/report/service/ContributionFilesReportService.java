@@ -7,6 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Service
@@ -17,11 +18,12 @@ public class ContributionFilesReportService {
 
     private final MaatApiContributionsEndpoint maatApiContributionsEndpoint;
 
+    public static final String DATE_FORMAT = MaatApiContributionsEndpoint.DATE_FORMAT;
 
     @Retry(name = SERVICE_NAME)
     public MaatApiResponseModel getContributionFiles(
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date start,
-            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Date finish) {
+            @DateTimeFormat(pattern = DATE_FORMAT) LocalDate start,
+            @DateTimeFormat(pattern = DATE_FORMAT) LocalDate finish) {
         log.info("Start - call MAAT API to collect contribution files date between {} and {}", start.toString(), finish.toString());
         return maatApiContributionsEndpoint.sendGetRequest(start, finish);
     }
