@@ -5,11 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Service
 @RequiredArgsConstructor
@@ -17,15 +15,15 @@ import java.util.Date;
 public class ContributionFilesReportService {
     private static final String SERVICE_NAME = "dcesReportContributions";
 
-    private final MaatApiContributionsEndpoint maatApiContributionsEndpoint;
+    private final ContributionFilesClient contributionFilesClientEndpoint;
 
-    public static final String DATE_FORMAT = MaatApiContributionsEndpoint.DATE_FORMAT;
+    public static final String DATE_FORMAT = ContributionFilesClient.DATE_FORMAT;
 
     @Retry(name = SERVICE_NAME)
     public ContributionFilesResponse getContributionFiles(
             @DateTimeFormat(pattern = DATE_FORMAT) LocalDate start,
             @DateTimeFormat(pattern = DATE_FORMAT) LocalDate finish) {
         log.info("Start - call MAAT API to collect contribution files date between {} and {}", start.toString(), finish.toString());
-        return maatApiContributionsEndpoint.sendGetRequest(start, finish);
+        return contributionFilesClientEndpoint.sendGetRequest(start, finish);
     }
 }

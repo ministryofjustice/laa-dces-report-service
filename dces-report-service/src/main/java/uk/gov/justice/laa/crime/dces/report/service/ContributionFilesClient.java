@@ -9,13 +9,12 @@ import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 import uk.gov.justice.laa.crime.dces.report.maatapi.MaatApiClient;
 import uk.gov.justice.laa.crime.dces.report.maatapi.MaatApiClientFactory;
-import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
 
 @HttpExchange()
-public interface MaatApiContributionsEndpoint extends MaatApiClient {
+public interface ContributionFilesClient extends MaatApiClient {
     public static final String DATE_FORMAT = "dd-MM-yyyy";
 
     @GetExchange("/getContributions/{startDate}/{finishDate}")
@@ -28,8 +27,8 @@ public interface MaatApiContributionsEndpoint extends MaatApiClient {
         WebClient maatApiWebClient;
 
         @Bean
-        public MaatApiContributionsEndpoint getMaatApiContributionsEndpoint() {
-            return MaatApiClientFactory.maatApiClient(maatApiWebClient, MaatApiContributionsEndpoint.class);
+        public ContributionFilesClient getContributionFilesClient() {
+            return MaatApiClientFactory.maatApiClient(maatApiWebClient, ContributionFilesClient.class);
         }
     }
 }

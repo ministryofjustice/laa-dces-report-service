@@ -14,15 +14,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.justice.laa.crime.dces.contributions.generated.ContributionFile;
-import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
-import uk.gov.justice.laa.crime.dces.report.mapper.ContributionsFileMapper;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesReportService;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController

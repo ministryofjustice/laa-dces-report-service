@@ -9,7 +9,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
-import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
@@ -24,7 +23,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class ContributionFilesReportServiceTest {
+class ContributionFilesClientReportServiceTest {
 
     private static final int DEFAULT_ID = 1;
     private static final int DEFAULT_TOTAL = 0;
@@ -32,7 +31,7 @@ class ContributionFilesReportServiceTest {
     private static final LocalDate finishPeriod = LocalDate.parse("31-01-2023", DateTimeFormatter.ofPattern(ContributionFilesReportService.DATE_FORMAT));
 
     @Mock
-    MaatApiContributionsEndpoint contributionsEndpoint;
+    ContributionFilesClient contributionsEndpoint;
     @InjectMocks
     ContributionFilesReportService contributionFilesReportService;
 
