@@ -55,8 +55,8 @@ class ContributionFilesClientReportServiceTest {
                 .thenReturn(expectedResponse);
 
         ContributionFilesResponse actualResponse = contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod);
-        assertThat(actualResponse.getFiles().size()).isGreaterThan(0);
-        assertThat(actualResponse.getFiles().size()).isEqualTo(expectedResponse.getFiles().size());
+        assertThat(actualResponse.getFiles().size()).isPositive();
+        assertThat(actualResponse.getFiles()).hasSameClassAs(expectedResponse.getFiles());
         assertThat(actualResponse.getFiles().get(0)).isEqualTo(expectedResponse.getFiles().get(0));
     }
 

@@ -16,7 +16,7 @@ class MaatApiClientFactoryTest {
     WebClient maatApiWebClient;
 
     @Test
-    public void givenAnyParameters_whenMaatApiClientIsInvoked_thenTheCorrectClientShouldBeReturned() {
+    void givenAnyParameters_whenMaatApiClientIsInvoked_thenTheCorrectClientShouldBeReturned() {
         MaatApiClient actualMaatApiClient = MaatApiClientFactory.maatApiClient(maatApiWebClient, MaatApiClient.class);
         assertThat(actualMaatApiClient).isNotNull();
         assertThat(actualMaatApiClient).isInstanceOf(MaatApiClient.class);
