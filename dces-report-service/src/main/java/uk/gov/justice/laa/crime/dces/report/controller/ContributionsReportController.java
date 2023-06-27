@@ -55,7 +55,6 @@ public class ContributionsReportController {
             @PathVariable("finish") @DateTimeFormat(pattern = ContributionFilesReportService.DATE_FORMAT)
                 LocalDate finish) {
         ContributionFilesResponse contributionFiles = contributionFilesService.getContributionFiles(start, finish);
-        System.out.println(contributionFiles.toString());
 
         // TODO (DCES-25): This is a draft template for what the next step should look like
 //        List<ContributionFile> parsedFiles =  contributionFiles.getFiles()

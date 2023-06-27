@@ -21,8 +21,4 @@ public class ContributionsFileMapper {
         }
         return contFile;
     }
-
-    public static ContributionFile mapContributionsXMLFileToObject(String xmlFile) {
-        return null;
-    }
 }
