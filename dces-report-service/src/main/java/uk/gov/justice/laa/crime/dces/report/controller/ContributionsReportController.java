@@ -14,10 +14,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.justice.laa.crime.dces.contributions.generated.ContributionFile;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
+import uk.gov.justice.laa.crime.dces.report.mapper.ContributionsFileMapper;
+import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesReportService;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -49,7 +54,13 @@ public class ContributionsReportController {
                 LocalDate start,
             @PathVariable("finish") @DateTimeFormat(pattern = ContributionFilesReportService.DATE_FORMAT)
                 LocalDate finish) {
-        MaatApiResponseModel contributionFiles = contributionFilesService.getContributionFiles(start, finish);
+        ContributionFilesResponse contributionFiles = contributionFilesService.getContributionFiles(start, finish);
         System.out.println(contributionFiles.toString());
+
+        // TODO (DCES-25): This is a draft template for what the next step should look like
+//        List<ContributionFile> parsedFiles =  contributionFiles.getFiles()
+//                .stream()
+//                .map(ContributionsFileMapper::mapContributionsXMLFileToObject)
+//                .toList();
     }
 }

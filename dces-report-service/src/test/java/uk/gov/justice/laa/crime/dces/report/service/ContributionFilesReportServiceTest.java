@@ -10,9 +10,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
+import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -37,7 +39,7 @@ class ContributionFilesReportServiceTest {
 
     @Test
     void givenValidDateLimitParams_whenEndpointSendGetRequestIsInvoked_thenResponseDataModelIsReturned() {
-        MaatApiResponseModel expectedResponse = getMockedMaatApiResponseModel();
+        ContributionFilesResponse expectedResponse = getMockedMaatApiResponseModel();
 
         when(contributionsEndpoint.sendGetRequest(any(), any()))
                 .thenReturn(expectedResponse);
@@ -48,14 +50,15 @@ class ContributionFilesReportServiceTest {
 
     @Test
     void givenValidDateLimitParams_whenGetContributionFilesIsInvoked_thenResponseDataModelIsReturned() {
-        MaatApiResponseModel expectedResponse = getMockedMaatApiResponseModel();
+        ContributionFilesResponse expectedResponse = getMockedMaatApiResponseModel();
 
         when(contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod))
                 .thenReturn(expectedResponse);
 
-        MaatApiResponseModel actualResponse = contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod);
-        assertThat(actualResponse.getId()).isEqualTo(expectedResponse.getId());
-        assertThat(actualResponse.getTotalFiles()).isEqualTo(expectedResponse.getTotalFiles());
+        ContributionFilesResponse actualResponse = contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod);
+        assertThat(actualResponse.getFiles().size()).isGreaterThan(0);
+        assertThat(actualResponse.getFiles().size()).isEqualTo(expectedResponse.getFiles().size());
+        assertThat(actualResponse.getFiles().get(0)).isEqualTo(expectedResponse.getFiles().get(0));
     }
 
     @Test
@@ -66,11 +69,8 @@ class ContributionFilesReportServiceTest {
         assertThrows(MaatApiClientException.class, mockSendRequestGetContributionFiles());
     }
 
-    private MaatApiResponseModel getMockedMaatApiResponseModel() {
-        MaatApiResponseModel expectedResponse = new MaatApiResponseModel();
-        expectedResponse.setId(DEFAULT_ID);
-        expectedResponse.setTotalFiles(DEFAULT_TOTAL);
-        return expectedResponse;
+    private ContributionFilesResponse getMockedMaatApiResponseModel() {
+        return new ContributionFilesResponse(List.of("XML1", "XML2"));
     }
 
     private Executable mockSendRequestGetContributionFiles() {

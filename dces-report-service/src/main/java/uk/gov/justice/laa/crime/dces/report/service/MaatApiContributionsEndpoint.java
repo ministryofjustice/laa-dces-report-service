@@ -10,6 +10,7 @@ import org.springframework.web.service.annotation.HttpExchange;
 import uk.gov.justice.laa.crime.dces.report.maatapi.MaatApiClient;
 import uk.gov.justice.laa.crime.dces.report.maatapi.MaatApiClientFactory;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
+import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
 
@@ -18,7 +19,7 @@ public interface MaatApiContributionsEndpoint extends MaatApiClient {
     public static final String DATE_FORMAT = "dd-MM-yyyy";
 
     @GetExchange("/getContributions/{startDate}/{finishDate}")
-    MaatApiResponseModel sendGetRequest(
+    ContributionFilesResponse sendGetRequest(
             @PathVariable @DateTimeFormat(pattern = DATE_FORMAT) LocalDate startDate,
             @PathVariable @DateTimeFormat(pattern = DATE_FORMAT) LocalDate finishDate);
 
