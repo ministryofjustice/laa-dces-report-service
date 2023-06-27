@@ -81,8 +81,4 @@ class ContributionFilesReportServiceTest {
             }
         };
     }
-
-    @Test
-    void getContributionFiles() {
-    }
 }
