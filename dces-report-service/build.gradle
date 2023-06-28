@@ -22,7 +22,8 @@ def versions = [
 		jaxbCore                           : '4.0.0',
 		jakartaActivation                  : '2.0.1',
 		jakartaXmlBindApi                  : '4.0.0',
-		glassfishJaxb                      : '4.0.2'
+		glassfishJaxb                      : '4.0.2',
+		resilience4jVersion                : "2.0.2"
 ]
 
 dependencyManagement {
@@ -75,6 +76,7 @@ dependencies {
 
 
 	implementation "org.springdoc:springdoc-openapi-ui:$versions.springdocVersion"
+	implementation "io.github.resilience4j:resilience4j-spring-boot3:$versions.resilience4jVersion"
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
