@@ -19,8 +19,8 @@ public class FdcFilesReportService {
 
     @Retry(name = SERVICE_NAME)
     public MaatApiResponseModel getContributionFiles(
-            @DateTimeFormat(pattern = MaatApiContributionsEndpoint.DATE_FORMAT) LocalDate start,
-            @DateTimeFormat(pattern = MaatApiContributionsEndpoint.DATE_FORMAT) LocalDate finish) {
+            @DateTimeFormat(pattern = ContributionFilesClient.DATE_FORMAT) LocalDate start,
+            @DateTimeFormat(pattern = ContributionFilesClient.DATE_FORMAT) LocalDate finish) {
         log.info("Start - call MAAT API to collect FDC files, between {} and {}", start, finish);
         return maatApiFdcEndpoint.sendGetRequest(start, finish);
     }
