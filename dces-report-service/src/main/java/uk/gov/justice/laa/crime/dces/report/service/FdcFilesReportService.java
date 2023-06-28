@@ -21,6 +21,11 @@ public class FdcFilesReportService {
     public MaatApiResponseModel getContributionFiles(
             @DateTimeFormat(pattern = ContributionFilesClient.DATE_FORMAT) LocalDate start,
             @DateTimeFormat(pattern = ContributionFilesClient.DATE_FORMAT) LocalDate finish) {
+        // validate date period
+        if (finish.isBefore(start)) {
+            String message = String.format("invalid time range {} is before {}", finish, start);
+            throw new RuntimeException(message);
+        }
         log.info("Start - call MAAT API to collect FDC files, between {} and {}", start, finish);
         return maatApiFdcEndpoint.sendGetRequest(start, finish);
     }
