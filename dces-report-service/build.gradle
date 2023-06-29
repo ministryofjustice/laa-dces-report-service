@@ -22,7 +22,8 @@ def versions = [
 		jaxbCore                           : '4.0.0',
 		jakartaActivation                  : '2.0.1',
 		jakartaXmlBindApi                  : '4.0.0',
-		glassfishJaxb                      : '4.0.2'
+		glassfishJaxb                      : '4.0.2',
+		opencsv                            : '5.7.1'
 ]
 
 dependencyManagement {
@@ -73,6 +74,7 @@ dependencies {
 	implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
 	implementation "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
 
+	implementation "com.opencsv:opencsv:$versions.opencsv"
 
 	implementation "org.springdoc:springdoc-openapi-ui:$versions.springdocVersion"
 
@@ -95,6 +97,7 @@ dependencies {
 	xsd2java "com.sun.activation:jakarta.activation:$versions.jakartaActivation"
 	xsd2java "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
 }
+
 
 
 test {
@@ -163,6 +166,12 @@ task xsd2java() {
 				destdir: '${jaxbTargetDir}',
 				package: 'uk.gov.justice.laa.crime.dces.contributions.generated',
 				schema: 'src/main/resources/contributions.xsd'
+		)
+
+		ant.xjc(
+				destdir: '${jaxbTargetDir}',
+				package: 'uk.gov.justice.laa.crime.dces.contributions.generated',
+				schema: 'src/main/resources/fdc.xsd'
 		)
 	}
 }
