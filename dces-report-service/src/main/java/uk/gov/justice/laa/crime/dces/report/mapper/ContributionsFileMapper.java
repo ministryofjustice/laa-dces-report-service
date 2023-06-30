@@ -3,6 +3,8 @@ package uk.gov.justice.laa.crime.dces.report.mapper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.contributions.generated.ContributionFile;
@@ -22,6 +24,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Setter
+@Getter
 public class ContributionsFileMapper {
 
     private JAXBContext jaxbContext;
@@ -35,6 +39,7 @@ public class ContributionsFileMapper {
         try {
             this.jaxbContext = JAXBContext.newInstance(ContributionFile.class);
             unmarshaller = jaxbContext.createUnmarshaller();
+            this.csvFileService = new CSVFileService();
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
@@ -47,7 +52,7 @@ public class ContributionsFileMapper {
         for(CONTRIBUTIONS contribution : contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()){
             csvLineList.add(buildCSVDataLine(contribution, startDate, endDate));
         }
-        return csvFileService.writeContributionToCsv(csvLineList, "test.csv");
+        return csvFileService.writeContributionToCsv(csvLineList, "output.csv");
     }
 
     public ContributionFile mapContributionsXMLFileToObject(File xmlFile) throws JAXBException {

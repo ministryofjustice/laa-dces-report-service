@@ -10,8 +10,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import uk.gov.justice.laa.crime.dces.contributions.generated.ContributionFile;
+import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -19,6 +21,9 @@ import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
@@ -121,6 +126,9 @@ class ContributionsFileMapperTest {
         try {
             Date startDate = getDate("2020-01-01");
             Date endDate = getDate("2023-01-01");
+            CSVFileService csvServiceMock = mock(CSVFileService.class);
+            when(csvServiceMock.writeContributionToCsv(any(),any())).thenReturn(new File("this_is_a_test.xml"));
+            contributionsFileMapper.setCsvFileService(csvServiceMock);
             contributionsFileMapper.processRequest(getXMLString(), startDate, endDate);
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
@@ -132,7 +140,9 @@ class ContributionsFileMapperTest {
         try {
             Date startDate = getDate("2010-01-01");
             Date endDate = getDate("2011-01-01");
-
+            CSVFileService csvServiceMock = mock(CSVFileService.class);
+            when(csvServiceMock.writeContributionToCsv(any(),any())).thenReturn(new File("this_is_a_test.xml"));
+            contributionsFileMapper.setCsvFileService(csvServiceMock);
             contributionsFileMapper.processRequest(getXMLString(), startDate, endDate);
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
@@ -150,8 +160,12 @@ class ContributionsFileMapperTest {
     @Test
     void testProcessRequestTooOld(){
         try {
+
             Date startDate = getDate("2025-01-01");
             Date endDate = getDate("2025-01-01");
+            CSVFileService csvServiceMock = mock(CSVFileService.class);
+            when(csvServiceMock.writeContributionToCsv(any(),any())).thenReturn(new File("this_is_a_test.xml"));
+            contributionsFileMapper.setCsvFileService(csvServiceMock);
             contributionsFileMapper.processRequest(getXMLString(), startDate, endDate);
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
