@@ -15,13 +15,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CSVFileService {
 
-
-    public File writeContributionToCsv(List<CSVDataLine> contributionData, String fileName) throws IOException {
-        // have file path in config
-        String path = System.getProperty("user.home")+"/Desktop";
-        File targetFile = new File(path,fileName);
+    public File writeContributionToCsv(List<CSVDataLine> contributionData, File targetFile) throws IOException {
         // if file does not exist, we need to add the headers.
-        if(!targetFile.exists()) {
+        if(targetFile.length()==0) {
             contributionData.add(0, getContributionsHeader());
         }
         // filewriter initialise
@@ -33,20 +29,34 @@ public class CSVFileService {
         return targetFile;
     }
 
-    public void writeFdcToCsv(FdcFile fdcFile, String fileName) throws IOException {
-        List<Fdc> fdcList = fdcFile.getFdcList().getFdc();
+    public File writeContributionToCsv(List<CSVDataLine> contributionData, String fileName) throws IOException {
+        File targetFile = getFile(fileName);
+        return writeContributionToCsv(contributionData, targetFile);
+    }
 
-        String path = System.getProperty("user.home")+"/Desktop";
-        File targetFile = new File(path,fileName);
+    public File writeFdcToCsv(FdcFile fdcFile, File targetFile) throws IOException {
+        List<Fdc> fdcList = fdcFile.getFdcList().getFdc();
         // filewriter initialise
         FileWriter fw = new FileWriter(targetFile, true);
-        if(!targetFile.exists()) {
+        if(targetFile.length()==0) {
             writeFdcHeader(fw);
         }
         for (Fdc fdcLine: fdcList){
             writeFdcLine(fw, fdcLine);
         }
         fw.close();
+        return targetFile;
+    }
+
+    public File writeFdcToCsv(FdcFile fdcFile, String fileName) throws IOException {
+        File targetFile = getFile(fileName);
+        return writeFdcToCsv(fdcFile, targetFile);
+    }
+
+    private File getFile(String fileName){
+        // TODO: have file path in config, fix below line!
+        String path = System.getProperty("user.home")+"/Desktop";
+        return new File(path,fileName);
     }
 
     private CSVDataLine getContributionsHeader(){
@@ -62,30 +72,27 @@ public class CSVFileService {
                 .build();
     }
 
-    private void writeFdcHeader(FileWriter fw){
-        try {
-            fw.append("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private void writeFdcHeader(FileWriter fw) throws IOException {
+        String headerLine = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST"+System.lineSeparator();
+        fw.append(headerLine);
     }
 
-    private void writeContributionLine(FileWriter fw, CSVDataLine dataLine){
-        try {
-            fw.append(dataLine.toString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private void writeContributionLine(FileWriter fw, CSVDataLine dataLine) throws IOException {
+        String lineOutput = dataLine.toString()+System.lineSeparator();
+        fw.append(lineOutput);
     }
 
-    private void writeFdcLine(FileWriter fw, Fdc fdcLine){
-        try {
-            fw.append(fdcLine.toString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private void writeFdcLine(FileWriter fw, Fdc fdcLine) throws IOException {
+        fw.append(fdcLineBuilder(fdcLine));
     }
 
+    private String fdcLineBuilder(Fdc fdcLine){
+        StringBuilder sb = new StringBuilder();
+//        sb.append();
 
+
+
+        return "";
+    }
 
 }

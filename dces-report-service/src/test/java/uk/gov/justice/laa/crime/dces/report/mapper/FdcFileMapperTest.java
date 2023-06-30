@@ -4,66 +4,65 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.UnmarshalException;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
-import org.junit.jupiter.api.Test;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import uk.gov.justice.laa.crime.dces.contributions.generated.ContributionFile;
+import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile;
 import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
-class ContributionsFileMapperTest {
+class FdcFileMapperTest {
 
     @InjectSoftAssertions
     private SoftAssertions softly;
     @Autowired
-    private ContributionsFileMapper contributionsFileMapper;
+    private FdcFileMapper fdcFileMapper;
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private static final String filename = "this_is_a_test.xml";
 
     @Test
     void testXMLValid(){
-        File f = new File(getClass().getClassLoader().getResource("contributions/CONTRIBUTIONS_202102122031.xml").getFile());
-        ContributionFile contributionsFile = null;
+        File f = new File(getClass().getClassLoader().getResource("fdc/FDC_File.xml").getFile());
+        FdcFile fdcFile = null;
         try {
-            contributionsFile = contributionsFileMapper.mapContributionsXMLFileToObject(f);
+            fdcFile = fdcFileMapper.mapFdcXMLFileToObject(f);
         } catch (JAXBException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         }
-        softly.assertThat(contributionsFile).isNotNull();
-        var contributions = contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().get(0);
-        softly.assertThat(contributions.getFlag()).isEqualTo("update");
-        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()).isEqualTo(1);
+        softly.assertThat(fdcFile).isNotNull();
+        var fdcOutput = fdcFile.getFdcList().getFdc().get(0);
+//        softly.assertThat(contributions.getFlag()).isEqualTo("update");
+//        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()).isEqualTo(1);
         softly.assertAll();
     }
 
     @Test
-    void testMultipleContributions(){
+    void testMultipleFdcEntries(){
         File f = new File(getClass().getClassLoader().getResource("contributions/multiple_contributions.xml").getFile());
-        ContributionFile contributionsFile = null;
+        FdcFile fdcFile = null;
         try {
-            contributionsFile = contributionsFileMapper.mapContributionsXMLFileToObject(f);
+            fdcFile = fdcFileMapper.mapFdcXMLFileToObject(f);
         } catch (JAXBException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         }
-        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()).isEqualTo(16);
+        softly.assertThat(fdcFile.getFdcList().getFdc().size()).isEqualTo(16);
         softly.assertAll();
     }
 
@@ -72,36 +71,35 @@ class ContributionsFileMapperTest {
         //MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date
         // TODO: Need to finish test once ccOutcome date, and CorrespondenceSentDate mappings are understood.
         File f = new File(getClass().getClassLoader().getResource("contributions/report_values_filled.xml").getFile());
-        ContributionFile contributionsFile = null;
+        FdcFile fdcFile = null;
         try {
-            contributionsFile = contributionsFileMapper.mapContributionsXMLFileToObject(f);
+            fdcFile = fdcFileMapper.mapFdcXMLFileToObject(f);
         } catch (JAXBException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         }
-        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()).isEqualTo(1);
+        softly.assertThat(fdcFile.getFdcList().getFdc().size()).isEqualTo(1);
 
-        var contributions = contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().get(0);
-        softly.assertThat(contributions.getMaatId()).isEqualTo(5635978);
-        softly.assertThat(contributions.getFlag()).isEqualTo("update");
-        softly.assertThat(contributions.getAssessment().getEffectiveDate().toString()).isEqualTo("2021-01-30");
-        //cc outcome date
-        //correspondence sent date
-        softly.assertThat(contributions.getApplication().getRepStatusDate().toString()).isEqualTo("2021-01-25");
-        softly.assertThat(contributions.getApplication().getCcHardship().getReviewDate().toString()).isEqualTo("2020-05-05");
-        softly.assertThat(contributions.getPassported().getDateCompleted().toString()).isEqualTo("2020-02-12");
+        var contributions = fdcFile.getFdcList().getFdc().get(0);
+        softly.assertThat(contributions.getMaatId()).isEqualTo(5635978L);
+        softly.assertThat(contributions.getAgfsTotal()).isEqualTo(new BigDecimal(1));
+        softly.assertThat(contributions.getId()).isEqualTo(1L);
+        softly.assertThat(contributions.getFinalCost()).isEqualTo(1L);
+        softly.assertThat(contributions.getLgfsTotal()).isEqualTo(1L);
+        softly.assertThat(contributions.getCalculationDate().toString()).isEqualTo("2020-02-12");
+        softly.assertThat(contributions.getSentenceDate().toString()).isEqualTo("2020-02-12");
         softly.assertAll();
     }
 
     @Test
     void testFileNotFound(){
-        var filePath = getClass().getClassLoader().getResource("contributions/FileNotFound.xml");
+        var filePath = getClass().getClassLoader().getResource("fdc/FileNotFound.xml");
         assertThrows(RuntimeException.class, () -> {new File(filePath.getFile());});
     }
 
     @Test
     void testInvalidXML(){
-        File f = new File(getClass().getClassLoader().getResource("contributions/invalid.XML").getFile());
-        assertThrows(UnmarshalException.class, () -> {contributionsFileMapper.mapContributionsXMLFileToObject(f);});
+        File f = new File(getClass().getClassLoader().getResource("fdc/invalid.XML").getFile());
+        assertThrows(UnmarshalException.class, () -> {fdcFileMapper.mapFdcXMLFileToObject(f);});
     }
 
 
@@ -109,13 +107,13 @@ class ContributionsFileMapperTest {
     @Test
     void testStringConversion(){
 
-        ContributionFile contributionsFile = null;
+        FdcFile fdcFile = null;
         try {
-            contributionsFile = contributionsFileMapper.mapContributionsXmlStringToObject(getXMLString());
+            fdcFile = fdcFileMapper.mapFdcXmlStringToObject(getXMLString());
         } catch (JAXBException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         }
-        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()).isEqualTo(1);
+        softly.assertThat(fdcFile.getFdcList().getFdc().size()).isEqualTo(1);
     }
 
     private String getXMLString(){
@@ -124,14 +122,14 @@ class ContributionsFileMapperTest {
 
     @Test
     void testProcessRequest(){
-        ContributionFile contributionsFile = null;
+        FdcFile fdcFile = null;
         try {
             Date startDate = getDate("2020-01-01");
             Date endDate = getDate("2023-01-01");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
-            when(csvServiceMock.writeContributionToCsv(any(),anyString())).thenReturn(new File(filename));
-            contributionsFileMapper.csvFileService=csvServiceMock;
-            contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
+            when(csvServiceMock.writeFdcToCsv(any(),anyString())).thenReturn(new File(filename));
+            fdcFileMapper.csvFileService=csvServiceMock;
+            fdcFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         }
@@ -143,9 +141,9 @@ class ContributionsFileMapperTest {
             Date startDate = getDate("2010-01-01");
             Date endDate = getDate("2011-01-01");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
-            when(csvServiceMock.writeContributionToCsv(any(),anyString())).thenReturn(new File(filename));
-            contributionsFileMapper.csvFileService=csvServiceMock;
-            contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
+            when(csvServiceMock.writeFdcToCsv(any(),anyString())).thenReturn(new File(filename));
+            fdcFileMapper.csvFileService=csvServiceMock;
+            fdcFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         }
@@ -165,9 +163,9 @@ class ContributionsFileMapperTest {
             Date startDate = getDate("2025-01-01");
             Date endDate = getDate("2025-01-01");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
-            when(csvServiceMock.writeContributionToCsv(any(),anyString())).thenReturn(new File(filename));
-            contributionsFileMapper.csvFileService=csvServiceMock;
-            contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
+            when(csvServiceMock.writeFdcToCsv(any(),anyString())).thenReturn(new File(filename));
+            fdcFileMapper.csvFileService=csvServiceMock;
+            fdcFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         }

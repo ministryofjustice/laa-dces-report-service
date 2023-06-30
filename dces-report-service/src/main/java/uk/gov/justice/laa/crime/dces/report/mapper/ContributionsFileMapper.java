@@ -3,8 +3,6 @@ package uk.gov.justice.laa.crime.dces.report.mapper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.contributions.generated.ContributionFile;
@@ -24,13 +22,11 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-@Setter
-@Getter
 public class ContributionsFileMapper {
 
     private JAXBContext jaxbContext;
     private Unmarshaller unmarshaller;
-    private CSVFileService csvFileService;
+    protected CSVFileService csvFileService;
     private final static String EMPTY_CHARACTER="";
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -46,13 +42,13 @@ public class ContributionsFileMapper {
         return this;
     }
 
-    public File processRequest(String xmlData, Date startDate, Date endDate) throws JAXBException, IOException {
+    public File processRequest(String xmlData, Date startDate, Date endDate, String filename) throws JAXBException, IOException {
         ContributionFile contributionFile = mapContributionsXmlStringToObject(xmlData);
         List<CSVDataLine> csvLineList = new ArrayList<>();
         for(CONTRIBUTIONS contribution : contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()){
             csvLineList.add(buildCSVDataLine(contribution, startDate, endDate));
         }
-        return csvFileService.writeContributionToCsv(csvLineList, "output.csv");
+        return csvFileService.writeContributionToCsv(csvLineList, filename);
     }
 
     public ContributionFile mapContributionsXMLFileToObject(File xmlFile) throws JAXBException {

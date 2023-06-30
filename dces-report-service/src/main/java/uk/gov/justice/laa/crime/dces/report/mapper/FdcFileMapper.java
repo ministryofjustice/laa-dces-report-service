@@ -7,19 +7,19 @@ import jakarta.xml.bind.Unmarshaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile;
-import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
+import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class FdcFileMapper {
 
-    JAXBContext jaxbContext;
-    Unmarshaller unmarshaller;
+    private JAXBContext jaxbContext;
+    private Unmarshaller unmarshaller;
+    protected CSVFileService csvFileService;
 
     @Autowired
     public FdcFileMapper fdcFileMapper(){
@@ -32,18 +32,18 @@ public class FdcFileMapper {
         return this;
     }
 
-    public void processRequest(String xmlData, Date startDate, Date toDate) throws JAXBException {
+    public File processRequest(String xmlData, Date startDate, Date toDate, String filename) throws JAXBException, IOException {
         FdcFile fdcFile = mapFdcXmlStringToObject(xmlData);
-        List<CSVDataLine> csvLineList = new ArrayList<>();
-    }
-
-    public FdcFile mapFdcXmlFileToObject(File xmlFile) throws JAXBException {
-            return (FdcFile) unmarshaller.unmarshal(xmlFile);
+        return csvFileService.writeFdcToCsv(fdcFile, filename);
     }
 
     public FdcFile mapFdcXmlStringToObject(String xmlString) throws JAXBException {
         StringReader sr = new StringReader(xmlString);
         return (FdcFile) unmarshaller.unmarshal(sr);
+    }
+
+    public FdcFile mapFdcXMLFileToObject(File xmlFile) throws JAXBException {
+        return (FdcFile) unmarshaller.unmarshal(xmlFile);
     }
 
 }
