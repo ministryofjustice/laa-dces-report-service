@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.crime.dces.report.maatapi.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 
 import java.time.LocalDate;
@@ -15,18 +16,18 @@ import java.time.LocalDate;
 public class FdcFilesReportService {
     private static final String SERVICE_NAME = "dcesReportFdc";
 
-    private final MaatApiFdcEndpoint maatApiFdcEndpoint;
+    private final FdcFilesClient fdcFilesClient;
 
     @Retry(name = SERVICE_NAME)
     public MaatApiResponseModel getContributionFiles(
             @DateTimeFormat(pattern = ContributionFilesClient.DATE_FORMAT) LocalDate start,
-            @DateTimeFormat(pattern = ContributionFilesClient.DATE_FORMAT) LocalDate finish) {
+            @DateTimeFormat(pattern = ContributionFilesClient.DATE_FORMAT) LocalDate end) {
         // validate date period
-        if (finish.isBefore(start)) {
-            String message = String.format("invalid time range {} is before {}", finish, start);
+        if (end.isBefore(start)) {
+            String message = String.format("invalid time range {} is before {}", end, start);
             throw new RuntimeException(message);
         }
-        log.info("Start - call MAAT API to collect FDC files, between {} and {}", start, finish);
-        return maatApiFdcEndpoint.sendGetRequest(start, finish);
+        log.info("Start - call MAAT API to collect FDC files, between {} and {}", start, end);
+        return fdcFilesClient.getFileList(start, end);
     }
 }

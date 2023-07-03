@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.web.reactive.function.client.WebClient;
-import uk.gov.justice.laa.crime.dces.report.maatapi.config.MaatApiConfiguration;
+import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ class MaatApiWebClientFactoryTest {
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     @Mock
-    private MaatApiConfiguration configuration;
+    private ServicesConfiguration configuration;
     @MockBean
     private ClientRegistrationRepository clientRegistrationRepo;
     @MockBean
@@ -45,9 +45,9 @@ class MaatApiWebClientFactoryTest {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
 
-        configuration = new MaatApiConfiguration();
-        configuration.setBaseUrl(String.format("http://localhost:%s", mockWebServer.getPort()));
-        configuration.setOAuthEnabled(false);
+        configuration = new ServicesConfiguration();
+        configuration.getEformApi().setBaseUrl(String.format("http://localhost:%s", mockWebServer.getPort()));
+        configuration.getEformApi().setOAuthEnabled(false);
 
         maatApiWebClientFactory = new MaatApiWebClientFactory();
     }
@@ -88,7 +88,7 @@ class MaatApiWebClientFactoryTest {
     private MaatApiResponseModel mockWebClientRequest(WebClient webClient) {
         return webClient
                 .get()
-                .uri(configuration.getBaseUrl())
+                .uri(configuration.getEformApi().getBaseUrl())
                 .retrieve()
                 .bodyToMono(MaatApiResponseModel.class)
                 .block();

@@ -1,0 +1,21 @@
+{
+  "mappings": [
+    {
+      "scenarioName": "successBasicRequest",
+      "request": {
+        "urlPathPattern": "/fdc/10-06-2023/10-06-2023",
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": {
+          "id": 1,
+          "totalFiles": 1
+        }
+      }
+    }
+  ]
+}
