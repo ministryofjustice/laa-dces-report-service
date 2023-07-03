@@ -8,12 +8,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @EnableConfigurationProperties(value = ServicesConfiguration.class)
+@ActiveProfiles("test")
 public class MaatApiConfigurationTest {
 
     @Autowired
@@ -33,6 +35,6 @@ public class MaatApiConfigurationTest {
 
     @Test
     public void givenDefinedBasedURL_whenGetBaseUrlIsInvoked_thenCorrectBaseURLIsReturned() {
-        assertThat(configuration.getEformApi().getBaseUrl()).isEqualTo("http://localhost:8090");
+        assertThat(configuration.getEformApi().getBaseUrl()).isEqualTo("http://localhost:1111");
     }
 }
