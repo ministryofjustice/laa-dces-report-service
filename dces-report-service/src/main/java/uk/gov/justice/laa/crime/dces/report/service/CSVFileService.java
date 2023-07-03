@@ -6,10 +6,12 @@ import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile;
 import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile.FdcList.Fdc;
 import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
 
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -55,6 +57,7 @@ public class CSVFileService {
 
     private File getFile(String fileName){
         // TODO: have file path in config, fix below line!
+        // Use temp files perhaps??
         String path = System.getProperty("user.home")+"/Desktop";
         return new File(path,fileName);
     }
@@ -88,11 +91,21 @@ public class CSVFileService {
 
     private String fdcLineBuilder(Fdc fdcLine){
         StringBuilder sb = new StringBuilder();
-//        sb.append();
+        sb.append(checkValue(fdcLine.getMaatId()));
+        sb.append(checkValue(fdcLine.getSentenceDate()));
+        sb.append(checkValue(fdcLine.getCalculationDate()));
+        sb.append(checkValue(fdcLine.getFinalCost()));
+        sb.append(checkValue(fdcLine.getLgfsTotal()));
+        sb.append(checkValue(fdcLine.getAgfsTotal()));
+        return sb.toString();
+    }
 
+    private String checkValue(Object o){
+        return (Objects.nonNull(o)?String.valueOf(o)+",":",");
+    }
 
-
-        return "";
+    private String checkValue(XMLGregorianCalendar o){
+        return (Objects.nonNull(o)?String.valueOf(o)+",":",");
     }
 
 }

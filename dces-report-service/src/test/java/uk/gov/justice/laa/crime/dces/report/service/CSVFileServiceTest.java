@@ -16,9 +16,13 @@ import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile.FdcList.Fdc
 import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
 
 
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -72,16 +76,17 @@ public class CSVFileServiceTest {
             String output = FileUtils.readText(file);
             softly.assertThat(output.contains(String.valueOf(testMaatId)));
             softly.assertThat(output.contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date"));
-        } catch (IOException e) {
+        } catch (IOException | DatatypeConfigurationException e) {
             throw new RuntimeException(e);
         } finally {
             if(Objects.nonNull(file)){file.delete();}
         }
     }
 
-    private FdcFile buildTestFdcFile(){
+    private FdcFile buildTestFdcFile() throws DatatypeConfigurationException {
         var fdc = new Fdc();
         fdc.setMaatId(testMaatId);
+        fdc.setCalculationDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()));
         var fdcList = new FdcList();
         fdcList.getFdc().add(fdc);
 
