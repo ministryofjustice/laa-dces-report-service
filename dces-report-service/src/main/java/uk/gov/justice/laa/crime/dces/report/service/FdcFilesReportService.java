@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.maatapi.client.FdcFilesClient;
+import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 
 import java.time.LocalDate;
@@ -24,8 +25,8 @@ public class FdcFilesReportService {
             @DateTimeFormat(pattern = ContributionFilesClient.DATE_FORMAT) LocalDate end) {
         // validate date period
         if (end.isBefore(start)) {
-            String message = String.format("invalid time range {} is before {}", end, start);
-            throw new RuntimeException(message);
+            String message = String.format("invalid time range %s is before %s", end, start);
+            throw new MaatApiClientException(message);
         }
         log.info("Start - call MAAT API to collect FDC files, between {} and {}", start, end);
         return fdcFilesClient.getFileList(start, end);

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 
 import java.time.LocalDate;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @WireMockTest(httpPort = 1111)
-public class FdcFilesReportServiceTest {
+class FdcFilesReportServiceTest {
 
     @Autowired
     private FdcFilesReportService testService;
@@ -38,14 +39,14 @@ public class FdcFilesReportServiceTest {
         LocalDate endDate = LocalDate.of(2023, 6, 9);
 
         // execute
-        Exception exception = assertThrows(RuntimeException.class, () -> {
+        Exception exception = assertThrows(MaatApiClientException.class, () -> {
             testService.getContributionFiles(startDate, endDate);
         });
 
         String expectedMessage = String.format("invalid time range {} is before {}", endDate, startDate);;
         String actualMessage = exception.getMessage();
 
-        // asset
+        // assert
         assertTrue(actualMessage.contains(expectedMessage));
 
     }
