@@ -7,7 +7,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.maatapi.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
-import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
+import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
 
@@ -20,7 +20,7 @@ public class FdcFilesReportService {
     private final FdcFilesClient fdcFilesClient;
 
     @Retry(name = SERVICE_NAME)
-    public MaatApiResponseModel getContributionFiles(
+    public ContributionFilesResponse getContributionFiles(
             @DateTimeFormat(pattern = ContributionFilesClient.DATE_FORMAT) LocalDate start,
             @DateTimeFormat(pattern = ContributionFilesClient.DATE_FORMAT) LocalDate end) {
 

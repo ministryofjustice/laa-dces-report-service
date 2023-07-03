@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
-import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
+import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
 
@@ -26,10 +26,13 @@ class FdcFilesReportServiceTest {
         LocalDate date = LocalDate.of(2023, 6, 10);
 
         // execute
-        MaatApiResponseModel result = testService.getContributionFiles(date, date);
+        ContributionFilesResponse result = testService.getContributionFiles(date, date);
 
         // assert
         assertNotNull(result);
+        assertEquals(2, result.getFiles().size());
+        assertTrue(result.getFiles().get(0).contains("id=\"222772044"));
+        assertTrue(result.getFiles().get(1).contains("id=\"222772045"));
     }
 
     @Test
