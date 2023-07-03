@@ -23,7 +23,7 @@ public class FdcFilesReportService {
     public MaatApiResponseModel getContributionFiles(
             @DateTimeFormat(pattern = ContributionFilesClient.DATE_FORMAT) LocalDate start,
             @DateTimeFormat(pattern = ContributionFilesClient.DATE_FORMAT) LocalDate end) {
-        // validate date period
+
         if (end.isBefore(start)) {
             String message = String.format("invalid time range %s is before %s", end, start);
             throw new MaatApiClientException(message);
