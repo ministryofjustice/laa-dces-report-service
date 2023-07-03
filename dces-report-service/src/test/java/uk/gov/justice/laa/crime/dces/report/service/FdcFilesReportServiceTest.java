@@ -43,11 +43,10 @@ class FdcFilesReportServiceTest {
             testService.getContributionFiles(startDate, endDate);
         });
 
-        String expectedMessage = String.format("invalid time range {} is before {}", endDate, startDate);;
+        String expectedMessage = String.format("invalid time range %s is before %s", endDate, startDate);;
         String actualMessage = exception.getMessage();
 
         // assert
         assertTrue(actualMessage.contains(expectedMessage));
-
     }
 }
