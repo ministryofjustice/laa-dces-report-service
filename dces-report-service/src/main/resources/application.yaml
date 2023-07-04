@@ -26,7 +26,7 @@ maatApi:
   baseUrl: ${MAAT_API_BASE_URL}
 
 services:
-  eform-api:
+  maat-api:
     baseUrl: ${MAAT_API_BASE_URL}
     registrationId: ${MAAT_API_REGISTRATION_ID}
     oAuthEnabled: true

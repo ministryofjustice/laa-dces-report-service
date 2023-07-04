@@ -16,12 +16,12 @@ public class ServicesConfiguration {
     private static final String REGISTERED_ID = "maatapi";
 
     @NotNull
-    private EformApi eformApi;
+    private MaatApi maatApi;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class EformApi {
+    public static class MaatApi {
 
         @NotNull
         private String baseUrl;

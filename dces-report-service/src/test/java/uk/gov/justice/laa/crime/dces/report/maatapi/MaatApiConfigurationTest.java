@@ -35,6 +35,6 @@ public class MaatApiConfigurationTest {
 
     @Test
     public void givenDefinedBasedURL_whenGetBaseUrlIsInvoked_thenCorrectBaseURLIsReturned() {
-        assertThat(configuration.getEformApi().getBaseUrl()).isEqualTo("http://localhost:1111");
+        assertThat(configuration.getMaatApi().getBaseUrl()).isEqualTo("http://localhost:1111");
     }
 }

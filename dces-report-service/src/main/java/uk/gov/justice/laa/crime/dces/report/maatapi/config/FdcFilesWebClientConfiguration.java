@@ -37,7 +37,7 @@ public class FdcFilesWebClientConfiguration {
                         .build();
 
         WebClient.Builder clientBuilder = WebClient.builder()
-                .baseUrl(servicesConfiguration.getEformApi().getBaseUrl())
+                .baseUrl(servicesConfiguration.getMaatApi().getBaseUrl())
                 .defaultHeader("LAA-TRANSACTION-ID", UUID.randomUUID().toString())
                 .clientConnector(new ReactorClientHttpConnector(
                                 HttpClient.create(provider)
@@ -46,12 +46,12 @@ public class FdcFilesWebClientConfiguration {
                                         .responseTimeout(Duration.ofSeconds(30))
                         )
                 );
-        if (servicesConfiguration.getEformApi().isOAuthEnabled()) {
+        if (servicesConfiguration.getMaatApi().isOAuthEnabled()) {
             ServletOAuth2AuthorizedClientExchangeFilterFunction oauth =
                     new ServletOAuth2AuthorizedClientExchangeFilterFunction(
                             clientRegistrations, authorizedClients
                     );
-            oauth.setDefaultClientRegistrationId(servicesConfiguration.getEformApi().getRegistrationId());
+            oauth.setDefaultClientRegistrationId(servicesConfiguration.getMaatApi().getRegistrationId());
             clientBuilder.filter(oauth);
         };
                 return clientBuilder.build();

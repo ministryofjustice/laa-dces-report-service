@@ -47,7 +47,7 @@ public class MaatApiWebClientFactory {
                 .build();
 
         WebClient.Builder clientBuilder = WebClient.builder()
-            .baseUrl(servicesConfiguration.getEformApi().getBaseUrl())
+            .baseUrl(servicesConfiguration.getMaatApi().getBaseUrl())
             .filter(errorResponse())
             .clientConnector(new ReactorClientHttpConnector(
                 HttpClient.create(provider)
@@ -59,7 +59,7 @@ public class MaatApiWebClientFactory {
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
-        if (servicesConfiguration.getEformApi().isOAuthEnabled()) {
+        if (servicesConfiguration.getMaatApi().isOAuthEnabled()) {
             ServletOAuth2AuthorizedClientExchangeFilterFunction oauth =
                     new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations, authorizedClients);
             oauth.setDefaultClientRegistrationId(REGISTERED_ID);

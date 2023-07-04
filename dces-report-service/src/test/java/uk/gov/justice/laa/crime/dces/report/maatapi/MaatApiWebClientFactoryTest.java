@@ -48,7 +48,7 @@ class MaatApiWebClientFactoryTest {
     public void setup() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
-        configuration.getEformApi().setBaseUrl(String.format("http://localhost:%s", mockWebServer.getPort()));
+        configuration.getMaatApi().setBaseUrl(String.format("http://localhost:%s", mockWebServer.getPort()));
 
         maatApiWebClientFactory = new MaatApiWebClientFactory();
     }
@@ -89,7 +89,7 @@ class MaatApiWebClientFactoryTest {
     private MaatApiResponseModel mockWebClientRequest(WebClient webClient) {
         return webClient
                 .get()
-                .uri(configuration.getEformApi().getBaseUrl())
+                .uri(configuration.getMaatApi().getBaseUrl())
                 .retrieve()
                 .bodyToMono(MaatApiResponseModel.class)
                 .block();
