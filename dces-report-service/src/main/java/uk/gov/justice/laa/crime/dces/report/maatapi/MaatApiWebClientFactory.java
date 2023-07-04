@@ -24,12 +24,13 @@ import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 
 import java.time.Duration;
+import java.util.UUID;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class MaatApiWebClientFactory {
-    private static final String REGISTERED_ID = "maatapi";
+    private static final String LAA_TRANSACTION_ID = "LAA-TRANSACTION-ID";
 
 
     @Bean("maatApiWebClient")
@@ -48,6 +49,7 @@ public class MaatApiWebClientFactory {
 
         WebClient.Builder clientBuilder = WebClient.builder()
             .baseUrl(servicesConfiguration.getMaatApi().getBaseUrl())
+            .defaultHeader(LAA_TRANSACTION_ID, UUID.randomUUID().toString())
             .filter(errorResponse())
             .clientConnector(new ReactorClientHttpConnector(
                 HttpClient.create(provider)
@@ -62,7 +64,7 @@ public class MaatApiWebClientFactory {
         if (servicesConfiguration.getMaatApi().isOAuthEnabled()) {
             ServletOAuth2AuthorizedClientExchangeFilterFunction oauth =
                     new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations, authorizedClients);
-            oauth.setDefaultClientRegistrationId(REGISTERED_ID);
+            oauth.setDefaultClientRegistrationId(servicesConfiguration.getMaatApi().getRegistrationId());
 
             clientBuilder.filter(oauth);
         }
