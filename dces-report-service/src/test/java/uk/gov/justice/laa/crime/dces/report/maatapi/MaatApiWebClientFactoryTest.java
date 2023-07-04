@@ -8,14 +8,16 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.mockito.Mock;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClient;
-import uk.gov.justice.laa.crime.dces.report.maatapi.config.MaatApiConfiguration;
+import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 
 import java.io.IOException;
@@ -26,14 +28,16 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ActiveProfiles("test")
 class MaatApiWebClientFactoryTest {
 
     MaatApiWebClientFactory maatApiWebClientFactory;
     private static MockWebServer mockWebServer;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    @Mock
-    private MaatApiConfiguration configuration;
+    @Qualifier("servicesConfiguration")
+    @Autowired
+    private ServicesConfiguration configuration;
     @MockBean
     private ClientRegistrationRepository clientRegistrationRepo;
     @MockBean
@@ -44,10 +48,7 @@ class MaatApiWebClientFactoryTest {
     public void setup() throws IOException {
         mockWebServer = new MockWebServer();
         mockWebServer.start();
-
-        configuration = new MaatApiConfiguration();
-        configuration.setBaseUrl(String.format("http://localhost:%s", mockWebServer.getPort()));
-        configuration.setOAuthEnabled(false);
+        configuration.getMaatApi().setBaseUrl(String.format("http://localhost:%s", mockWebServer.getPort()));
 
         maatApiWebClientFactory = new MaatApiWebClientFactory();
     }
@@ -88,7 +89,7 @@ class MaatApiWebClientFactoryTest {
     private MaatApiResponseModel mockWebClientRequest(WebClient webClient) {
         return webClient
                 .get()
-                .uri(configuration.getBaseUrl())
+                .uri(configuration.getMaatApi().getBaseUrl())
                 .retrieve()
                 .bodyToMono(MaatApiResponseModel.class)
                 .block();

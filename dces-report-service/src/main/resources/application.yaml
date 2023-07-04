@@ -25,6 +25,12 @@ maatApi:
   oAuthEnabled: true
   baseUrl: ${MAAT_API_BASE_URL}
 
+services:
+  maat-api:
+    baseUrl: ${MAAT_API_BASE_URL}
+    registrationId: ${MAAT_API_REGISTRATION_ID}
+    oAuthEnabled: true
+
 maat-retry-config:
   max-retries: 2
   min-back-off-period: 3
