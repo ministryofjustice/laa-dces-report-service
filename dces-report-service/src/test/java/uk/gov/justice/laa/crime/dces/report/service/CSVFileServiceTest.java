@@ -18,7 +18,6 @@ import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class CSVFileServiceTest {
     void testWriteContributionToCsv(){
         File file = null;
         try {
-            file = File.createTempFile( "test", "csv");
+            file = File.createTempFile( "test", ".csv");
 
             List<CSVDataLine> contFile = buildTestContributionFile();
             CSVFileService.writeContributionToCsv(contFile, file);
@@ -69,7 +68,7 @@ public class CSVFileServiceTest {
     void testWriteFdcToCsv(){
         File file = null;
         try {
-            file = File.createTempFile( "test", "csv");
+            file = File.createTempFile( "test", ".csv");
 
             FdcFile fdcFile = buildTestFdcFile();
             CSVFileService.writeFdcToCsv(fdcFile, file);
