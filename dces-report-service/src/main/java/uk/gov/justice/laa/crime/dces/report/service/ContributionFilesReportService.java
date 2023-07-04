@@ -7,7 +7,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
-
 import java.time.LocalDate;
 
 @Service
@@ -16,6 +15,7 @@ import java.time.LocalDate;
 public class ContributionFilesReportService {
     private static final String SERVICE_NAME = "dcesReportContributions";
 
+//    @Qualifier("contributionFilesClient")
     private final ContributionFilesClient contributionFilesClientEndpoint;
 
     public static final String DATE_FORMAT = ContributionFilesClient.DATE_FORMAT;
