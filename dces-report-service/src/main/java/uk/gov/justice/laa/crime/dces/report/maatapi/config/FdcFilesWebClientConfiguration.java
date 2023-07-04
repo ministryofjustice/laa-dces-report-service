@@ -15,7 +15,7 @@ import org.springframework.web.reactive.function.client.support.WebClientAdapter
 import org.springframework.web.service.invoker.HttpServiceProxyFactory;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
-import uk.gov.justice.laa.crime.dces.report.maatapi.client.FdcFilesClient;
+import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 
 import java.time.Duration;
 import java.util.UUID;

@@ -5,7 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.dces.report.maatapi.client.FdcFilesClient;
+import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
+import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
