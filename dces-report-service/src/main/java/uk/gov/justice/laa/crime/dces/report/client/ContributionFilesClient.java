@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.dces.report.service;
+package uk.gov.justice.laa.crime.dces.report.client;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.format.annotation.DateTimeFormat;
