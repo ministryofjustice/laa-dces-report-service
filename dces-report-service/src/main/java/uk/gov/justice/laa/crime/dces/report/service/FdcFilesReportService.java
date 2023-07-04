@@ -9,8 +9,8 @@ import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
-
 import java.time.LocalDate;
+
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +18,7 @@ import java.time.LocalDate;
 public class FdcFilesReportService {
     private static final String SERVICE_NAME = "dcesReportFdc";
 
+//    @Qualifier("fdcFilesClient")
     private final FdcFilesClient fdcFilesClient;
 
     @Retry(name = SERVICE_NAME)
@@ -32,4 +33,5 @@ public class FdcFilesReportService {
         log.info("Start - call MAAT API to collect FDC files, between {} and {}", start, end);
         return fdcFilesClient.getFileList(start, end);
     }
+
 }
