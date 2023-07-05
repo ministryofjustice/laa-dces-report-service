@@ -72,7 +72,6 @@ class ContributionsFileMapperTest {
     @Test
     void testFieldMappingForCSV(){
         //MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date
-        // TODO: Need to finish test once ccOutcome date, and CorrespondenceSentDate mappings are understood.
         File f = new File(getClass().getClassLoader().getResource("contributions/report_values_filled.xml").getFile());
         ContributionFile contributionsFile = null;
         try {
@@ -86,8 +85,8 @@ class ContributionsFileMapperTest {
         softly.assertThat(contributions.getMaatId()).isEqualTo(5635978);
         softly.assertThat(contributions.getFlag()).isEqualTo("update");
         softly.assertThat(contributions.getAssessment().getEffectiveDate().toString()).isEqualTo("2021-01-30");
-        //cc outcome date
-        //correspondence sent date
+        softly.assertThat(contributions.getCcOutcomes().getCcOutcome().get(0).getDate().toString()).isEqualTo("2021-01-25");
+        softly.assertThat(contributions.getCorrespondence().getLetter().get(0).getCreated().toString()).isEqualTo("2021-02-12");
         softly.assertThat(contributions.getApplication().getRepStatusDate().toString()).isEqualTo("2021-01-25");
         softly.assertThat(contributions.getApplication().getCcHardship().getReviewDate().toString()).isEqualTo("2020-05-05");
         softly.assertThat(contributions.getPassported().getDateCompleted().toString()).isEqualTo("2020-02-12");
@@ -126,14 +125,16 @@ class ContributionsFileMapperTest {
 
     @Test
     void testProcessRequest(){
-        ContributionFile contributionsFile = null;
         try {
             Date startDate = getDate("2020-01-01");
             Date endDate = getDate("2023-01-01");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
             when(csvServiceMock.writeContributionToCsv(any(),anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
-            contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
+            File f = contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
+            softly.assertThat(f).isNotNull();
+            softly.assertThat(f.getName()).isEqualTo(filename);
+            softly.assertAll();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         }
@@ -147,7 +148,10 @@ class ContributionsFileMapperTest {
             CSVFileService csvServiceMock = mock(CSVFileService.class);
             when(csvServiceMock.writeContributionToCsv(any(),anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
-            contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
+            File f = contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
+            softly.assertThat(f).isNotNull();
+            softly.assertThat(f.getName()).isEqualTo(filename);
+            softly.assertAll();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         }
@@ -169,7 +173,10 @@ class ContributionsFileMapperTest {
             CSVFileService csvServiceMock = mock(CSVFileService.class);
             when(csvServiceMock.writeContributionToCsv(any(),anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
-            contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
+            File f = contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
+            softly.assertThat(f).isNotNull();
+            softly.assertThat(f.getName()).isEqualTo(filename);
+            softly.assertAll();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         }
@@ -184,6 +191,7 @@ class ContributionsFileMapperTest {
             f = contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
 
             softly.assertThat(f).isNotNull();
+            softly.assertAll();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         } finally {

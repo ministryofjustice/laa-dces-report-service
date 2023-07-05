@@ -12,23 +12,21 @@ import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Date;
 
 @Service
 public class FdcFileMapper {
 
-    private JAXBContext jaxbContext;
     private Unmarshaller unmarshaller;
     protected CSVFileService csvFileService;
 
     @Autowired
     public FdcFileMapper fdcFileMapper() throws JAXBException {
-        this.jaxbContext = JAXBContext.newInstance(FdcFile.class);
+        JAXBContext jaxbContext = JAXBContext.newInstance(FdcFile.class);
         unmarshaller = jaxbContext.createUnmarshaller();
         return this;
     }
 
-    public File processRequest(String xmlData, Date startDate, Date toDate, String filename) throws JAXBException, IOException {
+    public File processRequest(String xmlData, String filename) throws JAXBException, IOException {
         FdcFile fdcFile = mapFdcXmlStringToObject(xmlData);
         return csvFileService.writeFdcToCsv(fdcFile, filename);
     }

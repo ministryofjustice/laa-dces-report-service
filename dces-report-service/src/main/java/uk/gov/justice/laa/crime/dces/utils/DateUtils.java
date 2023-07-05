@@ -12,8 +12,8 @@ import java.util.Objects;
 @UtilityClass
 public class DateUtils {
 
-    private final static DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private final DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+    private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
 
     public String convertXmlGregorianToString(XMLGregorianCalendar xmlGregorianCalendar){

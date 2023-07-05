@@ -24,16 +24,15 @@ import java.util.Objects;
 @Service
 public class ContributionsFileMapper {
 
-    private JAXBContext jaxbContext;
     private Unmarshaller unmarshaller;
     protected CSVFileService csvFileService;
-    private final static String EMPTY_CHARACTER="";
+    private static final String EMPTY_CHARACTER="";
 
 
     @Autowired
     public ContributionsFileMapper contributionsFileMapper(){
         try {
-            this.jaxbContext = JAXBContext.newInstance(ContributionFile.class);
+            JAXBContext jaxbContext = JAXBContext.newInstance(ContributionFile.class);
             unmarshaller = jaxbContext.createUnmarshaller();
             this.csvFileService = new CSVFileService();
         } catch (JAXBException e) {

@@ -4,10 +4,8 @@ import io.sentry.util.FileUtils;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.Rule;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.rules.TemporaryFolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -29,10 +27,8 @@ import java.util.Objects;
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
 @ActiveProfiles("test")
-public class CSVFileServiceTest {
+class CSVFileServiceTest {
 
-    @Rule
-    public TemporaryFolder folder= new TemporaryFolder();
 
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -58,8 +54,9 @@ public class CSVFileServiceTest {
             List<CSVDataLine> contFile = buildTestContributionFile();
             CSVFileService.writeContributionToCsv(contFile, file);
             String output = FileUtils.readText(file);
-            softly.assertThat(output.contains(contFile.get(0).getMaatId()));
-            softly.assertThat(output.contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date"));
+            softly.assertThat(output).contains(contFile.get(0).getMaatId());
+            softly.assertThat(output).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date");
+            softly.assertAll();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
@@ -75,8 +72,9 @@ public class CSVFileServiceTest {
             FdcFile fdcFile = buildTestFdcFile();
             CSVFileService.writeFdcToCsv(fdcFile, file);
             String output = FileUtils.readText(file);
-            softly.assertThat(output.contains(String.valueOf(testMaatId)));
-            softly.assertThat(output.contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date"));
+            softly.assertThat(output).contains(String.valueOf(testMaatId));
+            softly.assertThat(output).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date");
+            softly.assertAll();
         } catch (IOException | DatatypeConfigurationException e) {
             throw new RuntimeException(e);
         } finally {
