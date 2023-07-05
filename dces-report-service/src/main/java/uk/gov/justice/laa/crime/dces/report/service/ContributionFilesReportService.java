@@ -14,11 +14,10 @@ import java.time.LocalDate;
 @Slf4j
 public class ContributionFilesReportService {
     private static final String SERVICE_NAME = "dcesReportContributions";
+    public static final String DATE_FORMAT = ContributionFilesClient.DATE_FORMAT;
 
-//    @Qualifier("contributionFilesClient")
     private final ContributionFilesClient contributionFilesClientEndpoint;
 
-    public static final String DATE_FORMAT = ContributionFilesClient.DATE_FORMAT;
 
     @Retry(name = SERVICE_NAME)
     public ContributionFilesResponse getContributionFiles(

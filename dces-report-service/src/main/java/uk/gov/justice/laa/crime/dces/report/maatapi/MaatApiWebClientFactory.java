@@ -1,9 +1,9 @@
 package uk.gov.justice.laa.crime.dces.report.maatapi;
 
 import io.netty.resolver.DefaultAddressResolverGroup;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -12,7 +12,6 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunctions;
@@ -27,13 +26,12 @@ import java.time.Duration;
 import java.util.UUID;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
+@Configuration
 public class MaatApiWebClientFactory {
     private static final String LAA_TRANSACTION_ID = "LAA-TRANSACTION-ID";
 
 
-    @Bean("maatApiWebClient")
+    @Bean
     public WebClient maatApiWebClient(
             ServicesConfiguration servicesConfiguration,
             ClientRegistrationRepository clientRegistrations, OAuth2AuthorizedClientRepository authorizedClients

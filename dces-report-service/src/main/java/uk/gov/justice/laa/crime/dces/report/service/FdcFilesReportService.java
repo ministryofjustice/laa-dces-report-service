@@ -18,7 +18,6 @@ import java.time.LocalDate;
 public class FdcFilesReportService {
     private static final String SERVICE_NAME = "dcesReportFdc";
 
-//    @Qualifier("fdcFilesClient")
     private final FdcFilesClient fdcFilesClient;
 
     @Retry(name = SERVICE_NAME)
@@ -33,5 +32,4 @@ public class FdcFilesReportService {
         log.info("Start - call MAAT API to collect FDC files, between {} and {}", start, end);
         return fdcFilesClient.getFileList(start, end);
     }
-
 }

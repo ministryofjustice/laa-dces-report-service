@@ -16,7 +16,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class MaatApiClientFactoryTest {
 
     @MockBean
-//    @Qualifier("maatApiWebClient")
     WebClient maatApiWebClient;
 
     @Test
