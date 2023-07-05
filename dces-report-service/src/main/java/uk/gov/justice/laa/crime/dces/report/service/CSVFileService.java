@@ -5,13 +5,12 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile;
 import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile.FdcList.Fdc;
 import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
+import uk.gov.justice.laa.crime.dces.utils.DateUtils;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,7 +18,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class CSVFileService {
 
-    private final static DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+
 
     public File writeContributionToCsv(List<CSVDataLine> contributionData, File targetFile) throws IOException {
         // if file does not exist, we need to add the headers.
@@ -59,10 +58,8 @@ public class CSVFileService {
         return writeFdcToCsv(fdcFile, targetFile);
     }
 
-    private File getFile(String fileName){
-        // TODO: have file path in config, fix below line! Use temp files instead perhaps?
-        String path = System.getProperty("user.home")+"/Desktop";
-        return new File(path,fileName);
+    private File getFile(String fileName) throws IOException {
+        return File.createTempFile( fileName, ".csv");
     }
 
     private CSVDataLine getContributionsHeader(){
@@ -108,7 +105,7 @@ public class CSVFileService {
     }
 
     private String checkValue(XMLGregorianCalendar o){
-        return (Objects.nonNull(o)?df.format(o.toGregorianCalendar().getTime())+",":",");
+        return (Objects.nonNull(o)? DateUtils.convertXmlGregorianToString(o) +",":",");
     }
 
 }

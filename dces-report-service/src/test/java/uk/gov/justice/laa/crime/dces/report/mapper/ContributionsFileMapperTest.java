@@ -13,11 +13,11 @@ import uk.gov.justice.laa.crime.dces.contributions.generated.ContributionFile;
 import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -170,6 +170,22 @@ class ContributionsFileMapperTest {
             contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
+        }
+    }
+
+    @Test
+    void testProcessRequestFileGeneration(){
+        File f = null;
+        try {
+            Date startDate = getDate("2021-01-01");
+            Date endDate = getDate("2021-02-02");
+            f = contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
+
+            softly.assertThat(f).isNotNull();
+        } catch (JAXBException | IOException e) {
+            fail("Exception occurred in mapping test:"+e.getMessage());
+        } finally {
+            if (Objects.nonNull(f)) { f.delete();}
         }
     }
 

@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.contributions.generated.ContributionFile;
 import uk.gov.justice.laa.crime.dces.contributions.generated.ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS;
+import uk.gov.justice.laa.crime.dces.contributions.generated.ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS.CcOutcomes.CcOutcome;
+import uk.gov.justice.laa.crime.dces.contributions.generated.ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS.Correspondence.Letter;
 import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
 import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
+import uk.gov.justice.laa.crime.dces.utils.DateUtils;
 
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +28,7 @@ public class ContributionsFileMapper {
     private Unmarshaller unmarshaller;
     protected CSVFileService csvFileService;
     private final static String EMPTY_CHARACTER="";
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
 
     @Autowired
     public ContributionsFileMapper contributionsFileMapper(){
@@ -81,55 +81,55 @@ public class ContributionsFileMapper {
     }
     private String getAssessmentDate(CONTRIBUTIONS contribution, Date startDate, Date endDate){
         if(Objects.isNull(contribution.getAssessment()) || Objects.isNull(contribution.getAssessment().getEffectiveDate())
-                || !validateDate(contribution.getAssessment().getEffectiveDate(), startDate, endDate)){
+                || !DateUtils.validateDate(contribution.getAssessment().getEffectiveDate(), startDate, endDate)){
             return EMPTY_CHARACTER;
         }
-        return contribution.getAssessment().getEffectiveDate().toString();
+        return DateUtils.convertXmlGregorianToString(contribution.getAssessment().getEffectiveDate());
     }
     private String getOutcomeDate(CONTRIBUTIONS contribution, Date startDate, Date endDate){
-        return "TODO: FIX ME";
+        List<CcOutcome> filteredList = contribution.getCcOutcomes().getCcOutcome()
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(x->DateUtils.validateDate(x.getDate(),startDate,endDate))
+                .toList();
+        if(!filteredList.isEmpty()){
+            return DateUtils.convertXmlGregorianToString(filteredList.get(0).getDate());
+        }
+        return "";
     }
     private String getCorrespondenceSentDate(CONTRIBUTIONS contribution, Date startDate, Date endDate){
-        return "TODO: FIX ME";
+        List<Letter> filteredList = contribution.getCorrespondence().getLetter()
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(x->DateUtils.validateDate(x.getCreated(),startDate,endDate))
+                .toList();
+        if(!filteredList.isEmpty()){
+            return DateUtils.convertXmlGregorianToString(filteredList.get(0).getCreated());
+        }
+        return "";
     }
     private String getRepOrderStatusDate(CONTRIBUTIONS contribution, Date startDate, Date endDate){
         if(Objects.isNull(contribution.getApplication()) || Objects.isNull(contribution.getApplication().getRepStatusDate())
-                || !validateDate(contribution.getApplication().getRepStatusDate(), startDate, endDate)){
+                || !DateUtils.validateDate(contribution.getApplication().getRepStatusDate(), startDate, endDate)){
             return EMPTY_CHARACTER;
         }
-        return contribution.getApplication().getRepStatusDate().toString();
+        return DateUtils.convertXmlGregorianToString(contribution.getApplication().getRepStatusDate());
     }
     private String getHardshipReviewDate(CONTRIBUTIONS contribution, Date startDate, Date endDate){
         if(Objects.isNull(contribution.getApplication())
                 || Objects.isNull(contribution.getApplication().getCcHardship()) || Objects.isNull(contribution.getApplication().getCcHardship().getReviewDate())
-                || !validateDate(contribution.getApplication().getCcHardship().getReviewDate(), startDate, endDate)){
+                || !DateUtils.validateDate(contribution.getApplication().getCcHardship().getReviewDate(), startDate, endDate)){
             return EMPTY_CHARACTER;
         }
-        return contribution.getApplication().getCcHardship().getReviewDate().toString();
+        return DateUtils.convertXmlGregorianToString(contribution.getApplication().getCcHardship().getReviewDate());
     }
     private String getPassportedDate(CONTRIBUTIONS contribution, Date startDate, Date endDate){
         if( Objects.isNull(contribution.getPassported()) || Objects.isNull(contribution.getPassported().getDateCompleted())
-                || !validateDate(contribution.getPassported().getDateCompleted(), startDate, endDate)){
+                || !DateUtils.validateDate(contribution.getPassported().getDateCompleted(), startDate, endDate)){
             return EMPTY_CHARACTER;
         }
-        return contribution.getPassported().getDateCompleted().toString();
+        return DateUtils.convertXmlGregorianToString(contribution.getPassported().getDateCompleted());
     }
 
-    private boolean validateDate(Date toValidate, Date startDate, Date endDate){
-        return ( Objects.nonNull(toValidate)
-                && Objects.nonNull(startDate)
-                && Objects.nonNull(endDate)
-                && toValidate.compareTo(startDate)>=0
-                && toValidate.compareTo(endDate)<=0);
-    }
 
-    private boolean validateDate(XMLGregorianCalendar date, Date startDate, Date endDate){
-        Date convertedDate = null;
-        try {
-            convertedDate = dateFormat.parse(date.toString());
-        } catch (ParseException e) {
-            return false;
-        }
-        return validateDate(convertedDate, startDate, endDate);
-    }
 }
