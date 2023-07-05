@@ -73,7 +73,7 @@ class CSVFileServiceTest {
             CSVFileService.writeFdcToCsv(fdcFile, file);
             String output = FileUtils.readText(file);
             softly.assertThat(output).contains(String.valueOf(testMaatId));
-            softly.assertThat(output).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date");
+            softly.assertThat(output).contains("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST");
             softly.assertAll();
         } catch (IOException | DatatypeConfigurationException e) {
             throw new RuntimeException(e);
