@@ -2,11 +2,13 @@ package uk.gov.justice.laa.crime.dces.report.maatapi;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class MaatApiResponseModelTest {
     private static final int DEFAULT_ID = 1;
     private static final int DEFAULT_TOTAL = 0;

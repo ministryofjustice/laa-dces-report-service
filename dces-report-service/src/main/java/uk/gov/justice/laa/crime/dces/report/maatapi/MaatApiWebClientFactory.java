@@ -20,7 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
-import uk.gov.justice.laa.crime.dces.report.maatapi.config.MaatApiConfiguration;
+import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 
 import java.time.Duration;
@@ -32,9 +32,9 @@ public class MaatApiWebClientFactory {
     private static final String REGISTERED_ID = "maatapi";
 
 
-    @Bean()
+    @Bean("maatApiWebClient")
     public WebClient maatApiWebClient(
-            MaatApiConfiguration configuration,
+            ServicesConfiguration servicesConfiguration,
             ClientRegistrationRepository clientRegistrations, OAuth2AuthorizedClientRepository authorizedClients
     ) {
 
@@ -47,7 +47,7 @@ public class MaatApiWebClientFactory {
                 .build();
 
         WebClient.Builder clientBuilder = WebClient.builder()
-            .baseUrl(configuration.getBaseUrl())
+            .baseUrl(servicesConfiguration.getMaatApi().getBaseUrl())
             .filter(errorResponse())
             .clientConnector(new ReactorClientHttpConnector(
                 HttpClient.create(provider)
@@ -59,7 +59,7 @@ public class MaatApiWebClientFactory {
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
-        if (configuration.isOAuthEnabled()) {
+        if (servicesConfiguration.getMaatApi().isOAuthEnabled()) {
             ServletOAuth2AuthorizedClientExchangeFilterFunction oauth =
                     new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations, authorizedClients);
             oauth.setDefaultClientRegistrationId(REGISTERED_ID);

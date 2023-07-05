@@ -8,17 +8,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import uk.gov.justice.laa.crime.dces.report.maatapi.config.MaatApiConfiguration;
+import org.springframework.test.context.ActiveProfiles;
+import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
-@EnableConfigurationProperties(value = MaatApiConfiguration.class)
+@EnableConfigurationProperties(value = ServicesConfiguration.class)
+@ActiveProfiles("test")
 public class MaatApiConfigurationTest {
 
     @Autowired
     @Qualifier("test_configuration")
-    private MaatApiConfiguration configuration;
+    private ServicesConfiguration configuration;
 
     @Autowired
     Environment env;
@@ -26,13 +28,13 @@ public class MaatApiConfigurationTest {
     @Configuration
     public static class MaatApiConfigurationFactory {
         @Bean(name = "test_configuration")
-        public MaatApiConfiguration getDefaultConfiguration() {
-            return new MaatApiConfiguration();
+        public ServicesConfiguration getDefaultConfiguration() {
+            return new ServicesConfiguration();
         }
     }
 
     @Test
     public void givenDefinedBasedURL_whenGetBaseUrlIsInvoked_thenCorrectBaseURLIsReturned() {
-        assertThat(configuration.getBaseUrl()).isEqualTo("http://localhost:8090");
+        assertThat(configuration.getMaatApi().getBaseUrl()).isEqualTo("http://localhost:1111");
     }
 }
