@@ -10,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.rules.TemporaryFolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile;
 import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile.FdcList;
 import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile.FdcList.Fdc;
@@ -27,6 +28,7 @@ import java.util.Objects;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
+@ActiveProfiles("test")
 public class CSVFileServiceTest {
 
     @Rule

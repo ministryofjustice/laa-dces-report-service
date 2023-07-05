@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile;
 import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
 
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.when;
 @Ignore
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
+@ActiveProfiles("test")
 class FdcFileMapperTest {
 
     @InjectSoftAssertions
