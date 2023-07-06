@@ -35,7 +35,7 @@ public class CSVFileService {
     }
 
     public File writeContributionToCsv(List<CSVDataLine> contributionData, String fileName) throws IOException {
-        File targetFile = getFile(fileName);
+        File targetFile = createCsvFile(fileName);
         return writeContributionToCsv(contributionData, targetFile);
     }
 
@@ -54,11 +54,11 @@ public class CSVFileService {
     }
 
     public File writeFdcToCsv(FdcFile fdcFile, String fileName) throws IOException {
-        File targetFile = getFile(fileName);
+        File targetFile = createCsvFile(fileName);
         return writeFdcToCsv(fdcFile, targetFile);
     }
 
-    private File getFile(String fileName) throws IOException {
+    private File createCsvFile(String fileName) throws IOException {
         return File.createTempFile( fileName, ".csv");
     }
 
