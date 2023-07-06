@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
@@ -21,7 +22,7 @@ class FdcFilesReportServiceTest {
     private FdcFilesReportService testService;
 
     @Test
-    void getsListOfContributionsXmlWithValidDateParams(){
+    void getsListOfContributionsXmlWithValidDateParams()  throws WebClientResponseException {
         // setup
         LocalDate date = LocalDate.of(2023, 6, 10);
 
