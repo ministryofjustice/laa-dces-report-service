@@ -20,7 +20,7 @@ public class CSVFileService {
 
 
     public static final String FDC_FORMAT = "%s,";
-    public static final String COMMA_STRING = ",";
+    public static final String EMPTY_CHARACTER = "";
 
     public File writeContributionToCsv(List<CSVDataLine> contributionData, File targetFile) throws IOException {
         // if file does not exist, we need to add the headers.
@@ -103,7 +103,7 @@ public class CSVFileService {
     }
 
     private String getFdcValue(Object o){
-        return (Objects.nonNull(o)?String.format(FDC_FORMAT,o): COMMA_STRING);
+        return String.format(FDC_FORMAT,(Objects.nonNull(o)?o:EMPTY_CHARACTER));
     }
 
     private String getFdcValue(XMLGregorianCalendar o){
