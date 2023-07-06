@@ -1,6 +1,8 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
@@ -14,13 +16,11 @@ import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientExcep
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith(MockitoExtension.class)
@@ -30,8 +30,8 @@ class ContributionFilesClientReportServiceTest {
 
     private static final int DEFAULT_ID = 1;
     private static final int DEFAULT_TOTAL = 0;
-    private static final LocalDate startPeriod = LocalDate.parse("01-01-2023", DateTimeFormatter.ofPattern(ContributionFilesReportService.DATE_FORMAT));
-    private static final LocalDate finishPeriod = LocalDate.parse("31-01-2023", DateTimeFormatter.ofPattern(ContributionFilesReportService.DATE_FORMAT));
+    private static final LocalDate startPeriod = LocalDate.of(2023, 1, 1);
+    private static final LocalDate finishPeriod = LocalDate.of(2023, 1, 31);
 
     @Mock
     ContributionFilesClient contributionsEndpoint;

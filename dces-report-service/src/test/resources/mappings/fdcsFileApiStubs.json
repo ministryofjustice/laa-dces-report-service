@@ -3,7 +3,7 @@
     {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPathPattern": "/fdc/10-06-2023/10-06-2023",
+        "urlPathPattern": "/fdc/10%2F06%2F2023/10%2F06%2F2023",
         "method": "GET"
       },
       "response": {

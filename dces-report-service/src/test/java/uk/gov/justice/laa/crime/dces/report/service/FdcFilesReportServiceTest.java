@@ -21,7 +21,7 @@ class FdcFilesReportServiceTest {
     private FdcFilesReportService testService;
 
     @Test
-    void canGetServiceInstance(){
+    void getsListOfContributionsXmlWithValidDateParams(){
         // setup
         LocalDate date = LocalDate.of(2023, 6, 10);
 
