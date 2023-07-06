@@ -21,10 +21,6 @@ springdoc:
     enabled: true
     operationsSorter: method
 
-maatApi:
-  oAuthEnabled: true
-  baseUrl: ${MAAT_API_BASE_URL}
-
 services:
   maat-api:
     baseUrl: ${MAAT_API_BASE_URL}
@@ -41,6 +37,9 @@ means-assessment:
     issuer-uri: http://localhost:${server.port}
 
 spring:
+  mvc:
+    format:
+      date: dd-MM-yyyy
   security:
     oauth2:
       client:

@@ -1,7 +1,3 @@
-maatApi:
-  oAuthEnabled: false
-  baseUrl:
-
 services:
   maat-api:
     baseUrl: http://localhost:1111
