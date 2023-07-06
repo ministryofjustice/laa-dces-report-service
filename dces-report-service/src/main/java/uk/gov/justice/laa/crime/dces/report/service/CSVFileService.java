@@ -19,6 +19,8 @@ import java.util.Objects;
 public class CSVFileService {
 
 
+    public static final String FDC_FORMAT = "%s,";
+    public static final String COMMA_STRING = ",";
 
     public File writeContributionToCsv(List<CSVDataLine> contributionData, File targetFile) throws IOException {
         // if file does not exist, we need to add the headers.
@@ -101,7 +103,7 @@ public class CSVFileService {
     }
 
     private String getFdcValue(Object o){
-        return (Objects.nonNull(o)?String.valueOf(o)+",":",");
+        return (Objects.nonNull(o)?String.format(FDC_FORMAT,o): COMMA_STRING);
     }
 
     private String getFdcValue(XMLGregorianCalendar o){
