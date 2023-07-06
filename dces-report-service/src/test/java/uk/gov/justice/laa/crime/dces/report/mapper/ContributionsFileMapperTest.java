@@ -15,9 +15,8 @@ import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -37,7 +36,7 @@ class ContributionsFileMapperTest {
     @Autowired
     private ContributionsFileMapper contributionsFileMapper;
 
-    private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final String filename = "this_is_a_test.xml";
 
     @Test
@@ -94,18 +93,10 @@ class ContributionsFileMapperTest {
     }
 
     @Test
-    void testFileNotFound(){
-        var filePath = getClass().getClassLoader().getResource("contributions/FileNotFound.xml");
-        assertThrows(RuntimeException.class, () -> {new File(filePath.getFile());});
-    }
-
-    @Test
     void testInvalidXML(){
         File f = new File(getClass().getClassLoader().getResource("contributions/invalid.XML").getFile());
-        assertThrows(UnmarshalException.class, () -> {contributionsFileMapper.mapContributionsXMLFileToObject(f);});
+        assertThrows(UnmarshalException.class, () -> contributionsFileMapper.mapContributionsXMLFileToObject(f));
     }
-
-
 
     @Test
     void testStringConversion(){
@@ -126,8 +117,8 @@ class ContributionsFileMapperTest {
     @Test
     void testProcessRequest(){
         try {
-            Date startDate = getDate("2020-01-01");
-            Date endDate = getDate("2023-01-01");
+            LocalDate startDate = getDate("01-01-2020");
+            LocalDate endDate = getDate("01-01-2023");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
             when(csvServiceMock.writeContributionToCsv(any(),anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
@@ -143,8 +134,8 @@ class ContributionsFileMapperTest {
     @Test
     void testProcessRequestTooNew(){
         try {
-            Date startDate = getDate("2010-01-01");
-            Date endDate = getDate("2011-01-01");
+            LocalDate startDate = getDate("01-01-2010");
+            LocalDate endDate = getDate("01-01-2011");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
             when(csvServiceMock.writeContributionToCsv(any(),anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
@@ -157,19 +148,15 @@ class ContributionsFileMapperTest {
         }
     }
 
-    private Date getDate(String date){
-        try {
-            return dateFormat.parse(date);
-        } catch (ParseException e) {
-            throw new RuntimeException(e);
-        }
+    private LocalDate getDate(String date){
+        return LocalDate.parse(date, dateFormat);
     }
 
     @Test
     void testProcessRequestTooOld(){
         try {
-            Date startDate = getDate("2025-01-01");
-            Date endDate = getDate("2025-01-01");
+            LocalDate startDate = getDate("01-01-2025");
+            LocalDate endDate = getDate("01-01-2025");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
             when(csvServiceMock.writeContributionToCsv(any(),anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
@@ -186,8 +173,8 @@ class ContributionsFileMapperTest {
     void testProcessRequestFileGeneration(){
         File f = null;
         try {
-            Date startDate = getDate("2021-01-01");
-            Date endDate = getDate("2021-02-02");
+            LocalDate startDate = getDate("01-01-2021");
+            LocalDate endDate = getDate("02-02-2021");
             f = contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
 
             softly.assertThat(f).isNotNull();

@@ -16,8 +16,8 @@ import uk.gov.justice.laa.crime.dces.utils.DateUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,18 +30,14 @@ public class ContributionsFileMapper {
 
 
     @Autowired
-    public ContributionsFileMapper contributionsFileMapper(){
-        try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(ContributionFile.class);
-            unmarshaller = jaxbContext.createUnmarshaller();
-            this.csvFileService = new CSVFileService();
-        } catch (JAXBException e) {
-            throw new RuntimeException(e);
-        }
+    public ContributionsFileMapper contributionsFileMapper() throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(ContributionFile.class);
+        unmarshaller = jaxbContext.createUnmarshaller();
+        this.csvFileService = new CSVFileService();
         return this;
     }
 
-    public File processRequest(String xmlData, Date startDate, Date endDate, String filename) throws JAXBException, IOException {
+    public File processRequest(String xmlData, LocalDate startDate, LocalDate endDate, String filename) throws JAXBException, IOException {
         ContributionFile contributionFile = mapContributionsXmlStringToObject(xmlData);
         List<CSVDataLine> csvLineList = new ArrayList<>();
         for(CONTRIBUTIONS contribution : contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()){
@@ -59,7 +55,7 @@ public class ContributionsFileMapper {
         return (ContributionFile) unmarshaller.unmarshal(sr);
     }
 
-    public CSVDataLine buildCSVDataLine(CONTRIBUTIONS contribution, Date startDate, Date endDate){
+    public CSVDataLine buildCSVDataLine(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
         return CSVDataLine.builder()
                 .maatId(getMaatId(contribution))
                 .dataFeedType(getDataFeed(contribution))
@@ -78,14 +74,14 @@ public class ContributionsFileMapper {
     private String getDataFeed(CONTRIBUTIONS contribution){
         return contribution.getFlag();
     }
-    private String getAssessmentDate(CONTRIBUTIONS contribution, Date startDate, Date endDate){
+    private String getAssessmentDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
         if(Objects.isNull(contribution.getAssessment()) || Objects.isNull(contribution.getAssessment().getEffectiveDate())
                 || !DateUtils.validateDate(contribution.getAssessment().getEffectiveDate(), startDate, endDate)){
             return EMPTY_CHARACTER;
         }
         return DateUtils.convertXmlGregorianToString(contribution.getAssessment().getEffectiveDate());
     }
-    private String getOutcomeDate(CONTRIBUTIONS contribution, Date startDate, Date endDate){
+    private String getOutcomeDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
         List<CcOutcome> filteredList = contribution.getCcOutcomes().getCcOutcome()
                 .stream()
                 .filter(Objects::nonNull)
@@ -96,7 +92,7 @@ public class ContributionsFileMapper {
         }
         return "";
     }
-    private String getCorrespondenceSentDate(CONTRIBUTIONS contribution, Date startDate, Date endDate){
+    private String getCorrespondenceSentDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
         List<Letter> filteredList = contribution.getCorrespondence().getLetter()
                 .stream()
                 .filter(Objects::nonNull)
@@ -107,14 +103,14 @@ public class ContributionsFileMapper {
         }
         return "";
     }
-    private String getRepOrderStatusDate(CONTRIBUTIONS contribution, Date startDate, Date endDate){
+    private String getRepOrderStatusDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
         if(Objects.isNull(contribution.getApplication()) || Objects.isNull(contribution.getApplication().getRepStatusDate())
                 || !DateUtils.validateDate(contribution.getApplication().getRepStatusDate(), startDate, endDate)){
             return EMPTY_CHARACTER;
         }
         return DateUtils.convertXmlGregorianToString(contribution.getApplication().getRepStatusDate());
     }
-    private String getHardshipReviewDate(CONTRIBUTIONS contribution, Date startDate, Date endDate){
+    private String getHardshipReviewDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
         if(Objects.isNull(contribution.getApplication())
                 || Objects.isNull(contribution.getApplication().getCcHardship()) || Objects.isNull(contribution.getApplication().getCcHardship().getReviewDate())
                 || !DateUtils.validateDate(contribution.getApplication().getCcHardship().getReviewDate(), startDate, endDate)){
@@ -122,7 +118,7 @@ public class ContributionsFileMapper {
         }
         return DateUtils.convertXmlGregorianToString(contribution.getApplication().getCcHardship().getReviewDate());
     }
-    private String getPassportedDate(CONTRIBUTIONS contribution, Date startDate, Date endDate){
+    private String getPassportedDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
         if( Objects.isNull(contribution.getPassported()) || Objects.isNull(contribution.getPassported().getDateCompleted())
                 || !DateUtils.validateDate(contribution.getPassported().getDateCompleted(), startDate, endDate)){
             return EMPTY_CHARACTER;
