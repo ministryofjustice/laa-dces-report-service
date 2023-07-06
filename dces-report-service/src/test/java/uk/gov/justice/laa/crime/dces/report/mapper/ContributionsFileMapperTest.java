@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.mapper;
 
+import io.sentry.util.FileUtils;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.UnmarshalException;
 import org.assertj.core.api.SoftAssertions;
@@ -178,6 +179,11 @@ class ContributionsFileMapperTest {
             f = contributionsFileMapper.processRequest(getXMLString(), startDate, endDate, filename);
 
             softly.assertThat(f).isNotNull();
+            String csvOutput = FileUtils.readText(f);
+            // check header present
+            softly.assertThat(csvOutput).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date");
+            // verify content has been mapped
+            softly.assertThat(csvOutput).contains("5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,");
             softly.assertAll();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
