@@ -91,21 +91,21 @@ public class CSVFileService {
 
     private String fdcLineBuilder(Fdc fdcLine){
         StringBuilder sb = new StringBuilder();
-        sb.append(checkValue(fdcLine.getMaatId()));
-        sb.append(checkValue(fdcLine.getSentenceDate()));
-        sb.append(checkValue(fdcLine.getCalculationDate()));
-        sb.append(checkValue(fdcLine.getFinalCost()));
-        sb.append(checkValue(fdcLine.getLgfsTotal()));
-        sb.append(checkValue(fdcLine.getAgfsTotal()));
+        sb.append(getFdcValue(fdcLine.getMaatId()));
+        sb.append(getFdcValue(fdcLine.getSentenceDate()));
+        sb.append(getFdcValue(fdcLine.getCalculationDate()));
+        sb.append(getFdcValue(fdcLine.getFinalCost()));
+        sb.append(getFdcValue(fdcLine.getLgfsTotal()));
+        sb.append(getFdcValue(fdcLine.getAgfsTotal()));
         return sb.toString();
     }
 
-    private String checkValue(Object o){
+    private String getFdcValue(Object o){
         return (Objects.nonNull(o)?String.valueOf(o)+",":",");
     }
 
-    private String checkValue(XMLGregorianCalendar o){
-        return (Objects.nonNull(o)? DateUtils.convertXmlGregorianToString(o) +",":",");
+    private String getFdcValue(XMLGregorianCalendar o){
+        return ( getFdcValue(DateUtils.convertXmlGregorianToString(o)));
     }
 
 }

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
+import java.util.Calendar;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
@@ -74,6 +75,7 @@ class CSVFileServiceTest {
             String output = FileUtils.readText(file);
             softly.assertThat(output).contains(String.valueOf(testMaatId));
             softly.assertThat(output).contains("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST");
+            softly.assertThat(output).contains("30/06/2020");
             softly.assertAll();
         } catch (IOException | DatatypeConfigurationException e) {
             throw new RuntimeException(e);
@@ -85,7 +87,7 @@ class CSVFileServiceTest {
     private FdcFile buildTestFdcFile() throws DatatypeConfigurationException {
         var fdc = new Fdc();
         fdc.setMaatId(testMaatId);
-        fdc.setCalculationDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar()));
+        fdc.setCalculationDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar(2020, Calendar.JUNE,30,4,0,0)));
         var fdcList = new FdcList();
         fdcList.getFdc().add(fdc);
 
