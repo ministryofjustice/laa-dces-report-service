@@ -1,0 +1,27 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="fdc_file">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="fdc_list">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element maxOccurs="unbounded" name="fdc">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="maat_id" type="xs:unsignedInt" />
+                                        <xs:element name="sentenceDate" type="xs:date" />
+                                        <xs:element minOccurs="0" name="calculationDate" type="xs:date" />
+                                        <xs:element name="final_cost" type="xs:decimal" />
+                                        <xs:element name="lgfs_total" type="xs:decimal" />
+                                        <xs:element name="agfs_total" type="xs:decimal" />
+                                    </xs:sequence>
+                                    <xs:attribute name="id" type="xs:unsignedInt" use="required" />
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

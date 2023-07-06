@@ -75,7 +75,6 @@ dependencies {
 	implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
 	implementation "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
 
-
 	implementation "org.springdoc:springdoc-openapi-ui:$versions.springdocVersion"
 	implementation "io.github.resilience4j:resilience4j-spring-boot3:$versions.resilience4jVersion"
 
@@ -99,6 +98,7 @@ dependencies {
 	xsd2java "com.sun.activation:jakarta.activation:$versions.jakartaActivation"
 	xsd2java "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
 }
+
 
 
 test {
@@ -149,7 +149,7 @@ sonar {
 		property "sonar.organization", "ministryofjustice"
 		property "sonar.projectKey", "ministryofjustice_laa-dces-report-service"
 
-		property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java,**/maatapi/**Client**.java"
+		property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java,**/maatapi/**Client**.java,**/generated/**"
 		property "sonar.coverage.exclusions", "**/DcesReportServiceApplication.java"
 		property "sonar.coverage.jacoco.xmlReportPaths",
 				"${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
@@ -167,6 +167,12 @@ task xsd2java() {
 				destdir: '${jaxbTargetDir}',
 				package: 'uk.gov.justice.laa.crime.dces.contributions.generated',
 				schema: 'src/main/resources/contributions.xsd'
+		)
+
+		ant.xjc(
+				destdir: '${jaxbTargetDir}',
+				package: 'uk.gov.justice.laa.crime.dces.contributions.generated',
+				schema: 'src/main/resources/fdc.xsd'
 		)
 	}
 }
