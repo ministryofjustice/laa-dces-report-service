@@ -2,8 +2,8 @@ package uk.gov.justice.laa.crime.dces.report.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile;
-import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile.FdcList.Fdc;
+import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
+import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList.Fdc;
 import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
 import uk.gov.justice.laa.crime.dces.utils.DateUtils;
 

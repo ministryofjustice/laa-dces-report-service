@@ -165,13 +165,13 @@ task xsd2java() {
 
 		ant.xjc(
 				destdir: '${jaxbTargetDir}',
-				package: 'uk.gov.justice.laa.crime.dces.contributions.generated',
+				package: 'uk.gov.justice.laa.crime.dces.report.model.generated',
 				schema: 'src/main/resources/contributions.xsd'
 		)
 
 		ant.xjc(
 				destdir: '${jaxbTargetDir}',
-				package: 'uk.gov.justice.laa.crime.dces.contributions.generated',
+				package: 'uk.gov.justice.laa.crime.dces.report.model.generated',
 				schema: 'src/main/resources/fdc.xsd'
 		)
 	}
