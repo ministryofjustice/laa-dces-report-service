@@ -9,9 +9,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile;
-import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile.FdcList;
-import uk.gov.justice.laa.crime.dces.contributions.generated.FdcFile.FdcList.Fdc;
+import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
+import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList;
+import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList.Fdc;
 import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
 
 
