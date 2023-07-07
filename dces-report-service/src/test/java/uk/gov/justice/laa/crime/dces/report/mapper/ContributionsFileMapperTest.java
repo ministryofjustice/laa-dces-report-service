@@ -11,7 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.justice.laa.crime.dces.contributions.generated.ContributionFile;
+import uk.gov.justice.laa.crime.dces.report.model.generated.ContributionFile;
 import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
 
 import java.io.File;
