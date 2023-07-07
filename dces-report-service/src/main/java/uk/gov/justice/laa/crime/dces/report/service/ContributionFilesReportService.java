@@ -13,7 +13,6 @@ import java.time.LocalDate;
 @Slf4j
 public class ContributionFilesReportService {
     private static final String SERVICE_NAME = "dcesReportContributions";
-    public static final String DATE_FORMAT = ContributionFilesClient.DATE_FORMAT;
 
     private final ContributionFilesClient contributionFilesClientEndpoint;
 
