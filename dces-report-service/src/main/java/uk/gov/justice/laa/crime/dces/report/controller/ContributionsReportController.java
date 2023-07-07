@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +27,6 @@ public class ContributionsReportController {
 
     private ContributionFilesReportService contributionFilesService;
 
-
     @GetMapping(value = "/contributions/{start}/{finish}")
     @Operation(description = "Retrieve information regarding contribution files sent during the given period and generate a report")
     @ApiResponse(responseCode = "200")
@@ -44,17 +42,7 @@ public class ContributionsReportController {
             schema = @Schema(implementation = ProblemDetail.class)
         )
     )
-    public void getContributionFiles(
-            @PathVariable("start") @DateTimeFormat(pattern = ContributionFilesReportService.DATE_FORMAT)
-                LocalDate start,
-            @PathVariable("finish") @DateTimeFormat(pattern = ContributionFilesReportService.DATE_FORMAT)
-                LocalDate finish) {
+    public void getContributionFiles(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) {
         ContributionFilesResponse contributionFiles = contributionFilesService.getContributionFiles(start, finish);
-
-        // TODO (DCES-25): This is a draft template for what the next step should look like
-//        List<ContributionFile> parsedFiles =  contributionFiles.getFiles()
-//                .stream()
-//                .map(ContributionsFileMapper::mapContributionsXMLFileToObject)
-//                .toList();
     }
 }
