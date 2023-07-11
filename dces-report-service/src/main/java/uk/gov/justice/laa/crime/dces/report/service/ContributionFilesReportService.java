@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
-
 import java.time.LocalDate;
 
 @Service
@@ -16,6 +15,7 @@ public class ContributionFilesReportService {
     private static final String SERVICE_NAME = "dcesReportContributions";
 
     private final ContributionFilesClient contributionFilesClientEndpoint;
+
 
     @Retry(name = SERVICE_NAME)
     public ContributionFilesResponse getContributionFiles(LocalDate start, LocalDate finish) {

@@ -1,9 +1,9 @@
 package uk.gov.justice.laa.crime.dces.report.maatapi;
 
 import io.netty.resolver.DefaultAddressResolverGroup;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -12,7 +12,6 @@ import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunctions;
@@ -24,15 +23,15 @@ import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 
 import java.time.Duration;
+import java.util.UUID;
 
 @Slf4j
-@Component
-@RequiredArgsConstructor
+@Configuration
 public class MaatApiWebClientFactory {
-    private static final String REGISTERED_ID = "maatapi";
+    private static final String LAA_TRANSACTION_ID = "LAA-TRANSACTION-ID";
 
 
-    @Bean("maatApiWebClient")
+    @Bean
     public WebClient maatApiWebClient(
             ServicesConfiguration servicesConfiguration,
             ClientRegistrationRepository clientRegistrations, OAuth2AuthorizedClientRepository authorizedClients
@@ -48,6 +47,7 @@ public class MaatApiWebClientFactory {
 
         WebClient.Builder clientBuilder = WebClient.builder()
             .baseUrl(servicesConfiguration.getMaatApi().getBaseUrl())
+            .defaultHeader(LAA_TRANSACTION_ID, UUID.randomUUID().toString())
             .filter(errorResponse())
             .clientConnector(new ReactorClientHttpConnector(
                 HttpClient.create(provider)
@@ -62,7 +62,7 @@ public class MaatApiWebClientFactory {
         if (servicesConfiguration.getMaatApi().isOAuthEnabled()) {
             ServletOAuth2AuthorizedClientExchangeFilterFunction oauth =
                     new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations, authorizedClients);
-            oauth.setDefaultClientRegistrationId(REGISTERED_ID);
+            oauth.setDefaultClientRegistrationId(servicesConfiguration.getMaatApi().getRegistrationId());
 
             clientBuilder.filter(oauth);
         }
