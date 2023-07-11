@@ -21,8 +21,8 @@ sequenceDiagram
         MaatApiWebClient-->ContributionFilesListService: getContributionsCollection
         MaatApiWebClient-->FcdFilesListService: getContributionsCollection
     end
-    FcdFilesListService->>MaatAPI: request "/fcd/01-07-2023/01-07-2023
-    ContributionFilesListService->>MaatAPI: request "/contributions/01-07-2023/01-07-2023
+    FcdFilesListService->>MaatAPI: request "/fcd/01-07-2023/01-07-2023"
+    ContributionFilesListService->>MaatAPI: request "/contributions/01-07-2023/01-07-2023"
     
     MaatAPI->>MaatApiWebClient: Return contributions collection
 
