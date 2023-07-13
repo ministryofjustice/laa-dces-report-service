@@ -84,7 +84,9 @@ public class MaatApiWebClientFactory {
                     }
 
                     if (httpStatus.equals(HttpStatus.NOT_FOUND)) {
-                        return WebClientResponseException.create(httpStatus.value(), httpStatus.getReasonPhrase(), null, null, null);
+                        return WebClientResponseException.create(
+                                httpStatus.value(), httpStatus.getReasonPhrase(),
+                                null, null, null);
                     }
 
                     return new MaatApiClientException(errorMessage);
