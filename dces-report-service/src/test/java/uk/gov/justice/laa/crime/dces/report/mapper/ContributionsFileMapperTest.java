@@ -5,6 +5,7 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.UnmarshalException;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,6 +40,11 @@ class ContributionsFileMapperTest {
 
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final String filename = "this_is_a_test.xml";
+
+    @AfterEach
+    void resetCsvFileService(){
+        contributionsFileMapper.csvFileService = new CSVFileService();
+    }
 
     @Test
     void testXMLValid(){
@@ -134,18 +140,21 @@ class ContributionsFileMapperTest {
 
     @Test
     void testProcessRequestTooNew(){
+        File f = null;
         try {
             LocalDate startDate = getDate("01-01-2010");
             LocalDate endDate = getDate("01-01-2011");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
             when(csvServiceMock.writeContributionToCsv(any(),anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
-            File f = contributionsFileMapper.processRequest(new String[]{getXMLString()}, startDate, endDate, filename);
+            f = contributionsFileMapper.processRequest(new String[]{getXMLString()}, startDate, endDate, filename);
             softly.assertThat(f).isNotNull();
             softly.assertThat(f.getName()).isEqualTo(filename);
             softly.assertAll();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
+        } finally {
+            if (Objects.nonNull(f)) { f.delete();}
         }
     }
 
@@ -155,18 +164,21 @@ class ContributionsFileMapperTest {
 
     @Test
     void testProcessRequestTooOld(){
+        File f = null;
         try {
             LocalDate startDate = getDate("01-01-2025");
             LocalDate endDate = getDate("01-01-2025");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
             when(csvServiceMock.writeContributionToCsv(any(),anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
-            File f = contributionsFileMapper.processRequest(new String[]{getXMLString()}, startDate, endDate, filename);
+            f = contributionsFileMapper.processRequest(new String[]{getXMLString()}, startDate, endDate, filename);
             softly.assertThat(f).isNotNull();
             softly.assertThat(f.getName()).isEqualTo(filename);
             softly.assertAll();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
+        } finally {
+            if (Objects.nonNull(f)) { f.delete();}
         }
     }
 
