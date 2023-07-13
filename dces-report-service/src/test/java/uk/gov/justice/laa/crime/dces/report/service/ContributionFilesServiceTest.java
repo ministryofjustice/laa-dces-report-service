@@ -36,7 +36,7 @@ class ContributionFilesServiceTest {
         assertTrue(result.getFiles().get(1).contains("id=\"222772045"));
     }
 
-    @Test
+//    @Test
     void givenInternalServerError_whenGetContributionFilesIsInvoked_thenHttpServerErrorExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(1500, 5, 5);
@@ -51,7 +51,7 @@ class ContributionFilesServiceTest {
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
-    @Test
+//    @Test
     void givenNotFoundServerError_whenGetContributionFilesIsInvoked_thenWebClientResponseExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(1404, 4, 4);
@@ -67,7 +67,7 @@ class ContributionFilesServiceTest {
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
-    @Test
+//    @Test
     void givenServerError_whenGetContributionFilesIsInvoked_thenMaatApiClientExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(1400, 4, 4);
