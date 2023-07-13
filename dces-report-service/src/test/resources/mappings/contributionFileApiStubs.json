@@ -54,7 +54,7 @@
     {
       "scenarioName": "error404BasicRequest",
       "request": {
-        "urlPathPattern": "/getContributions/[0-9%2F]+1404/[0-9%2F]+1404",
+        "url": "/getContributions/04%2F04%2F1404/04%2F04%2F1404",
         "method": "GET"
       },
       "response": {
