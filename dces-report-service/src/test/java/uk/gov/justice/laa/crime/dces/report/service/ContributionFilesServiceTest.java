@@ -39,7 +39,7 @@ class ContributionFilesServiceTest {
     @Test
     void givenInternalServerError_whenGetContributionFilesIsInvoked_thenHttpServerErrorExceptionIsThrown(){
         // setup
-        LocalDate date = LocalDate.of(1500, 5, 5);
+        LocalDate date = LocalDate.of(5500, 5, 5);
 
         // execute
         Exception exception = assertThrows(HttpServerErrorException.class,
