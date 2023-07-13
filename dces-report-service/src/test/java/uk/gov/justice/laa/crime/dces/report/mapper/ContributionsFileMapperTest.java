@@ -123,18 +123,21 @@ class ContributionsFileMapperTest {
 
     @Test
     void testProcessRequest(){
+        File f = null;
         try {
             LocalDate startDate = getDate("01-01-2020");
             LocalDate endDate = getDate("01-01-2023");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
             when(csvServiceMock.writeContributionToCsv(any(),anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
-            File f = contributionsFileMapper.processRequest(new String[]{getXMLString()}, startDate, endDate, filename);
+            f = contributionsFileMapper.processRequest(new String[]{getXMLString()}, startDate, endDate, filename);
             softly.assertThat(f).isNotNull();
             softly.assertThat(f.getName()).isEqualTo(filename);
             softly.assertAll();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
+        } finally {
+            if (Objects.nonNull(f)) { f.delete();}
         }
     }
 
