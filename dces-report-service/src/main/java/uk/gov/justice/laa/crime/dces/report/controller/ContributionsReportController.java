@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
-import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesReportService;
+import uk.gov.justice.laa.crime.dces.report.service.ContributionRecordsService;
 
 import java.time.LocalDate;
 
@@ -25,24 +25,24 @@ import java.time.LocalDate;
 @Tag(name = "DCES Contribution files report", description = "Rest API to retrieve and generate contribution files report")
 public class ContributionsReportController {
 
-    private ContributionFilesReportService contributionFilesService;
+    private ContributionRecordsService contributionFilesService;
 
     @GetMapping(value = "/contributions/{start}/{finish}")
     @Operation(description = "Retrieve information regarding contribution files sent during the given period and generate a report")
     @ApiResponse(responseCode = "200")
     @ApiResponse(responseCode = "400",
-        description = "Bad request.",
-        content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
-            schema = @Schema(implementation = ProblemDetail.class)
-        )
+            description = "Bad request.",
+            content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )
     )
     @ApiResponse(responseCode = "500",
-        description = "Server Error.",
-        content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
-            schema = @Schema(implementation = ProblemDetail.class)
-        )
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )
     )
     public void getContributionFiles(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) {
-        ContributionFilesResponse contributionFiles = contributionFilesService.getContributionFiles(start, finish);
+        ContributionFilesResponse contributionFiles = contributionFilesService.getFiles(start, finish);
     }
 }

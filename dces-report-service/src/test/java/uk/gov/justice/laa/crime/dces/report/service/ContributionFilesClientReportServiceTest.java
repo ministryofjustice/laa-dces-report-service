@@ -36,28 +36,28 @@ class ContributionFilesClientReportServiceTest {
     @Mock
     ContributionFilesClient contributionsEndpoint;
     @InjectMocks
-    ContributionFilesReportService contributionFilesReportService;
+    ContributionRecordsService contributionRecordsService;
 
 
     @Test
     void givenValidDateLimitParams_whenEndpointSendGetRequestIsInvoked_thenResponseDataModelIsReturned() {
         ContributionFilesResponse expectedResponse = getMockedMaatApiResponseModel();
 
-        when(contributionsEndpoint.sendGetRequest(any(), any()))
+        when(contributionsEndpoint.getContributions(any(), any()))
                 .thenReturn(expectedResponse);
 
         Assertions.assertDoesNotThrow(mockSendRequestGetContributionFiles());
-        verify(contributionsEndpoint, times(1)).sendGetRequest(startPeriod, finishPeriod);
+        verify(contributionsEndpoint, times(1)).getContributions(startPeriod, finishPeriod);
     }
 
     @Test
     void givenValidDateLimitParams_whenGetContributionFilesIsInvoked_thenResponseDataModelIsReturned() {
         ContributionFilesResponse expectedResponse = getMockedMaatApiResponseModel();
 
-        when(contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod))
+        when(contributionRecordsService.getFiles(startPeriod, finishPeriod))
                 .thenReturn(expectedResponse);
 
-        ContributionFilesResponse actualResponse = contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod);
+        ContributionFilesResponse actualResponse = contributionRecordsService.getFiles(startPeriod, finishPeriod);
         assertThat(actualResponse.getFiles().size()).isPositive();
         assertThat(actualResponse.getFiles()).hasSameClassAs(expectedResponse.getFiles());
         assertThat(actualResponse.getFiles().get(0)).isEqualTo(expectedResponse.getFiles().get(0));
@@ -65,8 +65,8 @@ class ContributionFilesClientReportServiceTest {
 
     @Test
     void givenValidDateLimitParams_whenGetContributionFilesIsInvoked_thenExceptionIsThrown() {
-        when(contributionsEndpoint.sendGetRequest(any(), any()))
-            .thenThrow(Mockito.mock(MaatApiClientException.class));
+        when(contributionsEndpoint.getContributions(any(), any()))
+                .thenThrow(Mockito.mock(MaatApiClientException.class));
 
         assertThrows(MaatApiClientException.class, mockSendRequestGetContributionFiles());
     }
@@ -79,7 +79,7 @@ class ContributionFilesClientReportServiceTest {
         return new Executable() {
             @Override
             public void execute() throws Throwable {
-                contributionsEndpoint.sendGetRequest(startPeriod, finishPeriod);
+                contributionsEndpoint.getContributions(startPeriod, finishPeriod);
             }
         };
     }

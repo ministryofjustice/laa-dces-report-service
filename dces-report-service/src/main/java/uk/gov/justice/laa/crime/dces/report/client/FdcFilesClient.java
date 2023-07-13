@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public interface FdcFilesClient extends MaatApiClient {
 
     @GetExchange(url = "/fdc/{startDate}/{endDate}")
-    ContributionFilesResponse getFileList(@PathVariable LocalDate startDate, @PathVariable LocalDate endDate);
+    ContributionFilesResponse getContributions(@PathVariable LocalDate startDate, @PathVariable LocalDate endDate);
 
     @Configuration
     class FdcFilesClientFactory {
