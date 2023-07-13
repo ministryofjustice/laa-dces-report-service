@@ -37,13 +37,20 @@ public class ContributionsFileMapper {
         return this;
     }
 
-    public File processRequest(String xmlData, LocalDate startDate, LocalDate endDate, String filename) throws JAXBException, IOException {
-        ContributionFile contributionFile = mapContributionsXmlStringToObject(xmlData);
+    public File processRequest(String[] xmlData, LocalDate startDate, LocalDate endDate, String filename) throws IOException, JAXBException {
         List<CSVDataLine> csvLineList = new ArrayList<>();
+        for (String xmlString: xmlData) {
+            processXMLFile(xmlString, startDate, endDate, csvLineList);
+        }
+        return csvFileService.writeContributionToCsv(csvLineList, filename);
+    }
+
+    private void processXMLFile(String xmlData, LocalDate startDate, LocalDate endDate, List<CSVDataLine> csvLineList) throws JAXBException {
+        ContributionFile contributionFile = mapContributionsXmlStringToObject(xmlData);
         for(CONTRIBUTIONS contribution : contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()){
             csvLineList.add(buildCSVDataLine(contribution, startDate, endDate));
         }
-        return csvFileService.writeContributionToCsv(csvLineList, filename);
+
     }
 
     public ContributionFile mapContributionsXMLFileToObject(File xmlFile) throws JAXBException {
