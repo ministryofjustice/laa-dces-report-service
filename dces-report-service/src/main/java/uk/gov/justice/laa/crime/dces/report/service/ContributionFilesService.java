@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import io.github.resilience4j.retry.annotation.Retry;
+import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import uk.gov.justice.laa.crime.dces.report.mapper.ContributionsFileMapper;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -32,7 +34,7 @@ public class ContributionFilesService implements MaatApiFilesService {
     }
 
     @Override
-    public File processFiles(List<String> files) {
-        return null;
+    public File processFiles(List<String> files, LocalDate start, LocalDate finish, String fileName) throws JAXBException, IOException {
+        return contributionsFileMapper.processRequest(files.toArray(new String[0]), start, finish, fileName);
     }
 }
