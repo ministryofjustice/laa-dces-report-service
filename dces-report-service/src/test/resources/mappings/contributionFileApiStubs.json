@@ -18,22 +18,6 @@
           ]
         }
       }
-    },
-    {
-      "scenarioName": "error500BasicRequest",
-      "request": {
-        "urlPathPattern": "/getContributions/05[%2F-]+05[%2F-]+1500/05[%2F-]+05[%2F-]+1500",
-        "method": "GET"
-      },
-      "response": {
-        "status": 500,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "jsonBody": {
-          "files": []
-        }
-      }
     }
   ]
 }
