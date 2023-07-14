@@ -3,7 +3,7 @@
     {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPath": "/getContributions/01%2F01%2F2023/31%2F01%2F2023",
+        "url": "/getContributions/01%2F01%2F2023/31%2F01%2F2023",
         "method": "GET"
       },
       "response": {
