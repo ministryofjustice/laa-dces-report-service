@@ -2,7 +2,7 @@
 
 sequenceDiagram
     autonumber
-    
+
     box rgb(70,70,70) Service
     participant SchedularCronService
     participant DcesReportService
@@ -12,13 +12,13 @@ sequenceDiagram
     participant MaatApiClient
     participant EmailService
     end
-    
+
     box rgb(70,70,70) XML to CSV Detail
     participant ContributionsFileMapper
     participant FdcFileMapper
     participant CSVFileService
     end
-    
+
     box rgb(50,50,50) AWS
         participant SesEmailClient
     end
@@ -41,7 +41,7 @@ Note over SchedularCronService ,DcesReportService: 1. Java/Spring Cron Job.
         end
 
 Note over DcesReportService, CSVFileService : 3. Component to process and parse XML and generate CSV
-        
+
     Alt Contributions
         DcesReportService->>+ContributionsFileMapper: calls processRequest
         Note over ContributionsFileMapper : For each XML file in parameter list
@@ -62,7 +62,7 @@ Note over DcesReportService, CSVFileService : 3. Component to process and parse 
         CSVFileService->>-FdcFileMapper: return File
         FdcFileMapper->>-DcesReportService: return File
     end
-    
+
     Note over DcesReportService, EmailService: 4. Sending email per file type (e.g. FDC).
     DcesReportService->>EmailService: Processing the Email.
     EmailService->>SesEmailClient: Creating an email config to send out.
