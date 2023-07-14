@@ -55,6 +55,14 @@ public class CSVFileService {
         return targetFile;
     }
 
+    public File writeFdcFileListToCsv(List<FdcFile> fdcFiles, String fileName) throws IOException {
+        File targetFile = createCsvFile(fileName);
+        for(FdcFile file: fdcFiles){
+            writeFdcToCsv(file, targetFile);
+        }
+        return targetFile;
+    }
+
     public File writeFdcToCsv(FdcFile fdcFile, String fileName) throws IOException {
         File targetFile = createCsvFile(fileName);
         return writeFdcToCsv(fdcFile, targetFile);
