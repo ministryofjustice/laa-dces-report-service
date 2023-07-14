@@ -10,7 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
-import uk.gov.justice.laa.crime.dces.report.service.ContributionRecordsService;
+import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -26,7 +26,7 @@ class ControllerDateFormatTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ContributionRecordsService mockService;
+    private ContributionFilesService mockService;
 
     @BeforeEach
     public void setup() throws Exception {

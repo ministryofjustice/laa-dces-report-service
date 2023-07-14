@@ -36,7 +36,7 @@ class ContributionFilesClientReportServiceTest {
     @Mock
     ContributionFilesClient contributionsEndpoint;
     @InjectMocks
-    ContributionRecordsService contributionRecordsService;
+    ContributionFilesService contributionFilesService;
 
 
     @Test
@@ -54,10 +54,10 @@ class ContributionFilesClientReportServiceTest {
     void givenValidDateLimitParams_whenGetContributionFilesIsInvoked_thenResponseDataModelIsReturned() {
         ContributionFilesResponse expectedResponse = getMockedMaatApiResponseModel();
 
-        when(contributionRecordsService.getFiles(startPeriod, finishPeriod))
+        when(contributionFilesService.getFiles(startPeriod, finishPeriod))
                 .thenReturn(expectedResponse);
 
-        ContributionFilesResponse actualResponse = contributionRecordsService.getFiles(startPeriod, finishPeriod);
+        ContributionFilesResponse actualResponse = contributionFilesService.getFiles(startPeriod, finishPeriod);
         assertThat(actualResponse.getFiles().size()).isPositive();
         assertThat(actualResponse.getFiles()).hasSameClassAs(expectedResponse.getFiles());
         assertThat(actualResponse.getFiles().get(0)).isEqualTo(expectedResponse.getFiles().get(0));

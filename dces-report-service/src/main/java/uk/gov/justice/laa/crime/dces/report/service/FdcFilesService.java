@@ -8,13 +8,15 @@ import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
+import java.io.File;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FdcRecordsService implements MaatApiRecords {
+public class FdcFilesService implements MaatApiFilesService {
     private static final String SERVICE_NAME = "dcesReportFdc";
 
     private final FdcFilesClient fdcFilesClient;
@@ -31,7 +33,7 @@ public class FdcRecordsService implements MaatApiRecords {
     }
 
     @Override
-    public String processFiles(String xmlString) {
+    public File processFiles(List<String> files) {
         return null;
     }
 }

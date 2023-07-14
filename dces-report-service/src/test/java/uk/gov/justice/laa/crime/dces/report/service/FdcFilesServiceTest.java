@@ -16,10 +16,10 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @WireMockTest(httpPort = 1111)
-class FdcRecordsServiceTest {
+class FdcFilesServiceTest {
 
     @Autowired
-    private FdcRecordsService testService;
+    private FdcFilesService testService;
 
     @Test
     void getsListOfContributionsXmlWithValidDateParams() throws WebClientResponseException {

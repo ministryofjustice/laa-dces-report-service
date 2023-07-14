@@ -5,30 +5,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
+import java.io.File;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class DcesReportServiceImpl implements DcesReportService {
 
     @Autowired
-    private FdcRecordsService fdcRecordsService;
+    private FdcFilesService fdcFilesService;
 
     @Autowired
-    private ContributionRecordsService contributionRecordsService;
+    private ContributionFilesService contributionFilesService;
 
     @Override
-    public ContributionFilesResponse getContributionsCollection(ReportFileType type, LocalDate start, LocalDate end) {
-        return getMaatApiService(type).getFiles(start, end);
+    public ContributionFilesResponse getApiFiles(ReportFileType type, LocalDate start, LocalDate end) {
+        return getApiFilesService(type).getFiles(start, end);
     }
 
-    private MaatApiRecords getMaatApiService(ReportFileType type) {
+    @Override
+    public File processFiles(ReportFileType type, List<String> files) {
+        return getApiFilesService(type).processFiles(files);
+    }
+
+    private MaatApiFilesService getApiFilesService(ReportFileType type) {
         if (type.equals(ReportFileType.FDC)) {
-            return fdcRecordsService;
+            return fdcFilesService;
         }
 
-        return contributionRecordsService;
+        return contributionFilesService;
     }
-
-
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
-import uk.gov.justice.laa.crime.dces.report.service.ContributionRecordsService;
+import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 
 import java.time.LocalDate;
 
@@ -25,7 +25,7 @@ import java.time.LocalDate;
 @Tag(name = "DCES Contribution files report", description = "Rest API to retrieve and generate contribution files report")
 public class ContributionsReportController {
 
-    private ContributionRecordsService contributionFilesService;
+    private ContributionFilesService contributionFilesService;
 
     @GetMapping(value = "/contributions/{start}/{finish}")
     @Operation(description = "Retrieve information regarding contribution files sent during the given period and generate a report")

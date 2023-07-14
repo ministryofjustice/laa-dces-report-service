@@ -22,10 +22,10 @@ class DcesReportServiceImplTest {
     DcesReportServiceImpl dcesReportService;
 
     @MockBean
-    FdcRecordsService mockFdcService;
+    FdcFilesService mockFdcService;
 
     @MockBean
-    ContributionRecordsService mockRecordsService;
+    ContributionFilesService mockRecordsService;
 
     @Before
     void setup() {
@@ -34,9 +34,14 @@ class DcesReportServiceImplTest {
 
     @Test
     void getInitialContributionsCollection() {
+        // setup
         LocalDate dateParam = LocalDate.of(2023, 7, 10);
+
+        // execute
         ContributionFilesResponse contributionsCollection = dcesReportService
-                .getContributionsCollection(ReportFileType.FDC, dateParam, dateParam);
+                .getApiFiles(ReportFileType.FDC, dateParam, dateParam);
+
+        // assert
         Mockito.verify(mockFdcService, times(1)).getFiles(dateParam, dateParam);
         Mockito.verify(mockRecordsService, times(0)).getFiles(any(), any());
     }
