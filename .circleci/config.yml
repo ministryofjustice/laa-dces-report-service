@@ -131,7 +131,7 @@ jobs:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - run:
           name: Run tests
-          command: ./gradlew test
+          command: ./gradlew test --stacktrace
       - run:
           name: Generate code coverage report
           command: ./gradlew jacocoTestReport
