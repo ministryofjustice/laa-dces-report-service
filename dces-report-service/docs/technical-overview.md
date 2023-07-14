@@ -2,21 +2,29 @@
 
 sequenceDiagram
     autonumber
+    
+    box rgb(70,70,70) Service
     participant SchedularCronService
     participant DcesReportService
     participant DataCollectionService
     participant ContributionFilesReportService
     participant FcdFilesReportService
     participant MaatApiClient
-    participant XmlConvertorService
-    participant CsvFileGenerator
-    participant ContributionsFileMapper
     participant EmailService
-    participant SesEmailClient
+    end
+    
+    box rgb(70,70,70) XML to CSV Detail
+    participant ContributionsFileMapper
+    participant FdcFileMapper
+    participant CSVFileService
+    end
+    
+    box rgb(50,50,50) AWS
+        participant SesEmailClient
+    end
 
-    Note over SchedularCronService ,DcesReportService: 1. Java/Spring Cron Job.
+Note over SchedularCronService ,DcesReportService: 1. Java/Spring Cron Job.
     SchedularCronService->>DcesReportService: Trigger every 30-day
-    rect gray
         DcesReportService->>DataCollectionService: Getting XML files.
         Note over DcesReportService ,MaatApiClient: 2. Input files. Dependency on the Cognito Service for Auth.
         DataCollectionService->>ContributionFilesReportService: Calling for contribution files
@@ -28,19 +36,33 @@ sequenceDiagram
         MaatApiClient-->>FcdFilesReportService: Returning a List<String>
         Note over DataCollectionService, DcesReportService : These are XML files returning as a String list
         DataCollectionService-->>DcesReportService: Returning list of XML.
-    end
+        alt when List is empty
+            DcesReportService-->>SchedularCronService: terminating the process.
+        end
 
-    alt when List is empty
-    DcesReportService-->>SchedularCronService: terminating the process.
+Note over DcesReportService, CSVFileService : 3. Component to process and parse XML and generate CSV
+        
+    Alt Contributions
+        DcesReportService->>+ContributionsFileMapper: calls processRequest
+        Note over ContributionsFileMapper : For each XML file in parameter list
+        Note over ContributionsFileMapper :Run JaxB Unmarshaller on the XML String
+        Note over ContributionsFileMapper :Use parameter dates for business logic <br> to determine mapping to logical objects
+        ContributionsFileMapper->>+CSVFileService: writeContributionToCsv
+        Note over CSVFileService: create temporary file
+        Note over CSVFileService: write logical objects to csv
+        ContributionsFileMapper->>-DcesReportService: return File
     end
-    rect gray
-        Note over DcesReportService, XmlConvertorService : 3. Component to process and parse XML and generate CSV
-        DcesReportService->>XmlConvertorService: Processing the XML
-        XmlConvertorService->>ContributionsFileMapper: Converting XML into objects
-        ContributionsFileMapper-->>XmlConvertorService: Returning logical objects
-        XmlConvertorService->>CsvFileGenerator: Generating CSV file
-        XmlConvertorService->>DcesReportService: Returning CSV File
+    alt FDC
+        DcesReportService->>+FdcFileMapper: calls processRequest
+        Note over FdcFileMapper : For each XML file in list passed in
+        Note over FdcFileMapper :Run JaxB Unmarshaller on xml String
+        FdcFileMapper->>+CSVFileService: writeContributionToCsv
+        Note over CSVFileService: create temporary file
+        Note over CSVFileService: write logical objects to csv
+        CSVFileService->>-FdcFileMapper: return File
+        FdcFileMapper->>-DcesReportService: return File
     end
+    
     Note over DcesReportService, EmailService: 4. Sending email per file type (e.g. FDC).
     DcesReportService->>EmailService: Processing the Email.
     EmailService->>SesEmailClient: Creating an email config to send out.
