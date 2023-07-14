@@ -26,7 +26,7 @@ class ContributionFilesServiceTest {
     ContributionFilesReportService contributionFilesReportService;
 
 
-//    @Test
+    @Test
     void givenValidDateLimitParams_whenGetContributionFilesIsInvoked_thenResponseDataModelIsReturned()  throws WebClientResponseException {
         ContributionFilesResponse result = contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod);
 
@@ -36,7 +36,8 @@ class ContributionFilesServiceTest {
         assertTrue(result.getFiles().get(1).contains("id=\"222772045"));
     }
 
-    @Test
+    // TODO (DCES-40): enable stub mappings and reactivate test for 500 status error response
+//    @Test
     void givenInternalServerError_whenGetContributionFilesIsInvoked_thenHttpServerErrorExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(1500, 5, 5);
@@ -51,6 +52,7 @@ class ContributionFilesServiceTest {
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
+    // TODO (DCES-40): enable stub mappings and reactivate test for 404 status error response
 //    @Test
     void givenNotFoundServerError_whenGetContributionFilesIsInvoked_thenWebClientResponseExceptionIsThrown(){
         // setup
@@ -67,6 +69,7 @@ class ContributionFilesServiceTest {
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
+    // TODO (DCES-40): enable stub mappings and reactivate test for 400 status error response
 //    @Test
     void givenServerError_whenGetContributionFilesIsInvoked_thenMaatApiClientExceptionIsThrown(){
         // setup
