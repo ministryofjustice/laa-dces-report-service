@@ -1,25 +1,9 @@
 {
   "mappings": [
     {
-      "scenarioName": "error500BasicRequest",
-      "request": {
-        "urlPathPattern": "/getContributions/05[%2F-]+05[%2F-]+1500/05[%2F-]+05[%2F-]+1500",
-        "method": "GET"
-      },
-      "response": {
-        "status": 500,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "jsonBody": {
-          "files": []
-        }
-      }
-    },
-    {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPathPattern": "/getContributions/[0-9%2F-]+/[0-9%2F-]+",
+        "urlPathPattern": "/getContributions/01[%2F-]+01[%2F-]+2023/31[%2F-]+01[%2F-]+2023",
         "method": "GET"
       },
       "response": {
