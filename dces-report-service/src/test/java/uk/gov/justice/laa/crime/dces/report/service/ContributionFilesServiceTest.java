@@ -3,7 +3,6 @@ package uk.gov.justice.laa.crime.dces.report.service;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpServerErrorException;
@@ -25,15 +24,7 @@ class ContributionFilesServiceTest {
     @Autowired
     ContributionFilesReportService contributionFilesReportService;
 
-    @Value("${testToken}")
-    private String applicationToken;
-
     @Test
-    void checkTestApplicationValues() {
-        assertEquals("vtest", applicationToken);
-    }
-
-    //    @Test
     void givenValidDateLimitParams_whenGetContributionFilesIsInvoked_thenResponseDataModelIsReturned() throws WebClientResponseException {
         ContributionFilesResponse result = contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod);
 
