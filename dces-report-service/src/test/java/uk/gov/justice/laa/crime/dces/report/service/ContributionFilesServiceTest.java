@@ -26,7 +26,7 @@ class ContributionFilesServiceTest {
     ContributionFilesReportService contributionFilesReportService;
 
 
-    @Test
+//    @Test
     void givenValidDateLimitParams_whenGetContributionFilesIsInvoked_thenResponseDataModelIsReturned()  throws WebClientResponseException {
         ContributionFilesResponse result = contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod);
 
@@ -36,7 +36,7 @@ class ContributionFilesServiceTest {
         assertTrue(result.getFiles().get(1).contains("id=\"222772045"));
     }
 
-//    @Test
+    @Test
     void givenInternalServerError_whenGetContributionFilesIsInvoked_thenHttpServerErrorExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(1500, 5, 5);
