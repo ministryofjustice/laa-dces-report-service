@@ -26,12 +26,16 @@ class ContributionFilesServiceTest {
 
     @Test
     void givenValidDateLimitParams_whenGetContributionFilesIsInvoked_thenResponseDataModelIsReturned() throws WebClientResponseException {
-        ContributionFilesResponse result = contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod);
-
-        assertNotNull(result);
-        assertEquals(2, result.getFiles().size());
-        assertTrue(result.getFiles().get(0).contains("id=\"222772044"));
-        assertTrue(result.getFiles().get(1).contains("id=\"222772045"));
+        try {
+            ContributionFilesResponse result = contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod);
+            assertNotNull(result);
+            assertEquals(2, result.getFiles().size());
+            assertTrue(result.getFiles().get(0).contains("id=\"222772044"));
+            assertTrue(result.getFiles().get(1).contains("id=\"222772045"));
+        } catch (WebClientResponseException e) {
+            System.out.println(e.getMessage());
+            throw e;
+        }
     }
 
     //    @Test
