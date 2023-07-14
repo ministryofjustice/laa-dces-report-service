@@ -20,29 +20,13 @@
       }
     },
     {
-      "scenarioName": "error400BasicRequest",
+      "scenarioName": "error500BasicRequest",
       "request": {
-        "urlPathPattern": "/getContributions/[0-9%2F-]+1400/[0-9%2F-]+1400",
+        "urlPathPattern": "/getContributions/[0-9%2F-]+(15|[5][0-5])[0-9]{2}/[0-9%2F-]+",
         "method": "GET"
       },
       "response": {
-        "status": 400,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "jsonBody": {
-          "files": []
-        }
-      }
-    },
-    {
-      "scenarioName": "error404BasicRequest",
-      "request": {
-        "urlPathPattern": "/getContributions/[0-9%2F-]+1404/[0-9%2F-]+1404",
-        "method": "GET"
-      },
-      "response": {
-        "status": 404,
+        "status": 500,
         "headers": {
           "Content-Type": "application/json"
         },
