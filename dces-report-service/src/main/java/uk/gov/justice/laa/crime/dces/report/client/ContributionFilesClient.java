@@ -14,7 +14,7 @@ import java.time.LocalDate;
 public interface ContributionFilesClient extends MaatApiClient {
 
     @GetExchange("/getContributions/{startDate}/{finishDate}")
-    ContributionFilesResponse sendGetRequest(@PathVariable LocalDate startDate, @PathVariable LocalDate finishDate);
+    ContributionFilesResponse getContributions(@PathVariable LocalDate startDate, @PathVariable LocalDate finishDate);
 
     @Configuration
     class ContributionFilesClientFactory {

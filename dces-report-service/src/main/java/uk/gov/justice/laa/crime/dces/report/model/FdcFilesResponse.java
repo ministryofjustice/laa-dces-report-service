@@ -8,9 +8,8 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ContributionFilesResponse {
+public class FdcFilesResponse {
     List<String> files;
 }

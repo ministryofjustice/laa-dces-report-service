@@ -26,47 +26,44 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @ActiveProfiles("test")
-class ContributionFilesClientReportServiceTest {
-
-    private static final int DEFAULT_ID = 1;
-    private static final int DEFAULT_TOTAL = 0;
+class ContributionFilesServiceTest {
     private static final LocalDate startPeriod = LocalDate.of(2023, 1, 1);
     private static final LocalDate finishPeriod = LocalDate.of(2023, 1, 31);
 
     @Mock
-    ContributionFilesClient contributionsEndpoint;
+    ContributionFilesClient contributionFilesClient;
     @InjectMocks
-    ContributionFilesReportService contributionFilesReportService;
+    ContributionFilesService contributionFilesService;
 
 
     @Test
     void givenValidDateLimitParams_whenEndpointSendGetRequestIsInvoked_thenResponseDataModelIsReturned() {
         ContributionFilesResponse expectedResponse = getMockedMaatApiResponseModel();
 
-        when(contributionsEndpoint.sendGetRequest(any(), any()))
+        when(contributionFilesClient.getContributions(any(), any()))
                 .thenReturn(expectedResponse);
 
         Assertions.assertDoesNotThrow(mockSendRequestGetContributionFiles());
-        verify(contributionsEndpoint, times(1)).sendGetRequest(startPeriod, finishPeriod);
+        verify(contributionFilesClient, times(1)).getContributions(startPeriod, finishPeriod);
     }
 
     @Test
-    void givenValidDateLimitParams_whenGetContributionFilesIsInvoked_thenResponseDataModelIsReturned() {
+    void givenValidDateLimitParams_whenGetFilesIsInvoked_thenResponseDataModelIsReturned() {
         ContributionFilesResponse expectedResponse = getMockedMaatApiResponseModel();
 
-        when(contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod))
+        when(contributionFilesService.getFiles(startPeriod, finishPeriod))
                 .thenReturn(expectedResponse);
 
-        ContributionFilesResponse actualResponse = contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod);
+        ContributionFilesResponse actualResponse = contributionFilesService.getFiles(startPeriod, finishPeriod);
         assertThat(actualResponse.getFiles().size()).isPositive();
         assertThat(actualResponse.getFiles()).hasSameClassAs(expectedResponse.getFiles());
         assertThat(actualResponse.getFiles().get(0)).isEqualTo(expectedResponse.getFiles().get(0));
     }
 
     @Test
-    void givenValidDateLimitParams_whenGetContributionFilesIsInvoked_thenExceptionIsThrown() {
-        when(contributionsEndpoint.sendGetRequest(any(), any()))
-            .thenThrow(Mockito.mock(MaatApiClientException.class));
+    void givenValidDateLimitParams_whenGetFilesIsInvoked_thenExceptionIsThrown() {
+        when(contributionFilesClient.getContributions(any(), any()))
+                .thenThrow(Mockito.mock(MaatApiClientException.class));
 
         assertThrows(MaatApiClientException.class, mockSendRequestGetContributionFiles());
     }
@@ -79,7 +76,7 @@ class ContributionFilesClientReportServiceTest {
         return new Executable() {
             @Override
             public void execute() throws Throwable {
-                contributionsEndpoint.sendGetRequest(startPeriod, finishPeriod);
+                contributionFilesClient.getContributions(startPeriod, finishPeriod);
             }
         };
     }
