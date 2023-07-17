@@ -36,8 +36,7 @@ class ContributionFilesServiceTest {
         assertTrue(result.getFiles().get(1).contains("id=\"222772045"));
     }
 
-    // TODO (DCES-40): enable stub mappings and reactivate test for 500 status error response
-//    @Test
+    @Test
     void givenInternalServerError_whenGetContributionFilesIsInvoked_thenHttpServerErrorExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(5500, 5, 5);
@@ -52,8 +51,7 @@ class ContributionFilesServiceTest {
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
-    // TODO (DCES-40): enable stub mappings and reactivate test for 404 status error response
-//    @Test
+    @Test
     void givenNotFoundServerError_whenGetContributionFilesIsInvoked_thenWebClientResponseExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(4404, 4, 4);
@@ -69,8 +67,7 @@ class ContributionFilesServiceTest {
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
-    // TODO (DCES-40): enable stub mappings and reactivate test for 400 status error response
-//    @Test
+    @Test
     void givenServerError_whenGetContributionFilesIsInvoked_thenMaatApiClientExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(4400, 4, 4);
