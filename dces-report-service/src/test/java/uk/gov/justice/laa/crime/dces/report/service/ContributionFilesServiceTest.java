@@ -23,12 +23,12 @@ class ContributionFilesServiceTest {
     private static final LocalDate finishPeriod = LocalDate.of(2023, 1, 31);
 
     @Autowired
-    ContributionFilesReportService contributionFilesReportService;
+    ContributionFilesService contributionFilesReportService;
 
 
     @Test
-    void givenValidDateLimitParams_whenGetContributionFilesIsInvoked_thenResponseDataModelIsReturned()  throws WebClientResponseException {
-        ContributionFilesResponse result = contributionFilesReportService.getContributionFiles(startPeriod, finishPeriod);
+    void givenValidDateLimitParams_whenGetFilesIsInvoked_thenResponseDataModelIsReturned()  throws WebClientResponseException {
+        ContributionFilesResponse result = contributionFilesReportService.getFiles(startPeriod, finishPeriod);
 
         assertNotNull(result);
         assertEquals(2, result.getFiles().size());
@@ -37,13 +37,13 @@ class ContributionFilesServiceTest {
     }
 
     @Test
-    void givenInternalServerError_whenGetContributionFilesIsInvoked_thenHttpServerErrorExceptionIsThrown(){
+    void givenInternalServerError_whenGetFilesIsInvoked_thenHttpServerErrorExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(5500, 5, 5);
 
         // execute
         Exception exception = assertThrows(HttpServerErrorException.class,
-                () -> contributionFilesReportService.getContributionFiles(date, date));
+                () -> contributionFilesReportService.getFiles(date, date));
 
         String expectedMessage = "500 Received error 500";
         String actualMessage = exception.getMessage();
@@ -52,13 +52,13 @@ class ContributionFilesServiceTest {
     }
 
     @Test
-    void givenNotFoundServerError_whenGetContributionFilesIsInvoked_thenWebClientResponseExceptionIsThrown(){
+    void givenNotFoundServerError_whenGetFilesIsInvoked_thenWebClientResponseExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(4404, 4, 4);
 
         // execute
         Exception exception = assertThrows(WebClientResponseException.class,
-                () -> contributionFilesReportService.getContributionFiles(date, date)
+                () -> contributionFilesReportService.getFiles(date, date)
         );
 
         String expectedMessage = "404 Not Found";
@@ -68,13 +68,13 @@ class ContributionFilesServiceTest {
     }
 
     @Test
-    void givenServerError_whenGetContributionFilesIsInvoked_thenMaatApiClientExceptionIsThrown(){
+    void givenServerError_whenGetFilesIsInvoked_thenMaatApiClientExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(4400, 4, 4);
 
         // execute
         Exception exception = assertThrows(MaatApiClientException.class,
-                () -> contributionFilesReportService.getContributionFiles(date, date)
+                () -> contributionFilesReportService.getFiles(date, date)
         );
 
         String expectedMessage = "Received error 400";

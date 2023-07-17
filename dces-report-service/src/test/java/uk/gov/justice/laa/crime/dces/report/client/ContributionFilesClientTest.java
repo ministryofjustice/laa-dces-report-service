@@ -35,16 +35,16 @@ class ContributionFilesClientTest {
     void givenValidDateLimitParams_whenContributionClientSendGetRequestIsInvoked_thenResponseDataModelIsReturned() {
         ContributionFilesResponse expectedResponse = getMockedMaatApiResponseModel();
 
-        when(contributionFilesClient.sendGetRequest(any(), any()))
+        when(contributionFilesClient.getContributions(any(), any()))
                 .thenReturn(expectedResponse);
 
         Assertions.assertDoesNotThrow(mockSendRequestGetContributionFiles());
-        verify(contributionFilesClient, times(1)).sendGetRequest(startPeriod, finishPeriod);
+        verify(contributionFilesClient, times(1)).getContributions(startPeriod, finishPeriod);
     }
 
     @Test
     void givenValidDateLimitParams_whenContributionClientSendGetRequestIsInvoked_thenExceptionIsThrown() {
-        when(contributionFilesClient.sendGetRequest(any(), any()))
+        when(contributionFilesClient.getContributions(any(), any()))
                 .thenThrow(Mockito.mock(MaatApiClientException.class));
 
         assertThrows(MaatApiClientException.class, mockSendRequestGetContributionFiles());
@@ -55,6 +55,6 @@ class ContributionFilesClientTest {
     }
     
     private Executable mockSendRequestGetContributionFiles() {
-        return () -> contributionFilesClient.sendGetRequest(startPeriod, finishPeriod);
+        return () -> contributionFilesClient.getContributions(startPeriod, finishPeriod);
     }
 }

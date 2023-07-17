@@ -16,18 +16,18 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 @WireMockTest(httpPort = 1111)
-class FdcFilesReportServiceTest {
+class FdcFilesServiceTest {
 
     @Autowired
-    private FdcFilesReportService testService;
+    private FdcFilesService testService;
 
     @Test
-    void getsListOfContributionsXmlWithValidDateParams()  throws WebClientResponseException {
+    void getsListOfContributionsXmlWithValidDateParams() throws WebClientResponseException {
         // setup
         LocalDate date = LocalDate.of(2023, 6, 10);
 
         // execute
-        ContributionFilesResponse result = testService.getContributionFiles(date, date);
+        ContributionFilesResponse result = testService.getFiles(date, date);
 
         // assert
         assertNotNull(result);
@@ -37,17 +37,17 @@ class FdcFilesReportServiceTest {
     }
 
     @Test
-    void serviceThrowsExceptionWithInvalidDateRange(){
+    void serviceThrowsExceptionWithInvalidDateRange() {
         // setup
         LocalDate startDate = LocalDate.of(2023, 6, 10);
         LocalDate endDate = LocalDate.of(2023, 6, 9);
 
         // execute
         Exception exception = assertThrows(MaatApiClientException.class, () -> {
-            testService.getContributionFiles(startDate, endDate);
+            testService.getFiles(startDate, endDate);
         });
 
-        String expectedMessage = String.format("invalid time range %s is before %s", endDate, startDate);;
+        String expectedMessage = String.format("invalid time range %s is before %s", endDate, startDate);
         String actualMessage = exception.getMessage();
 
         // assert
