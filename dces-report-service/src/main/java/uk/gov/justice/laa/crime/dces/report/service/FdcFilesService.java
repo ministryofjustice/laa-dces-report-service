@@ -19,14 +19,14 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FdcFilesService implements MaatApiFilesService {
+public class FdcFilesService implements DcesReportFileService {
     private static final String SERVICE_NAME = "dcesReportFdc";
+    private static final String FILE_NAME_TEMPLATE = "FDC_{%s}_{%s}.csv";
 
     private final FdcFilesClient fdcFilesClient;
 
-    private FdcFileMapper fdcFileMapper;
+    private final FdcFileMapper fdcFileMapper;
 
-    @Override
     @Retry(name = SERVICE_NAME)
     public ContributionFilesResponse getFiles(LocalDate start, LocalDate end) {
         if (end.isBefore(start)) {
@@ -37,8 +37,11 @@ public class FdcFilesService implements MaatApiFilesService {
         return fdcFilesClient.getContributions(start, end);
     }
 
-    @Override
     public File processFiles(List<String> files, LocalDate start, LocalDate finish, String fileName) throws JAXBException, IOException {
         return null;
+    }
+
+    public String getFileName(LocalDate start, LocalDate finish) {
+        return String.format(FILE_NAME_TEMPLATE, start, finish);
     }
 }

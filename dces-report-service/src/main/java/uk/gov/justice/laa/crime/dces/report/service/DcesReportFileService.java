@@ -13,8 +13,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-public interface MaatApiFilesService {
+public interface DcesReportFileService {
     ContributionFilesResponse getFiles(LocalDate start, LocalDate end);
 
     File processFiles(List<String> files, LocalDate start, LocalDate finish, String fileName) throws JAXBException, IOException;
+
+    String getFileName(LocalDate start, LocalDate finish);
 }

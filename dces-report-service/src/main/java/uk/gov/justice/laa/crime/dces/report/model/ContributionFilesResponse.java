@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-// TODO (DCES-25): Consider the possibility to refactor this class to be auto generated
 @Data
 @Builder
 @AllArgsConstructor

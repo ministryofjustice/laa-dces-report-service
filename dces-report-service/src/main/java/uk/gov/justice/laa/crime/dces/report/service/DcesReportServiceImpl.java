@@ -36,7 +36,7 @@ public class DcesReportServiceImpl implements DcesReportService {
         return getApiFilesService(type).processFiles(files, start, end, fileName);
     }
 
-    private MaatApiFilesService getApiFilesService(ReportFileType type) {
+    private DcesReportFileService getApiFilesService(ReportFileType type) {
         if (type.equals(ReportFileType.FDC)) {
             return fdcFilesService;
         }

@@ -38,7 +38,6 @@ class ControllerDateFormatTest {
     void dateParameterStringFails() throws Exception {
         mockMvc.perform(get(REQUEST_PATH + "/3414/3243214"))
                 .andExpect(status().is4xxClientError());
-
     }
 
     @Test
@@ -46,5 +45,4 @@ class ControllerDateFormatTest {
         mockMvc.perform(get(REQUEST_PATH + "/12-04-2023/12-04-2023"))
                 .andExpect(status().isOk());
     }
-
 }

@@ -4,7 +4,6 @@ import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.mapper.ContributionsFileMapper;
@@ -18,23 +17,25 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class ContributionFilesService implements MaatApiFilesService {
+public class ContributionFilesService implements DcesReportFileService {
     private static final String SERVICE_NAME = "dcesReportContributions";
+    private static final String FILE_NAME_TEMPLATE = "Contributions_{%s}_{%s}.csv";
 
-    private final ContributionFilesClient contributionFilesClientEndpoint;
+    private final ContributionFilesClient contributionFilesClient;
 
-    @Autowired
-    private ContributionsFileMapper contributionsFileMapper;
+    private final ContributionsFileMapper contributionFilesMapper;
 
-    @Override
     @Retry(name = SERVICE_NAME)
     public ContributionFilesResponse getFiles(LocalDate start, LocalDate finish) {
         log.info("Start - call MAAT API to collect contribution files date between {} and {}", start.toString(), finish.toString());
-        return contributionFilesClientEndpoint.getContributions(start, finish);
+        return contributionFilesClient.getContributions(start, finish);
     }
 
-    @Override
     public File processFiles(List<String> files, LocalDate start, LocalDate finish, String fileName) throws JAXBException, IOException {
-        return contributionsFileMapper.processRequest(files.toArray(new String[0]), start, finish, fileName);
+        return contributionFilesMapper.processRequest(files.toArray(new String[0]), start, finish, fileName);
+    }
+
+    public String getFileName(LocalDate start, LocalDate finish) {
+        return String.format(FILE_NAME_TEMPLATE, start, finish);
     }
 }
