@@ -74,7 +74,7 @@ dependencies {
 	// oAuth
 //	implementation "org.springframework.security:spring-security-web:$versions.springSecurityWeb"
 //	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$versions.springOAuthResource"
-	implementation "org.springframework.boot:spring-boot-starter-oauth2-client"
+	implementation "org.springframework.boot:spring-boot-starter-oauth2-client:$versions.springOAuthClient"
 //	implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
 
 	implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
