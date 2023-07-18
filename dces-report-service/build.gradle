@@ -7,8 +7,6 @@ plugins {
 	id 'info.solidsoft.pitest' version '1.9.11'
 }
 
-group = 'uk.gov.justice.laa.crime'
-
 def versions = [
 		pitestVersion                      : '1.4.10',
 		sentryVersion                      : '6.15.0',
@@ -16,6 +14,7 @@ def versions = [
 		okhttpVersion                      : '4.9.3',
 		mockwebserverVersion               : '4.9.3',
 		reactorTestVersion                 : '3.2.3',
+		springSecurityConfig               : '6.1.1',
 		springSecurityWeb                  : '6.1.1',
 		springOAuthJose                    : '6.1.1',
 		springOAuthClient                  : '3.1.1',
@@ -29,6 +28,8 @@ def versions = [
 		resilience4jVersion                : '2.0.2',
 		wiremockVersion                	   : '2.35.0'
 ]
+group = 'uk.gov.justice.laa.crime'
+
 
 dependencyManagement {
 	dependencies {
@@ -72,7 +73,8 @@ dependencies {
 
 
 	// oAuth
-//	implementation "org.springframework.security:spring-security-web:$versions.springSecurityWeb"
+	implementation "org.springframework.security:spring-security-config:$versions.springSecurityConfig"
+	implementation "org.springframework.security:spring-security-web:$versions.springSecurityWeb"
 //	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$versions.springOAuthResource"
 	implementation "org.springframework.boot:spring-boot-starter-oauth2-client:$versions.springOAuthClient"
 //	implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
