@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.mapper;
 
+import io.sentry.util.FileUtils;
+import jakarta.xml.bind.JAXBException;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -9,12 +11,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
-import static org.mockito.Mockito.mock;
 
 @Ignore
 @SpringBootTest
@@ -31,23 +35,20 @@ class FdcFileMapperTest {
     private static final String filename = "this_is_a_test.xml";
 
     @Test
-    void deleteMeWhenItsTime(){}
-
-//    @Test
-//    void testXMLValid(){
-//        File f = new File(getClass().getClassLoader().getResource("fdc/FDC_File.xml").getFile());
-//        FdcFile fdcFile = null;
-//        try {
-//            fdcFile = fdcFileMapper.mapFdcXMLFileToObject(f);
-//        } catch (JAXBException e) {
-//            fail("Exception occurred in mapping test:"+e.getMessage());
-//        }
-//        softly.assertThat(fdcFile).isNotNull();
-//        var fdcOutput = fdcFile.getFdcList().getFdc().get(0);
-////        softly.assertThat(contributions.getFlag()).isEqualTo("update");
-////        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()).isEqualTo(1);
-//        softly.assertAll();
-//    }
+    void testXMLValid(){
+        File f = new File(getClass().getClassLoader().getResource("fdc/multiple_fdc.xml").getFile());
+        FdcFile fdcFile = null;
+        try {
+            fdcFile = fdcFileMapper.mapFdcXMLFileToObject(f);
+        } catch (JAXBException e) {
+            fail("Exception occurred in mapping test:"+e.getMessage());
+        }
+        softly.assertThat(fdcFile).isNotNull();
+        var fdcOutput = fdcFile.getFdcList().getFdc().get(0);
+//        softly.assertThat(contributions.getFlag()).isEqualTo("update");
+//        softly.assertThat(contributionsFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().size()).isEqualTo(1);
+        softly.assertAll();
+    }
 //
 //    @Test
 //    void testMultipleFdcEntries(){
@@ -164,5 +165,32 @@ class FdcFileMapperTest {
 //            fail("Exception occurred in mapping test:"+e.getMessage());
 //        }
 //    }
+
+    @Test
+    void testProcessRequestFileGeneration(){
+        File input = new File(getClass().getClassLoader().getResource("fdc/multiple_fdc.xml").getFile());
+        File f = null;
+        try {
+            f = fdcFileMapper.processRequest(new String[]{FileUtils.readText(input)}, filename);
+
+            softly.assertThat(f).isNotNull();
+            String csvOutput = FileUtils.readText(f);
+            // check header present
+            softly.assertThat(csvOutput).contains("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST");
+            // verify content has been mapped
+            softly.assertThat(csvOutput).isEqualTo("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST\n" +
+                    "2525925,30/09/2016,22/12/2016,1774.4,1180.64,593.76\n" +
+                    "2492027,04/02/2011,04/07/2018,1479.23,569.92,909.31\n" +
+                    "5275089,19/08/2016,02/09/2016,2849.95,1497.6,1352.35\n" +
+                    "5427879,23/08/2016,06/09/2016,2252.6,937.86,1314.74\n" +
+                    "5438043,25/08/2016,19/12/2016,1969.47,1085.5,883.97\n" +
+                    "4971278,14/10/2016,11/01/2017,3226.01,1327.99,1898.02");
+            softly.assertAll();
+        } catch (JAXBException | IOException e) {
+            fail("Exception occurred in mapping test:"+e.getMessage());
+        } finally {
+            if (Objects.nonNull(f)) { f.delete();}
+        }
+    }
 
 }
