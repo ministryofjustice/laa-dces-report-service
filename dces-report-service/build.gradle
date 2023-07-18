@@ -13,6 +13,7 @@ def versions = [
 		pitestVersion                      : '1.4.10',
 		sentryVersion                      : '6.15.0',
 		springdocVersion                   : '1.6.15',
+		micrometer                   	   : '1.1.3',
 		okhttpVersion                      : '4.9.3',
 		mockwebserverVersion               : '4.9.3',
 		reactorTestVersion                 : '3.2.3',
@@ -67,10 +68,15 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	implementation platform("io.micrometer:micrometer-tracing-bom:$versions.micrometer")
+	implementation "io.micrometer:micrometer-tracing-bridge-brave:$versions.micrometer"
+	implementation "io.micrometer:micrometer-tracing:$versions.micrometer"
+
 	// oAuth
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 	implementation 'org.springframework.security:spring-security-oauth2-jose'
+
 
 	implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
 	implementation "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
