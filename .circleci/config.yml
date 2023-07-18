@@ -57,7 +57,7 @@ commands:
             kubectl --namespace=laa-dces-report-service-<< parameters.environment >> get pods
       - helm/upgrade-helm-chart:
           namespace: laa-dces-report-service-<< parameters.environment >>
-          update-repositories: false
+          update-repositories: true
           chart: ./helm_deploy/laa-dces-report-service/
           release-name: laa-dces-report-service
           values: ./helm_deploy/laa-dces-report-service/values-<< parameters.environment >>.yaml

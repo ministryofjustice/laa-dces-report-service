@@ -14,7 +14,7 @@ def versions = [
 		okhttpVersion                      : '4.9.3',
 		mockwebserverVersion               : '4.9.3',
 		reactorTestVersion                 : '3.2.3',
-		springSecurityConfig               : '6.1.1',
+		springSecurityConfig               : '6.1.2',
 		springSecurityWeb                  : '6.1.1',
 		springOAuthJose                    : '6.1.1',
 		springOAuthClient                  : '3.1.1',
