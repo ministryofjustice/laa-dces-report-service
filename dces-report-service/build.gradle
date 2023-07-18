@@ -16,7 +16,10 @@ def versions = [
 		okhttpVersion                      : '4.9.3',
 		mockwebserverVersion               : '4.9.3',
 		reactorTestVersion                 : '3.2.3',
-		springauthserverVersion            : '1.0.1',
+		springSecurityWeb                  : '6.1.1',
+		springOAuthJose                    : '6.1.1',
+		springOAuthClient                  : '3.1.1',
+		springOAuthResource                : '3.1.1',
 		jaxbXjc                            : '4.0.0',
 		jaxbImpl                           : '4.0.0',
 		jaxbCore                           : '4.0.0',
@@ -67,10 +70,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+
 	// oAuth
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
-	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-	implementation 'org.springframework.security:spring-security-oauth2-jose'
+	implementation "org.springframework.security:spring-security-web:$versions.springSecurityWeb"
+	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$versions.springOAuthResource"
+	implementation "org.springframework.boot:spring-boot-starter-oauth2-client:$versions.springOAuthClient"
+	implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
 
 	implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
 	implementation "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
