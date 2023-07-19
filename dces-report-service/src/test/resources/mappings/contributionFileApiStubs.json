@@ -3,7 +3,7 @@
     {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPattern": "/getContributions/01[%2F-]+01[%2F-]+2023/31[%2F-]+01[%2F-]+2023",
+        "urlPathPattern": "/getContributions/01[%2F-]+01[%2F-]+2023/31[%2F-]+01[%2F-]+2023",
         "method": "GET"
       },
       "response": {
