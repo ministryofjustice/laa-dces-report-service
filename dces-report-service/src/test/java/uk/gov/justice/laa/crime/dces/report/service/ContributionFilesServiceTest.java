@@ -20,8 +20,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 @WireMockTest(httpPort = 1111)
 class ContributionFilesServiceTest {
-    private static final LocalDate startPeriod = LocalDate.of(2023, 1, 1);
-    private static final LocalDate finishPeriod = LocalDate.of(2023, 1, 31);
 
     @Autowired
     ContributionFilesService contributionFilesReportService;
@@ -33,6 +31,8 @@ class ContributionFilesServiceTest {
 
     @Test
     void givenValidDateLimitParams_whenGetFilesIsInvoked_thenResponseDataModelIsReturned() throws WebClientResponseException {
+        LocalDate startPeriod = LocalDate.of(2023, 1, 1);
+        LocalDate finishPeriod = LocalDate.of(2023, 1, 31);
         ContributionFilesResponse result = contributionFilesReportService.getFiles(startPeriod, finishPeriod);
 
         assertNotNull(result);
