@@ -10,6 +10,8 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -84,5 +86,10 @@ class ContributionFilesServiceTest {
         String actualMessage = exception.getMessage();
         // assert
         assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    void givenNullFile_whenSearchInFileIsInvoked_thenFalseShouldBeReturned() throws IOException {
+        assertFalse(contributionFilesReportService.searchInFile(null, "nothingExpectedToSearchFor"));
     }
 }

@@ -43,6 +43,9 @@ public class ContributionFilesService implements DcesReportFileService {
     // TODO (DCES-57): Remove override method once we are happy with test results, or move  this implementation to default if it happens to be more efficient
     @Override
     public boolean searchInFile(File file, String toSearchFor) throws IOException {
+        if (file == null)
+            return DcesReportFileService.super.searchInFile(null, toSearchFor);
+
         boolean isFound = false;
 
         try (Scanner scanner = new Scanner(file)) {
