@@ -1,11 +1,21 @@
 <configuration>
     <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %12(ID: %8mdc{id}) | %X{traceId:-} | "%X{spanId:-}" - %msg%n</pattern>
+<!--            <pattern>%d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %thread | %5p | %logger{25} | %12(ID: %8mdc{id}) | %X{traceId:-} | "%X{spanId:-}" | %m%n</pattern>-->
         </encoder>
     </appender>
-
     <root level="INFO">
         <appender-ref ref="Console" />
     </root>
 </configuration>
+
+
+
+<!--<appender class="ch.qos.logback.core.ConsoleAppender" name="stdout">-->
+<!--<encoder>-->
+<!--    <pattern>-->
+<!--        %d{yyyy-MM-dd} | %d{HH:mm:ss.SSS} | %thread | %5p | %logger{25} | %12(ID: %8mdc{id}) | %X{traceId:-} | "%X{spanId:-}" | appName | %m%n-->
+<!--    </pattern>-->
+<!--</encoder>-->
+<!--</appender>-->
