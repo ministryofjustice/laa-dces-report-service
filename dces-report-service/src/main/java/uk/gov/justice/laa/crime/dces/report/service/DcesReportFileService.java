@@ -33,7 +33,10 @@ public interface DcesReportFileService {
 
         return isFound;
     }
+
     default boolean searchInLine(String line, String toSearchFor) {
+        // TODO (DCES-57): remove sout once we are happy with test result
+        System.out.println(line);
         return line.contains(toSearchFor);
     }
 }
