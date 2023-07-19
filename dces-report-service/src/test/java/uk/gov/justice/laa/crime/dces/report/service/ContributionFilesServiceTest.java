@@ -37,7 +37,7 @@ class ContributionFilesServiceTest {
     }
 
     // TODO (DCES-55): Debug and find a fix to mapping errors in CircleCI and then re-enable this test by uncommenting @Test tag
-//    @Test
+    @Test
     void givenInternalServerError_whenGetFilesIsInvoked_thenHttpServerErrorExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(5500, 5, 5);
