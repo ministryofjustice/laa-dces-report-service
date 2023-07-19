@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,9 +12,9 @@ import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientExcep
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -25,9 +26,13 @@ class ContributionFilesServiceTest {
     @Autowired
     ContributionFilesService contributionFilesReportService;
 
+    @Before
+    void setup() {
+        Locale.setDefault(new Locale("en", "UK"));
+    }
 
     @Test
-    void givenValidDateLimitParams_whenGetFilesIsInvoked_thenResponseDataModelIsReturned()  throws WebClientResponseException {
+    void givenValidDateLimitParams_whenGetFilesIsInvoked_thenResponseDataModelIsReturned() throws WebClientResponseException {
         ContributionFilesResponse result = contributionFilesReportService.getFiles(startPeriod, finishPeriod);
 
         assertNotNull(result);
@@ -38,7 +43,7 @@ class ContributionFilesServiceTest {
 
     // TODO (DCES-55): Debug and find a fix to mapping errors in CircleCI and then re-enable this test by uncommenting @Test tag
 //    @Test
-    void givenInternalServerError_whenGetFilesIsInvoked_thenHttpServerErrorExceptionIsThrown(){
+    void givenInternalServerError_whenGetFilesIsInvoked_thenHttpServerErrorExceptionIsThrown() {
         // setup
         LocalDate date = LocalDate.of(5500, 5, 5);
 
@@ -54,7 +59,7 @@ class ContributionFilesServiceTest {
 
     // TODO (DCES-55): Debug and find a fix to mapping errors in CircleCI and then re-enable this test by uncommenting @Test tag
 //    @Test
-    void givenNotFoundServerError_whenGetFilesIsInvoked_thenWebClientResponseExceptionIsThrown(){
+    void givenNotFoundServerError_whenGetFilesIsInvoked_thenWebClientResponseExceptionIsThrown() {
         // setup
         LocalDate date = LocalDate.of(4404, 4, 4);
 
@@ -71,7 +76,7 @@ class ContributionFilesServiceTest {
 
     // TODO (DCES-55): Debug and find a fix to mapping errors in CircleCI and then re-enable this test by uncommenting @Test tag
 //    @Test
-    void givenServerError_whenGetFilesIsInvoked_thenMaatApiClientExceptionIsThrown(){
+    void givenServerError_whenGetFilesIsInvoked_thenMaatApiClientExceptionIsThrown() {
         // setup
         LocalDate date = LocalDate.of(4400, 4, 4);
 
