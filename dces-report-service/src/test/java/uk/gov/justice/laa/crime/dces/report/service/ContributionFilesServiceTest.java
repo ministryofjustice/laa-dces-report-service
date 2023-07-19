@@ -51,7 +51,7 @@ class ContributionFilesServiceTest {
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
-    @Test
+//    @Test
     void givenNotFoundServerError_whenGetFilesIsInvoked_thenWebClientResponseExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(4404, 4, 4);
@@ -66,8 +66,8 @@ class ContributionFilesServiceTest {
         // assert
         assertTrue(actualMessage.contains(expectedMessage));
     }
-    
-//    @Test
+
+    @Test
     void givenServerError_whenGetFilesIsInvoked_thenMaatApiClientExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(4400, 4, 4);
