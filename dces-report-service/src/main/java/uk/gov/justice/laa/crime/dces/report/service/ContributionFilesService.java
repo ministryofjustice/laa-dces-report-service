@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import io.github.resilience4j.retry.annotation.Retry;
+import io.sentry.util.FileUtils;
 import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
+import java.util.Scanner;
 
 @Service
 @RequiredArgsConstructor
@@ -38,4 +41,26 @@ public class ContributionFilesService implements DcesReportFileService {
     public String getFileName(LocalDate start, LocalDate finish) {
         return String.format(FILE_NAME_TEMPLATE, start, finish);
     }
+
+    // TODO (DCES-57): Remove override method once we are happy with test results, or move  this implementation to default if it happens to be more efficient
+    @Override
+    public boolean searchInFile(File file, String toSearchFor) throws IOException {
+        boolean isFound = false;
+
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                isFound |= searchInLine(scanner.nextLine(), toSearchFor);
+            }
+        }
+
+        return isFound;
+    }
+
+    // TODO (DCES-57): Remove override method once we are happy with test results, or move  this implementation to default if it happens to be more efficient
+    @Override
+    public boolean searchInLine(String line, String toSearchFor) {
+        log.info("CSV line: [ {} ] ", line);
+        return DcesReportFileService.super.searchInLine(line, toSearchFor);
+    }
+
 }

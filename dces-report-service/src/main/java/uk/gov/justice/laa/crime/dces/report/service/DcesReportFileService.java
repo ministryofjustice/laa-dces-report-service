@@ -5,6 +5,7 @@
  */
 package uk.gov.justice.laa.crime.dces.report.service;
 
+import io.sentry.util.FileUtils;
 import jakarta.xml.bind.JAXBException;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
@@ -13,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public interface DcesReportFileService {
@@ -22,21 +24,13 @@ public interface DcesReportFileService {
 
     String getFileName(LocalDate start, LocalDate finish);
 
-    default boolean searchInFile(File file, String toSearchFor) throws FileNotFoundException {
-        boolean isFound = false;
-
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNextLine()) {
-                isFound |= searchInLine(scanner.nextLine(), toSearchFor);
-            }
-        }
-
-        return isFound;
+    default boolean searchInFile(File file, String toSearchFor) throws IOException {
+        return Optional.ofNullable(FileUtils.readText(file))
+                .orElse("")
+                .contains(toSearchFor);
     }
 
     default boolean searchInLine(String line, String toSearchFor) {
-        // TODO (DCES-57): remove sout once we are happy with test result
-        System.out.println(line);
-        return line.contains(toSearchFor);
+       return line.contains(toSearchFor);
     }
 }
