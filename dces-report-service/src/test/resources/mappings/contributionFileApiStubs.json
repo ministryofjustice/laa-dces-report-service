@@ -3,7 +3,7 @@
     {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPathPattern": "/getContributions/[0-9].*",
+        "urlPathPattern": "/getContributions/[01]+.*",
         "method": "GET"
       },
       "response": {
