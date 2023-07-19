@@ -9,8 +9,13 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
@@ -19,6 +24,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 class ContributionsReportControllerTest {
     private static final LocalDate startPeriod = LocalDate.of(2023, 1, 1);
     private static final LocalDate finishPeriod = LocalDate.of(2023, 1, 31);
+    private static final String MAAT_ID_EXPECTED = "5635978";
 
     @Autowired
     ContributionFilesService fileService;
@@ -35,5 +41,7 @@ class ContributionsReportControllerTest {
         assertThat(report.getName())
             .matches("Contributions_.*csv")
             .contains(fileService.getFileName(startPeriod, finishPeriod));
+        
+        assertThat(fileService.searchInFile(report, MAAT_ID_EXPECTED)).isTrue();
     }
 }

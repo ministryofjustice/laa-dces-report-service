@@ -9,9 +9,11 @@ import jakarta.xml.bind.JAXBException;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Scanner;
 
 public interface DcesReportFileService {
     ContributionFilesResponse getFiles(LocalDate start, LocalDate end);
@@ -19,4 +21,19 @@ public interface DcesReportFileService {
     File processFiles(List<String> files, LocalDate start, LocalDate finish, String fileName) throws JAXBException, IOException;
 
     String getFileName(LocalDate start, LocalDate finish);
+
+    default boolean searchInFile(File file, String toSearchFor) throws FileNotFoundException {
+        boolean isFound = false;
+
+        try (Scanner scanner = new Scanner(file)) {
+            while (scanner.hasNextLine()) {
+                isFound |= searchInLine(scanner.nextLine(), toSearchFor);
+            }
+        }
+
+        return isFound;
+    }
+    default boolean searchInLine(String line, String toSearchFor) {
+        return line.contains(toSearchFor);
+    }
 }
