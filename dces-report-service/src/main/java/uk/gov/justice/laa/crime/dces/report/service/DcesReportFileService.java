@@ -10,12 +10,10 @@ import jakarta.xml.bind.JAXBException;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
 
 public interface DcesReportFileService {
     ContributionFilesResponse getFiles(LocalDate start, LocalDate end);

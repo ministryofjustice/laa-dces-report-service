@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import io.github.resilience4j.retry.annotation.Retry;
-import io.sentry.util.FileUtils;
 import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.Scanner;
 
 @Service
