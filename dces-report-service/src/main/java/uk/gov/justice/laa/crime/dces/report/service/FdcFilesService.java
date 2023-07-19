@@ -21,7 +21,7 @@ import java.util.List;
 @Slf4j
 public class FdcFilesService implements DcesReportFileService {
     private static final String SERVICE_NAME = "dcesReportFdc";
-    private static final String FILE_NAME_TEMPLATE = "FDC_{%s}_{%s}.csv";
+    private static final String FILE_NAME_TEMPLATE = "FDC_%s_%s";
 
     private final FdcFilesClient fdcFilesClient;
 
