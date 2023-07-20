@@ -38,7 +38,7 @@ means-assessment:
 
 spring:
   web:
-    locale: en_JM
+    locale: en_GB
     locale-resolver: fixed
   mvc:
     format:
