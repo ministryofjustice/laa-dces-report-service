@@ -26,7 +26,7 @@ class ContributionFilesServiceTest {
 
     @Before
     void setup() {
-        Locale.setDefault(new Locale("en", "US"));
+        Locale.setDefault(new Locale("en", "GB"));
     }
 
     @Test
