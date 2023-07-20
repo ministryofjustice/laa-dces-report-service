@@ -37,9 +37,6 @@ means-assessment:
     issuer-uri: http://localhost:${server.port}
 
 spring:
-  mvc:
-    format:
-      date: dd-MM-yyyy
   security:
     oauth2:
       client:
