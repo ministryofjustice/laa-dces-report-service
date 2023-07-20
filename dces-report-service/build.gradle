@@ -19,6 +19,7 @@ def versions = [
 		springOAuthJose                    : '6.1.1',
 		springOAuthClient                  : '3.1.1',
 		springOAuthResource                : '3.1.1',
+		jjwtVersion                        : '0.11.5',
 		jaxbXjc                            : '4.0.0',
 		jaxbImpl                           : '4.0.0',
 		jaxbCore                           : '4.0.0',
@@ -75,9 +76,13 @@ dependencies {
 	// oAuth
 	implementation "org.springframework.security:spring-security-config:$versions.springSecurityConfig"
 	implementation "org.springframework.security:spring-security-web:$versions.springSecurityWeb"
-//	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$versions.springOAuthResource"
+	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$versions.springOAuthResource"
 	implementation "org.springframework.boot:spring-boot-starter-oauth2-client:$versions.springOAuthClient"
-//	implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
+	implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
+
+	implementation "io.jsonwebtoken:jjwt-api:$versions.jjwtVersion"
+	runtimeOnly "io.jsonwebtoken:jjwt-impl:$versions.jjwtVersion"
+	runtimeOnly "io.jsonwebtoken:jjwt-jackson:$versions.jjwtVersion"
 
 	implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
 	implementation "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"

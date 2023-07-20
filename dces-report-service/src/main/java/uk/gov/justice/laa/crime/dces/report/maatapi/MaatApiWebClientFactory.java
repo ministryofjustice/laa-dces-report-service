@@ -1,5 +1,9 @@
 package uk.gov.justice.laa.crime.dces.report.maatapi;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import io.netty.resolver.DefaultAddressResolverGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -23,12 +27,15 @@ import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 
 import java.time.Duration;
+import java.util.Date;
 import java.util.UUID;
 
 @Slf4j
 @Configuration
 public class MaatApiWebClientFactory {
     private static final String LAA_TRANSACTION_ID = "LAA-TRANSACTION-ID";
+    private static final String AUTHORIZATION = "Authorization";
+    private static final long TOKEN_LIFETIME_DURATION = Duration.ofSeconds(60).toMillis();
 
 
     @Bean
@@ -64,6 +71,12 @@ public class MaatApiWebClientFactory {
                     new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations, authorizedClients);
             oauth.setDefaultClientRegistrationId(servicesConfiguration.getMaatApi().getRegistrationId());
 
+            clientBuilder.defaultHeader(
+                    AUTHORIZATION,
+                    generateJWTForOAuth2MattApi(
+                            servicesConfiguration.getMaatApi().getClientSecret(),
+                            servicesConfiguration.getMaatApi().getIssuer())
+            );
             clientBuilder.filter(oauth);
         }
 
@@ -92,5 +105,17 @@ public class MaatApiWebClientFactory {
                     return new MaatApiClientException(errorMessage);
                 }
         );
+    }
+
+
+    private String generateJWTForOAuth2MattApi(String clientSecret, String issuer) {
+        return "Bearer " + Jwts.builder()
+                .setIssuer(issuer)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_LIFETIME_DURATION))
+                .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(clientSecret))
+                        , SignatureAlgorithm.HS256
+                )
+                .compact();
     }
 }

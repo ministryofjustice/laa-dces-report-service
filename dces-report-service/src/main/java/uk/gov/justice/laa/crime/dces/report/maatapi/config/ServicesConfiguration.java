@@ -30,5 +30,9 @@ public class ServicesConfiguration {
         private String registrationId;
 
         private boolean oAuthEnabled;
+
+        private String issuer;
+
+        private String clientSecret;
     }
 }
