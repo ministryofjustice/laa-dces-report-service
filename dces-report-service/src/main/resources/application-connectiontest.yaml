@@ -3,8 +3,7 @@ services:
     baseUrl: https://maat-cd-api.dev.legalservices.gov.uk/api/internal/v1
     registrationId: maatapi
     oAuthEnabled: true
-    issuer: 7p9a0fi8g9bj9d5ncapsdt5kl9
-    clientSecret: lcra7ktupqeooja6irqu3b4gqcmvml5coo5pnb7l1sf0uca78cv
+    maxBufferSize: 16
 
 spring:
   mvc:
@@ -16,15 +15,11 @@ spring:
       client:
         provider:
           maatapi:
-            token-uri: ${MAAT_API_OAUTH_URL}
+            token-uri: https://maat-cd-api-dev.auth.eu-west-2.amazoncognito.com/oauth2/token
         registration:
           maatapi:
-            client-id: ${MAAT_API_OAUTH_CLIENT_ID}
-            client-secret: ${MAAT_API_OAUTH_CLIENT_SECRET}
+            client-id: 7p9a0fi8g9bj9d5ncapsdt5kl9
+            client-secret: lcra7ktupqeooja6irqu3b4gqcmvml5coo5pnb7l1sf0uca78cv
             authorization-grant-type: client_credentials
             scope:
-              - ${MAAT_API_OAUTH_SCOPE}
-      # MAAT REST API authentication
-      resource-server:
-        jwt:
-          issuer-uri: https://maat-cd-api-dev.auth.eu-west-2.amazoncognito.com/oauth2/token?grant_type=client_credentials&scope=maat-cd-api/standard
+              - maat-cd-api/standard

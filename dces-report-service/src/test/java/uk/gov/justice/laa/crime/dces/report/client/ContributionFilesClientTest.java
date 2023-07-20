@@ -11,7 +11,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
-import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -33,7 +32,7 @@ class ContributionFilesClientTest {
 
     @Test
     void givenValidDateLimitParams_whenContributionClientSendGetRequestIsInvoked_thenResponseDataModelIsReturned() {
-        ContributionFilesResponse expectedResponse = getMockedMaatApiResponseModel();
+        List<String> expectedResponse = getMockedMaatApiResponseModel();
 
         when(contributionFilesClient.getContributions(any(), any()))
                 .thenReturn(expectedResponse);
@@ -50,8 +49,8 @@ class ContributionFilesClientTest {
         assertThrows(MaatApiClientException.class, mockSendRequestGetContributionFiles());
     }
 
-    private ContributionFilesResponse getMockedMaatApiResponseModel() {
-        return new ContributionFilesResponse(List.of("XML1", "XML2"));
+    private List<String> getMockedMaatApiResponseModel() {
+        return List.of("XML1", "XML2");
     }
     
     private Executable mockSendRequestGetContributionFiles() {

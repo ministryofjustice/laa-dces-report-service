@@ -31,8 +31,6 @@ public class ServicesConfiguration {
 
         private boolean oAuthEnabled;
 
-        private String issuer;
-
-        private String clientSecret;
+        private int maxBufferSize = 1;
     }
 }

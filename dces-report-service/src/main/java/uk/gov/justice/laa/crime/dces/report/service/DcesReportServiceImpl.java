@@ -4,7 +4,6 @@ import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,7 +21,7 @@ public class DcesReportServiceImpl implements DcesReportService {
     private ContributionFilesService contributionFilesService;
 
     @Override
-    public ContributionFilesResponse getApiFiles(ReportFileType type, LocalDate start, LocalDate end) {
+    public List<String> getApiFiles(ReportFileType type, LocalDate start, LocalDate end) {
         return getApiFilesService(type).getFiles(start, end);
     }
 

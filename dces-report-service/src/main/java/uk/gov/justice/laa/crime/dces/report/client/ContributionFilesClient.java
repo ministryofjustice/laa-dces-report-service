@@ -9,17 +9,18 @@ import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 import uk.gov.justice.laa.crime.dces.report.maatapi.MaatApiClientFactory;
 import uk.gov.justice.laa.crime.dces.report.maatapi.client.MaatApiClient;
-import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @HttpExchange("/debt-collection-enforcement")
 public interface ContributionFilesClient extends MaatApiClient {
 
     @GetExchange("/contributions?fromDate={startDate}&toDate={finishDate}")
-    ContributionFilesResponse getContributions(
-            @PathVariable @DateTimeFormat(pattern="dd.MM.yyyy") LocalDate startDate,
-            @PathVariable @DateTimeFormat(pattern="dd.MM.yyyy") LocalDate finishDate);
+    List<String> getContributions(
+            @PathVariable @DateTimeFormat(pattern = DEFAULT_DATE_FORMAT) LocalDate startDate,
+            @PathVariable @DateTimeFormat(pattern = DEFAULT_DATE_FORMAT) LocalDate finishDate);
+
 
     @Configuration
     class ContributionFilesClientFactory {

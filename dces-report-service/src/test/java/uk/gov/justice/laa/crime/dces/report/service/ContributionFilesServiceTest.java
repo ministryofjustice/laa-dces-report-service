@@ -8,9 +8,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
-import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -28,12 +28,12 @@ class ContributionFilesServiceTest {
 
     @Test
     void givenValidDateLimitParams_whenGetFilesIsInvoked_thenResponseDataModelIsReturned()  throws WebClientResponseException {
-        ContributionFilesResponse result = contributionFilesReportService.getFiles(startPeriod, finishPeriod);
+        List<String> result = contributionFilesReportService.getFiles(startPeriod, finishPeriod);
 
         assertNotNull(result);
-        assertEquals(2, result.getFiles().size());
-        assertTrue(result.getFiles().get(0).contains("id=\"222772044"));
-        assertTrue(result.getFiles().get(1).contains("id=\"222772045"));
+        assertEquals(2, result.size());
+        assertTrue(result.get(0).contains("id=\"222772044"));
+        assertTrue(result.get(1).contains("id=\"222772045"));
     }
 
     // TODO (DCES-55): Debug and find a fix to mapping errors in CircleCI and then re-enable this test by uncommenting @Test tag
