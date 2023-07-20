@@ -3,7 +3,7 @@
     {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPathPattern": "/getContributions/[0-9%2F-]+/[0-9%2F-]+",
+        "urlPathPattern": "/debt-collection-enforcement/contributions/[0-9%2F-]+/[0-9%2F-]+",
         "method": "GET"
       },
       "response": {
@@ -22,7 +22,7 @@
     {
       "scenarioName": "error500BasicRequest",
       "request": {
-        "urlPathPattern": "/getContributions/[0-9%2F-]+5500/[0-9%2F-]+",
+        "urlPathPattern": "/debt-collection-enforcement/contributions/[0-9%2F-]+5500/[0-9%2F-]+",
         "method": "GET"
       },
       "response": {
@@ -38,7 +38,7 @@
     {
       "scenarioName": "error400BasicRequest",
       "request": {
-        "urlPathPattern": "/getContributions/[0-9%2F-]+4400/[0-9%2F-]+",
+        "urlPathPattern": "/debt-collection-enforcement/contributions/[0-9%2F-]+4400/[0-9%2F-]+",
         "method": "GET"
       },
       "response": {
@@ -54,7 +54,7 @@
     {
       "scenarioName": "error404BasicRequest",
       "request": {
-        "urlPathPattern": "/getContributions/[0-9%2F-]+4404/[0-9%2F-]+",
+        "urlPathPattern": "/debt-collection-enforcement/contributions/[0-9%2F-]+4404/[0-9%2F-]+",
         "method": "GET"
       },
       "response": {
