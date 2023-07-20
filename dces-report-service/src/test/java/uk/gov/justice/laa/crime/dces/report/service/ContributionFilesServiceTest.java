@@ -12,6 +12,7 @@ import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientExcep
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,6 +27,13 @@ class ContributionFilesServiceTest {
     @Before
     void setup() {
 //        Locale.setDefault(new Locale("en", "GB"));
+    }
+
+    @Test
+    void checkGivenLocale() {
+        String givenLocale = String.valueOf(Locale.getDefault());
+        System.out.println(givenLocale);
+        assertEquals("en_GB", givenLocale);
     }
 
     @Test
