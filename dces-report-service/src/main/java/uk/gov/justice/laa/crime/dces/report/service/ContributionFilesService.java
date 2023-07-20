@@ -13,7 +13,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Scanner;
 
 @Service
 @RequiredArgsConstructor
@@ -39,29 +38,4 @@ public class ContributionFilesService implements DcesReportFileService {
     public String getFileName(LocalDate start, LocalDate finish) {
         return String.format(FILE_NAME_TEMPLATE, start, finish);
     }
-
-    // TODO (DCES-57): Remove override method once we are happy with test results, or move  this implementation to default if it happens to be more efficient
-    @Override
-    public boolean searchInFile(File file, String toSearchFor) throws IOException {
-        if (file == null)
-            return DcesReportFileService.super.searchInFile(null, toSearchFor);
-
-        boolean isFound = false;
-
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNextLine()) {
-                isFound |= searchInLine(scanner.nextLine(), toSearchFor);
-            }
-        }
-
-        return isFound;
-    }
-
-    // TODO (DCES-57): Remove override method once we are happy with test results, or move  this implementation to default if it happens to be more efficient
-    @Override
-    public boolean searchInLine(String line, String toSearchFor) {
-        log.info("CSV line: [ {} ] ", line);
-        return DcesReportFileService.super.searchInLine(line, toSearchFor);
-    }
-
 }
