@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ class DcesReportServiceImplTest {
     @MockBean
     ContributionFilesService mockRecordsService;
 
-    @Before
+    @BeforeEach
     void setup() {
         given(mockFdcService.getFiles(any(), any())).willReturn(new ArrayList<>());
     }
@@ -39,8 +39,7 @@ class DcesReportServiceImplTest {
         LocalDate dateParam = LocalDate.of(2023, 7, 10);
 
         // execute
-        List<String> contributionsCollection = dcesReportService
-                .getApiFiles(ReportFileType.FDC, dateParam, dateParam);
+        dcesReportService.getApiFiles(ReportFileType.FDC, dateParam, dateParam);
 
         // assert
         Mockito.verify(mockFdcService, times(1)).getFiles(dateParam, dateParam);

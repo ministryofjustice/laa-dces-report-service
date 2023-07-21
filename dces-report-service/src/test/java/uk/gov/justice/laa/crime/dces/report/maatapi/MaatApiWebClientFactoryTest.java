@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ class MaatApiWebClientFactoryTest {
     private static MockWebServer mockWebServer;
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+    @Qualifier("servicesConfiguration")
     @Autowired
     private ServicesConfiguration configuration;
     @MockBean
@@ -57,7 +59,7 @@ class MaatApiWebClientFactoryTest {
     }
 
     @Test
-    public void givenAnyParameters_whenMaatApiWebClientIsInvoked_thenTheCorrectWebClientShouldBeReturned() throws JsonProcessingException {
+    void givenAnyParameters_whenMaatApiWebClientIsInvoked_thenTheCorrectWebClientShouldBeReturned() throws JsonProcessingException {
         MaatApiResponseModel expectedResponse = new MaatApiResponseModel();
         expectedResponse.setId(1);
         expectedResponse.setTotalFiles(1);
