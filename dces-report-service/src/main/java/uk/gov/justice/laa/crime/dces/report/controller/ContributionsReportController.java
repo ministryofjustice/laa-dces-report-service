@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -46,8 +46,8 @@ public class ContributionsReportController {
             )
     )
     public File getContributionFiles(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException {
-        ContributionFilesResponse contributionFiles = contributionFilesService.getFiles(start, finish);
+        List<String> contributionFiles = contributionFilesService.getFiles(start, finish);
         String reportFileName = contributionFilesService.getFileName(start, finish);
-        return contributionFilesService.processFiles(contributionFiles.getFiles(), start, finish, reportFileName);
+        return contributionFilesService.processFiles(contributionFiles, start, finish, reportFileName);
     }
 }

@@ -7,9 +7,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
-import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,13 +27,13 @@ class FdcFilesServiceTest {
         LocalDate date = LocalDate.of(2023, 6, 10);
 
         // execute
-        ContributionFilesResponse result = testService.getFiles(date, date);
+        List<String> result = testService.getFiles(date, date);
 
         // assert
         assertNotNull(result);
-        assertEquals(2, result.getFiles().size());
-        assertTrue(result.getFiles().get(0).contains("id=\"222772044"));
-        assertTrue(result.getFiles().get(1).contains("id=\"222772045"));
+        assertEquals(2, result.size());
+        assertTrue(result.get(0).contains("id=\"222772044"));
+        assertTrue(result.get(1).contains("id=\"222772045"));
     }
 
     @Test

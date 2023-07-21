@@ -12,10 +12,14 @@ env:
     value: {{ .Values.java.host_env }}
   - name: MAAT_API_BASE_URL
     value: {{ .Values.maatApi.baseUrl }}
+  - name: MAAT_API_REGISTRATION_ID
+    value: {{ .Values.maatApi.registrationId }}
   - name: MAAT_API_OAUTH_URL
     value: {{ .Values.maatApi.oauthUrl }}
   - name: MAAT_API_OAUTH_CLIENT_ID
     value: {{ .Values.maatApi.clientId }}
   - name: MAAT_API_OAUTH_CLIENT_SECRET
     value: {{ .Values.maatApi.clientSecret }}
+  - name: MAAT_API_OAUTH_SCOPE
+    value: {{ .Values.maatApi.oauthScope }}
 {{- end -}}
