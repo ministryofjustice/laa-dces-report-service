@@ -9,8 +9,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,7 +32,7 @@ class ControllerDateFormatTest {
     @BeforeEach
     public void setup() throws Exception {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        Mockito.when(mockService.getFiles(any(), any())).thenReturn(new ContributionFilesResponse());
+        Mockito.when(mockService.getFiles(any(), any())).thenReturn(List.of("<xml1>"));
     }
 
     @Test

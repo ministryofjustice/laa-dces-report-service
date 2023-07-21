@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.mapper.FdcFileMapper;
-import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +27,7 @@ public class FdcFilesService implements DcesReportFileService {
     private final FdcFileMapper fdcFileMapper;
 
     @Retry(name = SERVICE_NAME)
-    public ContributionFilesResponse getFiles(LocalDate start, LocalDate end) {
+    public List<String> getFiles(LocalDate start, LocalDate end) {
         if (end.isBefore(start)) {
             String message = String.format("invalid time range %s is before %s", end, start);
             throw new MaatApiClientException(message);

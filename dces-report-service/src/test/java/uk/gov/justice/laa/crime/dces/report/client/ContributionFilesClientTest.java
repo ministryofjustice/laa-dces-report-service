@@ -16,7 +16,7 @@ import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
@@ -33,7 +33,7 @@ class ContributionFilesClientTest {
 
     @Test
     void givenValidDateLimitParams_whenContributionClientSendGetRequestIsInvoked_thenResponseDataModelIsReturned() {
-        ContributionFilesResponse expectedResponse = getMockedMaatApiResponseModel();
+        List<String> expectedResponse = List.of("<XML1>", "<XML1>");
 
         when(contributionFilesClient.getContributions(any(), any()))
                 .thenReturn(expectedResponse);
@@ -53,7 +53,7 @@ class ContributionFilesClientTest {
     private ContributionFilesResponse getMockedMaatApiResponseModel() {
         return new ContributionFilesResponse(List.of("XML1", "XML2"));
     }
-    
+
     private Executable mockSendRequestGetContributionFiles() {
         return () -> contributionFilesClient.getContributions(startPeriod, finishPeriod);
     }

@@ -7,14 +7,15 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.service.annotation.GetExchange;
 import uk.gov.justice.laa.crime.dces.report.maatapi.MaatApiClientFactory;
 import uk.gov.justice.laa.crime.dces.report.maatapi.client.MaatApiClient;
-import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
+
 import java.time.LocalDate;
+import java.util.List;
 
 
 public interface FdcFilesClient extends MaatApiClient {
 
     @GetExchange(url = "/fdc/{startDate}/{endDate}")
-    ContributionFilesResponse getContributions(@PathVariable LocalDate startDate, @PathVariable LocalDate endDate);
+    List<String> getContributions(@PathVariable LocalDate startDate, @PathVariable LocalDate endDate);
 
     @Configuration
     class FdcFilesClientFactory {

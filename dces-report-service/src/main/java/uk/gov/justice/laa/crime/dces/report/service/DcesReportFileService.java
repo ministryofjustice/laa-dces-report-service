@@ -5,18 +5,11 @@
  */
 package uk.gov.justice.laa.crime.dces.report.service;
 
-import jakarta.xml.bind.JAXBException;
-import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;
-
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
 public interface DcesReportFileService {
-    ContributionFilesResponse getFiles(LocalDate start, LocalDate end);
-
-    File processFiles(List<String> files, LocalDate start, LocalDate finish, String fileName) throws JAXBException, IOException;
+    List<String> getFiles(LocalDate start, LocalDate end);
 
     String getFileName(LocalDate start, LocalDate finish);
 }
