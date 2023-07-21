@@ -1,5 +1,9 @@
 package uk.gov.justice.laa.crime.dces.report.maatapi;
 
+//import io.jsonwebtoken.Jwts;
+//import io.jsonwebtoken.SignatureAlgorithm;
+//import io.jsonwebtoken.io.Decoders;
+//import io.jsonwebtoken.security.Keys;
 import io.netty.resolver.DefaultAddressResolverGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +30,8 @@ import java.util.UUID;
 @Configuration
 public class MaatApiWebClientFactory {
     private static final String LAA_TRANSACTION_ID = "LAA-TRANSACTION-ID";
+//    private static final String AUTHORIZATION = "Authorization";
+//    private static final long TOKEN_LIFETIME_DURATION = Duration.ofSeconds(60).toMillis();
 
     @Bean
     public WebClient maatApiWebClient(
@@ -59,6 +65,13 @@ public class MaatApiWebClientFactory {
             ServletOAuth2AuthorizedClientExchangeFilterFunction oauth =
                     new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations, authorizedClients);
             oauth.setDefaultClientRegistrationId(servicesConfiguration.getMaatApi().getRegistrationId());
+
+//            clientBuilder.defaultHeader(
+//                    AUTHORIZATION,
+//                    generateJWTForOAuth2MattApi(
+//                            "lcra7ktupqeooja6irqu3b4gqcmvml5coo5pnb7l1sf0uca78cv",
+//                            "7p9a0fi8g9bj9d5ncapsdt5kl9")
+//            );
 
             clientBuilder.filter(oauth);
         }
@@ -100,4 +113,15 @@ public class MaatApiWebClientFactory {
     private static int convertMaxBufferSize(int megaBytes) {
         return megaBytes * 1024 * 1024;
     }
+
+//    private static String generateJWTForOAuth2MattApi(String clientSecret, String issuer) {
+//        return "Bearer " + Jwts.builder()
+//                .setIssuer(issuer)
+//                .setIssuedAt(new Date(System.currentTimeMillis()))
+//                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_LIFETIME_DURATION))
+//                .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(clientSecret))
+//                        , SignatureAlgorithm.HS256
+//                )
+//                .compact();
+//    }
 }

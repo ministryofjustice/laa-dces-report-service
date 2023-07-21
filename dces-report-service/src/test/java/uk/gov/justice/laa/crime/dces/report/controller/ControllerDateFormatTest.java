@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 class ControllerDateFormatTest {
-    private static final String REQUEST_PATH = "/api/internal/v1/dces/report/contributions";
+    private static final String REQUEST_PATH = "/api/internal/v1/dces/report/contributions/%s/%s";
 
     @Autowired
     private WebApplicationContext webApplicationContext;
@@ -30,20 +30,20 @@ class ControllerDateFormatTest {
     private ContributionFilesService mockService;
 
     @BeforeEach
-    public void setup() throws Exception {
+    public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         Mockito.when(mockService.getFiles(any(), any())).thenReturn(new ArrayList<>());
     }
 
     @Test
     void dateParameterStringFails() throws Exception {
-        mockMvc.perform(get(REQUEST_PATH + "/3414/3243214"))
+        mockMvc.perform(get(String.format(REQUEST_PATH, "3414", "3243214")))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     void dateParameterStringSucceedsWithCorrectFormat() throws Exception {
-        mockMvc.perform(get(REQUEST_PATH + "/12-04-2023/12-04-2023"))
+        mockMvc.perform(get(String.format(REQUEST_PATH, "01.01.2023", "31.01.2023")))
                 .andExpect(status().isOk());
     }
 }
