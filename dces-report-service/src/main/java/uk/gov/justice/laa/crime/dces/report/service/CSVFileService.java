@@ -11,8 +11,13 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
+import java.nio.file.attribute.PosixFilePermission;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -29,11 +34,13 @@ public class CSVFileService {
             contributionData.add(0, getContributionsHeader());
         }
         // filewriter initialise
-        FileWriter fw = new FileWriter(targetFile, true);
-        for (CSVDataLine csvDataLine: contributionData){
-            writeContributionLine(fw, csvDataLine);
+        try (FileWriter fw = new FileWriter(targetFile, true)){
+            for (CSVDataLine csvDataLine : contributionData) {
+                writeContributionLine(fw, csvDataLine);
+            }
+        } catch (IOException e) {
+            throw new IOException(e);
         }
-        fw.close();
         return targetFile;
     }
 
@@ -42,18 +49,19 @@ public class CSVFileService {
         return writeContributionToCsv(contributionData, targetFile);
     }
 
-    public File writeFdcToCsv(FdcFile fdcFile, File targetFile) throws IOException {
+    public void writeFdcToCsv(FdcFile fdcFile, File targetFile) throws IOException {
         List<Fdc> fdcList = fdcFile.getFdcList().getFdc();
         // filewriter initialise
-        FileWriter fw = new FileWriter(targetFile, true);
-        if(targetFile.length()==0) {
-            writeFdcHeader(fw);
+        try (FileWriter fw = new FileWriter(targetFile, true)) {
+            if (targetFile.length() == 0) {
+                writeFdcHeader(fw);
+            }
+            for (Fdc fdcLine : fdcList) {
+                writeFdcLine(fw, fdcLine);
+            }
+        } catch (IOException e) {
+            throw new IOException(e);
         }
-        for (Fdc fdcLine: fdcList){
-            writeFdcLine(fw, fdcLine);
-        }
-        fw.close();
-        return targetFile;
     }
 
     public File writeFdcFileListToCsv(List<FdcFile> fdcFiles, String fileName) throws IOException {
@@ -62,10 +70,6 @@ public class CSVFileService {
             writeFdcToCsv(file, targetFile);
         }
         return targetFile;
-    }
-
-    private File createCsvFile(String fileName) throws IOException {
-        return File.createTempFile( fileName, ".csv");
     }
 
     private CSVDataLine getContributionsHeader(){
@@ -113,6 +117,11 @@ public class CSVFileService {
 
     private String getFdcValue(XMLGregorianCalendar o){
         return ( getFdcValue(DateUtils.convertXmlGregorianToString(o),true));
+    }
+
+    private File createCsvFile(String fileName) throws IOException {
+        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
+        return Files.createTempFile(fileName, ".csv", attr).toFile();
     }
 
 }
