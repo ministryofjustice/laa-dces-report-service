@@ -25,6 +25,7 @@ public class FdcFileMapper {
     public FdcFileMapper fdcFileMapper() throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(FdcFile.class);
         unmarshaller = jaxbContext.createUnmarshaller();
+        this.csvFileService = new CSVFileService();
         return this;
     }
 

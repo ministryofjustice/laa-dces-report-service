@@ -19,7 +19,8 @@ import java.util.Objects;
 public class CSVFileService {
 
 
-    public static final String FDC_FORMAT = "%s,";
+    public static final String FDC_FORMAT = "%s";
+    public static final String FDC_FORMAT_COMMA = "%s,";
     public static final String EMPTY_CHARACTER = "";
 
     public File writeContributionToCsv(List<CSVDataLine> contributionData, File targetFile) throws IOException {
@@ -63,11 +64,6 @@ public class CSVFileService {
         return targetFile;
     }
 
-    public File writeFdcToCsv(FdcFile fdcFile, String fileName) throws IOException {
-        File targetFile = createCsvFile(fileName);
-        return writeFdcToCsv(fdcFile, targetFile);
-    }
-
     private File createCsvFile(String fileName) throws IOException {
         return File.createTempFile( fileName, ".csv");
     }
@@ -101,21 +97,22 @@ public class CSVFileService {
 
     private String fdcLineBuilder(Fdc fdcLine){
         StringBuilder sb = new StringBuilder();
-        sb.append(getFdcValue(fdcLine.getMaatId()));
+        sb.append(getFdcValue(fdcLine.getMaatId(),true));
         sb.append(getFdcValue(fdcLine.getSentenceDate()));
         sb.append(getFdcValue(fdcLine.getCalculationDate()));
-        sb.append(getFdcValue(fdcLine.getFinalCost()));
-        sb.append(getFdcValue(fdcLine.getLgfsTotal()));
-        sb.append(getFdcValue(fdcLine.getAgfsTotal()));
+        sb.append(getFdcValue(fdcLine.getFinalCost(),true));
+        sb.append(getFdcValue(fdcLine.getLgfsTotal(),true));
+        sb.append(getFdcValue(fdcLine.getAgfsTotal(),false));
+        sb.append(System.lineSeparator());
         return sb.toString();
     }
 
-    private String getFdcValue(Object o){
-        return String.format(FDC_FORMAT,(Objects.nonNull(o)?o:EMPTY_CHARACTER));
+    private String getFdcValue(Object o, boolean insertComma){
+        return String.format( (insertComma?FDC_FORMAT_COMMA:FDC_FORMAT),(Objects.nonNull(o)?o:EMPTY_CHARACTER));
     }
 
     private String getFdcValue(XMLGregorianCalendar o){
-        return ( getFdcValue(DateUtils.convertXmlGregorianToString(o)));
+        return ( getFdcValue(DateUtils.convertXmlGregorianToString(o),true));
     }
 
 }
