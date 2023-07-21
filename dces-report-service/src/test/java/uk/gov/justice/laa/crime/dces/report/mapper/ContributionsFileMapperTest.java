@@ -137,7 +137,7 @@ class ContributionsFileMapperTest {
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         } finally {
-            if (Objects.nonNull(f)) { f.delete();}
+            closeFile(f);
         }
     }
 
@@ -157,7 +157,7 @@ class ContributionsFileMapperTest {
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         } finally {
-            if (Objects.nonNull(f)) { f.delete();}
+            closeFile(f);
         }
     }
 
@@ -181,7 +181,7 @@ class ContributionsFileMapperTest {
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         } finally {
-            if (Objects.nonNull(f)) { f.delete();}
+            closeFile(f);
         }
     }
 
@@ -203,7 +203,7 @@ class ContributionsFileMapperTest {
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         } finally {
-            if (Objects.nonNull(f)) { f.delete();}
+            closeFile(f);
         }
     }
 
@@ -228,7 +228,13 @@ class ContributionsFileMapperTest {
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
         } finally {
-            if (Objects.nonNull(f)) { f.delete();}
+            closeFile(f);
+        }
+    }
+
+    private void closeFile(File f){
+        if(Objects.nonNull(f)){
+            f.delete();
         }
     }
 

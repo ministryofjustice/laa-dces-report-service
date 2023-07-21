@@ -64,11 +64,6 @@ public class CSVFileService {
         return targetFile;
     }
 
-    public File writeFdcToCsv(FdcFile fdcFile, String fileName) throws IOException {
-        File targetFile = createCsvFile(fileName);
-        return writeFdcToCsv(fdcFile, targetFile);
-    }
-
     private File createCsvFile(String fileName) throws IOException {
         return File.createTempFile( fileName, ".csv");
     }
