@@ -8,6 +8,9 @@ import uk.gov.justice.laa.crime.dces.report.maatapi.client.MaatApiClient;
 
 public class MaatApiClientFactory {
 
+    private MaatApiClientFactory(){
+        throw new UnsupportedOperationException("Utility Class");
+    }
 
     @Bean
     public static <T extends MaatApiClient> T maatApiClient(WebClient maatApiWebClient, Class<T> returnClass) {
