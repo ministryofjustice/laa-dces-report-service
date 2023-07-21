@@ -69,10 +69,7 @@ class MaatApiResponseModelTest {
         );
 
         assertThat(response.toString()).isInstanceOf(String.class);
-        assertThat(response.toString()).isEqualTo(expectedEstring);
-
-
-
+        assertThat(response).hasToString(expectedEstring);
     }
 
 }

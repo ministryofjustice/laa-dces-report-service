@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 public class ContributionFilesService implements DcesReportFileService {
     private static final String SERVICE_NAME = "dcesReportContributions";
-    public static final String FILE_NAME_TEMPLATE = "Contributions_%s_%s.csv";
+    public static final String FILE_NAME_TEMPLATE = "Contributions_%s_%s";
 
     private final ContributionFilesClient contributionFilesClient;
 

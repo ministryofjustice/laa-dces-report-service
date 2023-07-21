@@ -38,7 +38,7 @@ class DcesReportServiceImplTest {
         // setup
         LocalDate dateParam = LocalDate.of(2023, 7, 10);
 
-        //execute
+        // execute
         dcesReportService.getFdcReport(dateParam, dateParam);
 
         // assert

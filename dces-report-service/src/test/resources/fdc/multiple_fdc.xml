@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<fdc_file>
+    <header file_id="222637370">
+        <filename>FDC_201807251354.xml</filename>
+        <dateGenerated>2018-07-25</dateGenerated>
+        <recordCount>6260</recordCount>
+    </header>
+    <fdc_list>
+        <fdc id="27783002">
+            <maat_id>2525925</maat_id>
+            <sentenceDate>2016-09-30</sentenceDate>
+            <calculationDate>2016-12-22</calculationDate>
+            <final_cost>1774.4</final_cost>
+            <lgfs_total>1180.64</lgfs_total>
+            <agfs_total>593.76</agfs_total>
+        </fdc>
+        <fdc id="31774046">
+            <maat_id>2492027</maat_id>
+            <sentenceDate>2011-02-04</sentenceDate>
+            <calculationDate>2018-07-04</calculationDate>
+            <final_cost>1479.23</final_cost>
+            <lgfs_total>569.92</lgfs_total>
+            <agfs_total>909.31</agfs_total>
+        </fdc>
+        <fdc id="210212249">
+            <maat_id>5275089</maat_id>
+            <sentenceDate>2016-08-19</sentenceDate>
+            <calculationDate>2016-09-02</calculationDate>
+            <final_cost>2849.95</final_cost>
+            <lgfs_total>1497.6</lgfs_total>
+            <agfs_total>1352.35</agfs_total>
+        </fdc>
+        <fdc id="210212260">
+            <maat_id>5427879</maat_id>
+            <sentenceDate>2016-08-23</sentenceDate>
+            <calculationDate>2016-09-06</calculationDate>
+            <final_cost>2252.6</final_cost>
+            <lgfs_total>937.86</lgfs_total>
+            <agfs_total>1314.74</agfs_total>
+        </fdc>
+        <fdc id="210490729">
+            <maat_id>5438043</maat_id>
+            <sentenceDate>2016-08-25</sentenceDate>
+            <calculationDate>2016-12-19</calculationDate>
+            <final_cost>1969.47</final_cost>
+            <lgfs_total>1085.5</lgfs_total>
+            <agfs_total>883.97</agfs_total>
+        </fdc>
+        <fdc id="215023003">
+            <maat_id>4971278</maat_id>
+            <sentenceDate>2016-10-14</sentenceDate>
+            <calculationDate>2017-01-11</calculationDate>
+            <final_cost>3226.01</final_cost>
+            <lgfs_total>1327.99</lgfs_total>
+            <agfs_total>1898.02</agfs_total>
+        </fdc>
+    </fdc_list>
+</fdc_file>
