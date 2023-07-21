@@ -35,11 +35,6 @@ public class DcesReportServiceImpl implements DcesReportService {
     public File getFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException {
         List<String> contributionFiles = fdcFilesService.getFiles(start, end);
         // @TODO handle empty list
-        return contributionFilesService.processFiles(
-                contributionFiles,
-                start,
-                end,
-                contributionFilesService.getFileName(start, end)
-        );
+        return fdcFilesService.processFiles(contributionFiles, start, end);
     }
 }

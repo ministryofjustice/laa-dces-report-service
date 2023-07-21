@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
+import jakarta.xml.bind.JAXBException;
 import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -32,9 +34,12 @@ class DcesReportServiceImplTest {
     }
 
     @Test
-    void getInitialContributionsCollection() {
+    void getInitialContributionsCollection() throws JAXBException, IOException {
         // setup
         LocalDate dateParam = LocalDate.of(2023, 7, 10);
+
+        //execute
+        dcesReportService.getFdcReport(dateParam, dateParam);
 
         // assert
         Mockito.verify(mockFdcService, times(1)).getFiles(dateParam, dateParam);
