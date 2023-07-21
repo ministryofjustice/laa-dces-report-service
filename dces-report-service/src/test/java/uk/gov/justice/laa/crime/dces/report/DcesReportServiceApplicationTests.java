@@ -11,7 +11,8 @@ import org.springframework.test.context.ActiveProfiles;
 @EnableAutoConfiguration
 @ActiveProfiles("test")
 class DcesReportServiceApplicationTests {
-	
+
+	@java.lang.SuppressWarnings("squid:S2699")
 	@Test
 	void contextLoads() {}
 
