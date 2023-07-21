@@ -83,7 +83,7 @@ jobs:
       - restore_cache:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - run:
-          name: Install Dependencies
+          name: Install Dependencies and Build
           command: ./gradlew clean build
       - run:
           name: Run Sonar
