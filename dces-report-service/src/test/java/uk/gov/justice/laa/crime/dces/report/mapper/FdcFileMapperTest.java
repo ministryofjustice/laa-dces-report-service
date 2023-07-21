@@ -120,15 +120,6 @@ class FdcFileMapperTest {
         softly.assertAll();
     }
 
-
-
-    @Test
-    void testFileNotFound(){
-        var filePath = getClass().getClassLoader().getResource("fdc/FileNotFound.xml");
-        String fp = filePath.getFile();
-        assertThrows(RuntimeException.class, () -> {new File(fp);});
-    }
-
     @Test
     void testInvalidXML(){
         File f = new File(getClass().getClassLoader().getResource("fdc/invalid_fdc.xml").getFile());

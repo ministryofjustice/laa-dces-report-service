@@ -3,8 +3,6 @@ package uk.gov.justice.laa.crime.dces.report.mapper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.model.generated.ContributionFile;
@@ -14,9 +12,6 @@ import uk.gov.justice.laa.crime.dces.report.model.generated.ContributionFile.CON
 import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
 import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
 import uk.gov.justice.laa.crime.dces.utils.DateUtils;
-
-import io.micrometer.tracing.Span;
-import io.micrometer.tracing.Tracer;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,9 +27,6 @@ public class ContributionsFileMapper {
     private Unmarshaller unmarshaller;
     protected CSVFileService csvFileService;
     private static final String EMPTY_CHARACTER="";
-    @Autowired
-    private Tracer tracer;
-    private static Logger log = LoggerFactory.getLogger(ContributionsFileMapper.class);
 
 
     @Autowired
@@ -70,10 +62,8 @@ public class ContributionsFileMapper {
         return (ContributionFile) unmarshaller.unmarshal(sr);
     }
 
-
     public CSVDataLine buildCSVDataLine(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
         // Business logic inside several of these. Go to methods for details.
-        testSpan();
         return CSVDataLine.builder()
                 .maatId(getMaatId(contribution))
                 .dataFeedType(getDataFeed(contribution))
@@ -91,6 +81,7 @@ public class ContributionsFileMapper {
                 .correspondenceSentDate(getCorrespondenceSentDate(contribution, startDate, endDate))
                 .build();
     }
+
 
     private String getMaatId(CONTRIBUTIONS contribution){
         return String.valueOf(contribution.getMaatId());
@@ -148,26 +139,6 @@ public class ContributionsFileMapper {
             return EMPTY_CHARACTER;
         }
         return DateUtils.convertXmlGregorianToString(contribution.getPassported().getDateCompleted());
-    }
-    
-    void testSpan(){
-        Span newSpan = this.tracer.nextSpan().name("calculateTax");
-        try (Tracer.SpanInScope ws = this.tracer.withSpan(newSpan.start())) {
-            // ...
-            // You can tag a span - put a key value pair on it for better debugging
-            newSpan.tag("taxValue", "123");
-            // ...
-            // You can log an event on a span - an event is an annotated timestamp
-            newSpan.event("taxCalculated");
-            log.info("Words go here?");
-        }
-        finally {
-            // Once done remember to end the span. This will allow collecting
-            // the span to send it to a distributed tracing system e.g. Zipkin
-            newSpan.end();
-        }
-
-
     }
 
 
