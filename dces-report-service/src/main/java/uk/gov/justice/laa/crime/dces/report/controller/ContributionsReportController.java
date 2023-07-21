@@ -20,7 +20,6 @@ import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Slf4j
 @RestController

@@ -16,7 +16,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 @EnableConfigurationProperties(value = ServicesConfiguration.class)
 @ActiveProfiles("test")
-public class MaatApiConfigurationTest {
+class MaatApiConfigurationTest {
 
     @Autowired
     @Qualifier("test_configuration")
@@ -34,7 +34,7 @@ public class MaatApiConfigurationTest {
     }
 
     @Test
-    public void givenDefinedBasedURL_whenGetBaseUrlIsInvoked_thenCorrectBaseURLIsReturned() {
+    void givenDefinedBasedURL_whenGetBaseUrlIsInvoked_thenCorrectBaseURLIsReturned() {
         assertThat(configuration.getMaatApi().getBaseUrl()).isEqualTo("http://localhost:1111");
     }
 }
