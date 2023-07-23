@@ -30,5 +30,7 @@ public class ServicesConfiguration {
         private String registrationId;
 
         private boolean oAuthEnabled;
+
+        private int maxBufferSize = 1;
     }
 }

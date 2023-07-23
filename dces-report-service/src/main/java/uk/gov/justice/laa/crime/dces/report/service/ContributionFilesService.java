@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -24,10 +25,12 @@ public class ContributionFilesService implements DcesReportFileService {
 
     private final ContributionsFileMapper contributionFilesMapper;
 
+
     @Retry(name = SERVICE_NAME)
     public List<String> getFiles(LocalDate start, LocalDate finish) {
         log.info("Start - call MAAT API to collect contribution files date between {} and {}", start.toString(), finish.toString());
         return contributionFilesClient.getContributions(start, finish);
+
     }
 
     public File processFiles(List<String> files, LocalDate start, LocalDate finish, String fileName) throws JAXBException, IOException {

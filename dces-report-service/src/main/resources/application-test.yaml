@@ -3,3 +3,11 @@ services:
     baseUrl: http://localhost:1111
     registrationId: MATT_API_REG_ID
     oAuthEnabled: false
+
+spring:
+  mvc:
+    format:
+      date: dd.MM.yyyy
+  web:
+    locale: en_GB
+    locale-resolver: fixed

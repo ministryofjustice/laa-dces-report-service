@@ -26,22 +26,15 @@ services:
     baseUrl: ${MAAT_API_BASE_URL}
     registrationId: ${MAAT_API_REGISTRATION_ID}
     oAuthEnabled: true
-
-maat-retry-config:
-  max-retries: 2
-  min-back-off-period: 3
-  jitter-value: 0.5
-
-means-assessment:
-  security:
-    issuer-uri: http://localhost:${server.port}
+    maxBufferSize: 16
 
 spring:
   mvc:
     format:
-      date: dd-MM-yyyy
+      date: dd.MM.yyyy
   security:
     oauth2:
+      # Interactive/Web user authentication
       client:
         provider:
           maatapi:
@@ -51,7 +44,5 @@ spring:
             client-id: ${MAAT_API_OAUTH_CLIENT_ID}
             client-secret: ${MAAT_API_OAUTH_CLIENT_SECRET}
             authorization-grant-type: client_credentials
-
-      resourceserver:
-        jwt:
-          issuer-uri: ${means-assessment.security.issuer-uri}
+            scope:
+              - ${MAAT_API_OAUTH_SCOPE}

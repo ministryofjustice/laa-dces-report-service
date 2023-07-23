@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -27,6 +28,13 @@ class FdcFilesServiceTest {
         LocalDate date = LocalDate.of(2023, 6, 10);
 
         // execute
+        List<String> result = testService.getFiles(date, date);
+
+        // assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertTrue(result.get(0).contains("id=\"222772044"));
+        assertTrue(result.get(1).contains("id=\"222772045"));
     }
 
     @Test
