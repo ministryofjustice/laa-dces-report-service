@@ -11,8 +11,7 @@ import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientExcep
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
