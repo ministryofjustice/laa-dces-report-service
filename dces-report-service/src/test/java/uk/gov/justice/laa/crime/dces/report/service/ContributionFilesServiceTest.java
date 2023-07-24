@@ -64,7 +64,7 @@ class ContributionFilesServiceTest {
         // assert
         assertTrue(actualMessage.contains(expectedMessage));
     }
-    
+
     @Test
     void givenNotFoundServerError_whenGetFilesIsInvoked_thenWebClientResponseExceptionIsThrown(){
         // setup

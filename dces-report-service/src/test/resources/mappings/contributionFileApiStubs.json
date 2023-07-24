@@ -80,10 +80,10 @@
         "urlPath": "/debt-collection-enforcement/contributions",
         "queryParameters": {
           "fromDate": {
-            "equalTo": "04.04.4404"
+            "equalTo": "04.04.4400"
           },
           "toDate": {
-            "equalTo": "04.04.4404"
+            "equalTo": "04.04.4400"
           }
         },
         "method": "GET"
