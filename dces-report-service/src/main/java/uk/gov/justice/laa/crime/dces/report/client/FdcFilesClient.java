@@ -15,6 +15,7 @@ import java.util.List;
 
 @HttpExchange("/debt-collection-enforcement")
 public interface FdcFilesClient extends MaatApiClient {
+
     @GetExchange(url = "/final-defence-cost?fromDate={startDate}&toDate={endDate}")
     List<String> getContributions(
             @PathVariable @DateTimeFormat(pattern = DEFAULT_DATE_FORMAT) LocalDate startDate,

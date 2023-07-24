@@ -11,7 +11,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,7 +32,7 @@ class ControllerDateFormatTest {
     @BeforeEach
     public void setup() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
-        Mockito.when(mockService.getFiles(any(), any())).thenReturn(new ArrayList<>());
+        Mockito.when(mockService.getFiles(any(), any())).thenReturn(List.of("<xml1>"));
     }
 
     @Test

@@ -5,16 +5,10 @@ import jakarta.xml.bind.JAXBException;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 
 public interface DcesReportService {
 
-    enum ReportFileType {
-        FDC, // final-defence-cost
-        CONTRIBUTION
-    }
+    File getContributionsReport(LocalDate start, LocalDate end) throws JAXBException, IOException;
 
-    List<String> getApiFiles(ReportFileType type, LocalDate start, LocalDate end);
-
-    File processFiles(ReportFileType type, List<String> files, LocalDate start, LocalDate end, String fileName) throws JAXBException, IOException;
+    File getFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException;
 }
