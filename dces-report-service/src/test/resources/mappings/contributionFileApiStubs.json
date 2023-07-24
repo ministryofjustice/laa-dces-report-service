@@ -77,7 +77,15 @@
     {
       "scenarioName": "error400BasicRequest",
       "request": {
-        "urlPathPattern": "/debt-collection-enforcement/contributions/[0-9%2F-]+4400/[0-9%2F-]+",
+        "urlPath": "/debt-collection-enforcement/contributions",
+        "queryParameters": {
+          "fromDate": {
+            "equalTo": "04.04.4404"
+          },
+          "toDate": {
+            "equalTo": "04.04.4404"
+          }
+        },
         "method": "GET"
       },
       "response": {
@@ -93,7 +101,15 @@
     {
       "scenarioName": "error404BasicRequest",
       "request": {
-        "urlPathPattern": "/debt-collection-enforcement/contributions/[0-9%2F-]+4404/[0-9%2F-]+",
+        "urlPath": "/debt-collection-enforcement/contributions",
+        "queryParameters": {
+          "fromDate": {
+            "equalTo": "04.04.4404"
+          },
+          "toDate": {
+            "equalTo": "04.04.4404"
+          }
+        },
         "method": "GET"
       },
       "response": {

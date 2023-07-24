@@ -50,7 +50,6 @@ class ContributionFilesServiceTest {
         assertTrue(result.get(1).contains("id=\"222772045"));
     }
 
-    // TODO (DCES-55): Debug and find a fix to mapping errors in CircleCI and then re-enable this test by uncommenting @Test tag
     @Test
     void givenInternalServerError_whenGetFilesIsInvoked_thenHttpServerErrorExceptionIsThrown(){
         // setup
@@ -67,7 +66,7 @@ class ContributionFilesServiceTest {
     }
 
     // TODO (DCES-55): Debug and find a fix to mapping errors in CircleCI and then re-enable this test by uncommenting @Test tag
-//    @Test
+    @Test
     void givenNotFoundServerError_whenGetFilesIsInvoked_thenWebClientResponseExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(4404, 4, 4);
