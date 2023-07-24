@@ -91,6 +91,9 @@ dependencies {
 	implementation "org.springdoc:springdoc-openapi-ui:$versions.springdocVersion"
 	implementation "io.github.resilience4j:resilience4j-spring-boot3:$versions.resilience4jVersion"
 
+	implementation("io.micrometer:micrometer-tracing-bom:1.1.3")
+	implementation("io.micrometer:micrometer-tracing-bridge-brave:1.1.3")
+
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
@@ -110,6 +113,9 @@ dependencies {
 	xsd2java "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
 	xsd2java "com.sun.activation:jakarta.activation:$versions.jakartaActivation"
 	xsd2java "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
+
+
+
 }
 
 

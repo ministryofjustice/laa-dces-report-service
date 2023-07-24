@@ -4,7 +4,14 @@ package uk.gov.justice.laa.crime.dces.report.maatapi;
 //import io.jsonwebtoken.SignatureAlgorithm;
 //import io.jsonwebtoken.io.Decoders;
 //import io.jsonwebtoken.security.Keys;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import io.micrometer.observation.Observation;
+import io.micrometer.observation.ObservationRegistry;
+import io.micrometer.observation.annotation.Observed;
 import io.netty.resolver.DefaultAddressResolverGroup;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,17 +35,41 @@ import java.util.UUID;
 
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class MaatApiWebClientFactory {
     private static final String LAA_TRANSACTION_ID = "LAA-TRANSACTION-ID";
 //    private static final String AUTHORIZATION = "Authorization";
 //    private static final long TOKEN_LIFETIME_DURATION = Duration.ofSeconds(60).toMillis();
 
+    private final ObservationRegistry registry;
+
+    @Observed
+    void calling ()  {
+
+        Observation.createNotStarted("foo", registry)
+                        .lowCardinalityKeyValue("lowTag", "valueTag")
+                                .highCardinalityKeyValue("highKey", "highValye")
+                                        .observe(() -> System.out.println("Hello hello"));
+        MeterRegistry reg = new SimpleMeterRegistry();
+        Timer.Sample sample = Timer.start(reg);
+        log.error("Error");
+        try {
+            Thread.sleep(2000);
+            sample.stop(Timer.builder("myTottalTimer").register(reg));
+        } catch (InterruptedException e) {
+
+            throw new RuntimeException(e);
+        }
+    }
     @Bean
+    @Observed
     public WebClient maatApiWebClient(
             ServicesConfiguration servicesConfiguration,
             ClientRegistrationRepository clientRegistrations,  OAuth2AuthorizedClientRepository authorizedClients
     ) {
 
+        calling();
+        log.info("Spring-micrometer - Setting up the Maat API Client ");
         ConnectionProvider provider = ConnectionProvider.builder("custom")
                 .maxConnections(500)
                 .maxIdleTime(Duration.ofSeconds(20))
@@ -82,7 +113,8 @@ public class MaatApiWebClientFactory {
                 ))
             .build();
         clientBuilder.exchangeStrategies(strategies);
-
+        log.info("Spring-micrometer INFO - ending the maat api client config factory");
+        log.error("Spring-micrometer ERROR - ending the maat api client config factory");
         return clientBuilder.build();
     }
 

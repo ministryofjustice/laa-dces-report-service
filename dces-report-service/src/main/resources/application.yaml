@@ -28,10 +28,18 @@ services:
     oAuthEnabled: true
     maxBufferSize: 16
 
+logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+
+
 spring:
   mvc:
     format:
-      date: dd.MM.yyyy
+      date: dd-MM-yyyy
+  application:
+    name: dces-report-service
+
   security:
     oauth2:
       # Interactive/Web user authentication
