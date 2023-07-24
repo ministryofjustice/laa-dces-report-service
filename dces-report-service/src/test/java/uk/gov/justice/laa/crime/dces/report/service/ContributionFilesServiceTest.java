@@ -64,8 +64,7 @@ class ContributionFilesServiceTest {
         // assert
         assertTrue(actualMessage.contains(expectedMessage));
     }
-
-    // TODO (DCES-55): Debug and find a fix to mapping errors in CircleCI and then re-enable this test by uncommenting @Test tag
+    
     @Test
     void givenNotFoundServerError_whenGetFilesIsInvoked_thenWebClientResponseExceptionIsThrown(){
         // setup
@@ -82,8 +81,7 @@ class ContributionFilesServiceTest {
         assertTrue(actualMessage.contains(expectedMessage));
     }
 
-    // TODO (DCES-55): Debug and find a fix to mapping errors in CircleCI and then re-enable this test by uncommenting @Test tag
-//    @Test
+    @Test
     void givenServerError_whenGetFilesIsInvoked_thenMaatApiClientExceptionIsThrown(){
         // setup
         LocalDate date = LocalDate.of(4400, 4, 4);
