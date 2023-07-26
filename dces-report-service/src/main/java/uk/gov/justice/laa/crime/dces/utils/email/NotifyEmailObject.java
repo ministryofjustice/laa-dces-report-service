@@ -3,6 +3,7 @@ package uk.gov.justice.laa.crime.dces.utils.email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.commons.io.FileUtils;
+import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.utils.email.exceptions.EmailObjectInvalidException;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -13,6 +14,7 @@ import java.util.Map;
 
 @AllArgsConstructor
 @Data
+@Service
 public class NotifyEmailObject implements EmailObject {
 
     private static String UPLOAD_KEY = "link_to_file";
@@ -40,7 +42,6 @@ public class NotifyEmailObject implements EmailObject {
     }
 
     public void addAttachment(File file) throws IOException, NotificationClientException {
-        // format file for upload
         byte[] fileContents = FileUtils.readFileToByteArray(file);
         personalisation.put(UPLOAD_KEY, NotificationClient.prepareUpload(fileContents, true));
     }
