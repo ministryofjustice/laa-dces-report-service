@@ -61,8 +61,16 @@ class NotifyEmailObjectTest {
 
     @Test
     void emailObjectWithNoAttachmentIsInValid() {
+        Map<String, Object> personalisation = new HashMap<>();
+        NotifyEmailObject emailObject = new NotifyEmailObject(
+                "id",
+                "email",
+                personalisation,
+                "voTest",
+                ""
+        );
         // execute
-        Exception exception = assertThrows(EmailObjectInvalidException.class, () -> notifyEmailObject.validate());
+        Exception exception = assertThrows(EmailObjectInvalidException.class, emailObject::validate);
         assertEquals("file attachment cannot be empty on email object", exception.getMessage());
     }
 
