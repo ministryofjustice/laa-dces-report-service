@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.dces.utils.email;
+package uk.gov.justice.laa.crime.dces.integration;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -6,6 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
+import uk.gov.justice.laa.crime.dces.utils.email.EmailClient;
+import uk.gov.justice.laa.crime.dces.utils.email.NotifyEmailClient;
+import uk.gov.justice.laa.crime.dces.utils.email.NotifyEmailObject;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -16,7 +19,7 @@ import java.util.Map;
 
 @SpringBootTest
 @ContextConfiguration(classes = {NotifyEmailClient.class, NotifyEmailObject.class})
-final class NotifyEmailClientIntegrationTest {
+final class NotifyEmailClientTestIntegration {
 
     private static final String TEMPLATE_ID = "0f3438d7-78fd-4519-972e-4038084558c1";
 

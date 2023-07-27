@@ -157,6 +157,10 @@ pitest {
     mutationThreshold = 60
 }
 
+test {
+    exclude '**/**Integration.class'
+}
+
 sonar {
     properties {
         property "sonar.projectName", "laa-dces-report-service"
