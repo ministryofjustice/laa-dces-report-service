@@ -1,9 +1,8 @@
 package uk.gov.justice.laa.crime.dces.utils.email;
 
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.dces.utils.email.exceptions.EmailClientException;
 import uk.gov.service.notify.NotificationClient;
@@ -11,12 +10,11 @@ import uk.gov.service.notify.NotificationClientException;
 
 @Slf4j
 @NoArgsConstructor
-@AllArgsConstructor
 @Component
 final public class NotifyEmailClient implements EmailClient {
 
-    @Value("${emailClient.notify.key}")
-    private String key;
+    @Autowired
+    private NotificationClient client;
 
     @Override
     public void send(EmailObject emailObject) throws RuntimeException {
@@ -24,7 +22,7 @@ final public class NotifyEmailClient implements EmailClient {
         log.info("attempt to send email...");
         try {
             mail.validate();
-            getNotifyInstance().sendEmail(
+            client.sendEmail(
                     mail.getTemplateId(),
                     mail.getEmailAddress(),
                     mail.getPersonalisation(),
@@ -36,9 +34,5 @@ final public class NotifyEmailClient implements EmailClient {
             throw new EmailClientException(e.getMessage());
         }
         log.info("email sent successfully");
-    }
-
-    private NotificationClient getNotifyInstance() {
-        return new NotificationClient(this.key);
     }
 }
