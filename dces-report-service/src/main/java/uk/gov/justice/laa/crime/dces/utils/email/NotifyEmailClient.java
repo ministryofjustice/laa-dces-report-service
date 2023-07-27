@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.dces.utils.email.exceptions.EmailClientException;
+import uk.gov.justice.laa.crime.dces.utils.email.exceptions.EmailObjectInvalidException;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -17,7 +18,7 @@ public final class NotifyEmailClient implements EmailClient {
     private NotificationClient client;
 
     @Override
-    public void send(EmailObject emailObject) throws RuntimeException {
+    public void send(EmailObject emailObject) throws EmailClientException, EmailObjectInvalidException {
         NotifyEmailObject mail = (NotifyEmailObject) emailObject;
         log.info("attempt to send email...");
         try {

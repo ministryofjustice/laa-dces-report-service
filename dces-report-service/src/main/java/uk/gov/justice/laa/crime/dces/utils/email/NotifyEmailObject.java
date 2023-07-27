@@ -20,7 +20,7 @@ import static org.apache.commons.io.FileUtils.readFileToByteArray;
 @Component
 public final class NotifyEmailObject implements EmailObject {
 
-    private static String UPLOADKEY = "link_to_file";
+    private static String uploadKey = "link_to_file";
 
     private String templateId;
     private String emailAddress;
@@ -34,7 +34,7 @@ public final class NotifyEmailObject implements EmailObject {
             throw new EmailObjectInvalidException("email address cannot be empty on email object");
         }
 
-        if (!personalisation.containsKey(UPLOADKEY)) {
+        if (!personalisation.containsKey(uploadKey)) {
             throw new EmailObjectInvalidException("file attachment cannot be empty on email object");
         }
     }
@@ -42,6 +42,6 @@ public final class NotifyEmailObject implements EmailObject {
     @Override
     public void addAttachment(File file) throws IOException, NotificationClientException {
         byte[] fileContents = readFileToByteArray(file);
-        personalisation.put(UPLOADKEY, NotificationClient.prepareUpload(fileContents, true));
+        personalisation.put(uploadKey, NotificationClient.prepareUpload(fileContents, true));
     }
 }
