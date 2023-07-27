@@ -1,12 +1,11 @@
 package uk.gov.justice.laa.crime.dces.utils.email;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -16,18 +15,18 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SpringBootTest
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = NotifyEmailClientIntegrationTest.class)
-class NotifyEmailClientIntegrationTest {
+@ContextConfiguration(classes = {NotifyEmailClient.class, NotifyEmailObject.class})
+final class NotifyEmailClientIntegrationTest {
 
-    private static final String TEMPLATE_ID = "6b742f6c-6d02-4ef9-adb6-3d575528ac6b";
+    private static final String TEMPLATE_ID = "0f3438d7-78fd-4519-972e-4038084558c1";
 
-    EmailObject testEmailObject;
+    private NotifyEmailObject testEmailObject;
 
-    EmailClient testNotifyEmailClient;
+    @Autowired
+    private EmailClient testNotifyEmailClient;
 
-    @Before
-    void setUp() throws IOException, NotificationClientException {
+    @BeforeEach
+    void setup() throws IOException, NotificationClientException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("testContributionReport.csv").getFile());
         byte[] fileContents = FileUtils.readFileToByteArray(file);
@@ -35,19 +34,22 @@ class NotifyEmailClientIntegrationTest {
         Map<String, Object> personalisation = new HashMap<>();
         personalisation.put("link_to_file", NotificationClient.prepareUpload(fileContents, true));
 
+        String emailAddress = "victor.olorunleye@digital.justice.gov.uk";
         testEmailObject = new NotifyEmailObject(
                 TEMPLATE_ID,
-                "rahodav340@rc3s.com",
+                emailAddress,
                 personalisation,
                 "voTest",
                 ""
         );
+        // setup template fields
+        testEmailObject.getPersonalisation().put("report_type", "contribution");
+        testEmailObject.getPersonalisation().put("from_date", "25-07-2023");
+        testEmailObject.getPersonalisation().put("to_date", "25-07-2023");
     }
 
     @Test
     void testSendingEmail() throws RuntimeException {
-        testNotifyEmailClient = NotifyEmailClient.getInstance();
-
         testNotifyEmailClient.send(testEmailObject);
     }
 }

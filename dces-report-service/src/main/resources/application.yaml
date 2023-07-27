@@ -30,7 +30,7 @@ services:
 
 emailClient:
   notify:
-    keyd: ${NOTIFY_KEY}
+    key: ${NOTIFY_KEY}
 
 spring:
   mvc:
