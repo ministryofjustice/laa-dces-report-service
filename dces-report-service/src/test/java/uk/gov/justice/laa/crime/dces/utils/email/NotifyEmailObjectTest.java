@@ -23,7 +23,12 @@ class NotifyEmailObjectTest {
     @BeforeEach
     void setup() {
         Map<String, Object> personalisation = new HashMap<>();
-        notifyEmailObject = new NotifyEmailObject("templateId", "emailAdd", personalisation, "ref", "");
+        notifyEmailObject = new NotifyEmailObject();
+        notifyEmailObject.setEmailAddress("emailAdd");
+        notifyEmailObject.setTemplateId("templateId");
+        notifyEmailObject.setPersonalisation(personalisation);
+        notifyEmailObject.setEmailReplyToId("");
+        notifyEmailObject.setReference("ref");
     }
 
     @Test
