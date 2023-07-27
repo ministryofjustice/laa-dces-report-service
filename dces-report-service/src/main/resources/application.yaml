@@ -46,3 +46,8 @@ spring:
             authorization-grant-type: client_credentials
             scope:
               - ${MAAT_API_OAUTH_SCOPE}
+  # This is only needed to add support for executable beans (e.g. for serverless and AWS Lambada)
+  cloud:
+    function:
+      web:
+        path: /report

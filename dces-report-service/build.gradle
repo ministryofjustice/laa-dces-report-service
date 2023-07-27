@@ -72,6 +72,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// cloud-function is only required to support executable beans (e.g. serverless AWS Lambda)
+	implementation "org.springframework.cloud:spring-cloud-function-web:4.0.4"
 
 
 	// oAuth
@@ -80,10 +82,10 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$versions.springOAuthResource"
 	implementation "org.springframework.boot:spring-boot-starter-oauth2-client:$versions.springOAuthClient"
 	implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
-
-//	implementation "io.jsonwebtoken:jjwt-api:$versions.jjwtVersion"
-//	runtimeOnly "io.jsonwebtoken:jjwt-impl:$versions.jjwtVersion"
-//	runtimeOnly "io.jsonwebtoken:jjwt-jackson:$versions.jjwtVersion"
+	// JJWT package is used to connect and request token for authentication for own app access
+	implementation "io.jsonwebtoken:jjwt-api:$versions.jjwtVersion"
+	runtimeOnly "io.jsonwebtoken:jjwt-impl:$versions.jjwtVersion"
+	runtimeOnly "io.jsonwebtoken:jjwt-jackson:$versions.jjwtVersion"
 
 	implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
 	implementation "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
@@ -111,8 +113,6 @@ dependencies {
 	xsd2java "com.sun.activation:jakarta.activation:$versions.jakartaActivation"
 	xsd2java "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
 }
-
-
 
 test {
 	useJUnitPlatform()

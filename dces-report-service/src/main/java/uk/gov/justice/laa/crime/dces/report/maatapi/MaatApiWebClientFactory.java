@@ -69,8 +69,8 @@ public class MaatApiWebClientFactory {
 //            clientBuilder.defaultHeader(
 //                    AUTHORIZATION,
 //                    generateJWTForOAuth2MattApi(
-//                            "lcra7ktupqeooja6irqu3b4gqcmvml5coo5pnb7l1sf0uca78cv",
-//                            "7p9a0fi8g9bj9d5ncapsdt5kl9")
+//                            "client-secret",
+//                            "client-id")
 //            );
 
             clientBuilder.filter(oauth);
