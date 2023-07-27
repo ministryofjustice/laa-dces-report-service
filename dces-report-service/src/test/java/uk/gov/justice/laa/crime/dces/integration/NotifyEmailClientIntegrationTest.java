@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.crime.dces.integration;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,9 +18,11 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 @SpringBootTest
 @ContextConfiguration(classes = {NotifyEmailClient.class, NotifyEmailObject.class, EmailConfiguration.class})
-final class NotifyEmailClientTestIntegration {
+final class NotifyEmailClientIntegrationTest {
 
     // test template may need to be
     private static final String TEMPLATE_ID = "7008e285-0ef0-4f29-bc95-8f59840810a7";
@@ -33,7 +35,7 @@ final class NotifyEmailClientTestIntegration {
     @Autowired
     private EmailClient testNotifyEmailClient;
 
-    @Before
+    @BeforeEach
     void setup() throws IOException, NotificationClientException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("testContributionReport.csv").getFile());
@@ -56,7 +58,7 @@ final class NotifyEmailClientTestIntegration {
     }
 
     @Test
-    void testSendingEmail() throws RuntimeException {
-        testNotifyEmailClient.send(testEmailObject);
+    void testSendingEmail() {
+        assertDoesNotThrow(() -> testNotifyEmailClient.send(testEmailObject));
     }
 }

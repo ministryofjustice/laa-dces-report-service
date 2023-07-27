@@ -158,7 +158,7 @@ pitest {
 }
 
 test {
-    exclude '**/**Integration.class'
+    exclude '**/**IntegrationTest.class'
 }
 
 sonar {

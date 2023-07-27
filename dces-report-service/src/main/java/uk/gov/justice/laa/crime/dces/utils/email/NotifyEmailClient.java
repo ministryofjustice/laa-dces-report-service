@@ -11,7 +11,7 @@ import uk.gov.service.notify.NotificationClientException;
 @Slf4j
 @NoArgsConstructor
 @Component
-final public class NotifyEmailClient implements EmailClient {
+public final class NotifyEmailClient implements EmailClient {
 
     @Autowired
     private NotificationClient client;

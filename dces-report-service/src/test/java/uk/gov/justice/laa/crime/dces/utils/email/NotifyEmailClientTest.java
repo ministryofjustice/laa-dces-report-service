@@ -15,6 +15,7 @@ import uk.gov.service.notify.NotificationClientException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 
@@ -46,7 +47,7 @@ class NotifyEmailClientTest {
 
     @Test
     void sendEmailObjectIsSuccess() {
-        testEmailClient.send(mockEmailObject);
+        assertDoesNotThrow(() -> testEmailClient.send(mockEmailObject));
     }
 
     @Test

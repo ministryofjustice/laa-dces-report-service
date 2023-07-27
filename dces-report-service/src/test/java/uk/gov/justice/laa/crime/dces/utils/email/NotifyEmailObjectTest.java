@@ -11,8 +11,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -67,6 +66,6 @@ class NotifyEmailObjectTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("testContributionReport.csv").getFile());
 
-        notifyEmailObject.addAttachment(file);
+        assertDoesNotThrow(() -> notifyEmailObject.addAttachment(file));
     }
 }
