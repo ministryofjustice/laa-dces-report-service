@@ -28,6 +28,10 @@ services:
     oAuthEnabled: true
     maxBufferSize: 16
 
+emailClient:
+  notify:
+    key: ${NOTIFY_KEY}
+
 spring:
   mvc:
     format:

@@ -11,3 +11,7 @@ spring:
   web:
     locale: en_GB
     locale-resolver: fixed
+
+emailClient:
+  notify:
+    key: notify_test_key
