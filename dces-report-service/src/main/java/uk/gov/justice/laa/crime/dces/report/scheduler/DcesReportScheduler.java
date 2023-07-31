@@ -31,7 +31,7 @@ public class DcesReportScheduler {
                 fromDate.format(dateFormatter),
                 toDate.format(dateFormatter));
 
-//        File reportFile = reportService.getContributionsReport(fromDate, toDate);
+        File reportFile = reportService.getContributionsReport(fromDate, toDate);
     }
 
     @Scheduled(cron = "${spring.scheduling.fdc.cron}")
@@ -43,6 +43,6 @@ public class DcesReportScheduler {
                 fromDate.format(dateFormatter),
                 toDate.format(dateFormatter));
 
-//        File reportFile = reportService.getFdcReport(fromDate, toDate);
+        File reportFile = reportService.getFdcReport(fromDate, toDate);
     }
 }

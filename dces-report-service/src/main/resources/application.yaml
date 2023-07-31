@@ -23,8 +23,8 @@ springdoc:
 
 services:
   maat-api:
-    baseUrl: https://maat-cd-api.dev.legalservices.gov.uk/api/internal/v1 #${MAAT_API_BASE_URL}
-    registrationId: maatapi #${MAAT_API_REGISTRATION_ID}
+    baseUrl: ${MAAT_API_BASE_URL}
+    registrationId: ${MAAT_API_REGISTRATION_ID}
     oAuthEnabled: true
     maxBufferSize: 16
 
@@ -49,7 +49,7 @@ spring:
             client-secret: ${MAAT_API_OAUTH_CLIENT_SECRET}
             authorization-grant-type: client_credentials
             scope:
-              - maat-cd-api/standard #${MAAT_API_OAUTH_SCOPE}
+              - ${MAAT_API_OAUTH_SCOPE}
   # This is only needed to add support for executable beans (e.g. for serverless and AWS Lambada)
   cloud:
     function:
