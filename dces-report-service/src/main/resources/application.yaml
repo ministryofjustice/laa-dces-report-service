@@ -28,7 +28,6 @@ services:
     oAuthEnabled: true
     maxBufferSize: 16
 
-
 logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
@@ -36,7 +35,6 @@ logging:
 emailClient:
   notify:
     key: ${NOTIFY_KEY}
-
 
 spring:
   mvc:
