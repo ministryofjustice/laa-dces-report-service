@@ -7,7 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
-import uk.gov.justice.laa.crime.dces.utils.DateUtils;
+import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
+import uk.gov.service.notify.NotificationClientException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -23,7 +24,7 @@ public class DcesReportScheduler {
     private final DcesReportService reportService;
 
     @Scheduled(cron = "${spring.scheduling.contributions.cron}")
-    public void contributionsReport() throws JAXBException, IOException {
+    public void contributionsReport() throws JAXBException, IOException, NotificationClientException {
         LocalDate fromDate = DateUtils.getDefaultStartDateForReport();
         LocalDate toDate = DateUtils.getDefaultEndDateForReport();
 
@@ -31,11 +32,11 @@ public class DcesReportScheduler {
                 fromDate.format(dateFormatter),
                 toDate.format(dateFormatter));
 
-        reportService.getContributionsReport(fromDate, toDate);
+        reportService.sendContributionsReport(fromDate, toDate);
     }
 
     @Scheduled(cron = "${spring.scheduling.fdc.cron}")
-    public void fdcReport() throws JAXBException, IOException {
+    public void fdcReport() throws JAXBException, IOException, NotificationClientException {
         LocalDate fromDate = DateUtils.getDefaultStartDateForReport();
         LocalDate toDate = DateUtils.getDefaultEndDateForReport();
 
@@ -43,6 +44,6 @@ public class DcesReportScheduler {
                 fromDate.format(dateFormatter),
                 toDate.format(dateFormatter));
 
-        reportService.getFdcReport(fromDate, toDate);
+        reportService.sendFdcReport(fromDate, toDate);
     }
 }

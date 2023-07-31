@@ -2,10 +2,10 @@ package uk.gov.justice.laa.crime.dces.report.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList.Fdc;
-import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
-import uk.gov.justice.laa.crime.dces.utils.DateUtils;
+import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
@@ -30,11 +30,11 @@ public class CSVFileService {
 
     public File writeContributionToCsv(List<CSVDataLine> contributionData, File targetFile) throws IOException {
         // if file does not exist, we need to add the headers.
-        if(targetFile.length()==0) {
+        if (targetFile.length() == 0) {
             contributionData.add(0, getContributionsHeader());
         }
         // filewriter initialise
-        try (FileWriter fw = new FileWriter(targetFile, true)){
+        try (FileWriter fw = new FileWriter(targetFile, true)) {
             for (CSVDataLine csvDataLine : contributionData) {
                 writeContributionLine(fw, csvDataLine);
             }
@@ -66,13 +66,13 @@ public class CSVFileService {
 
     public File writeFdcFileListToCsv(List<FdcFile> fdcFiles, String fileName) throws IOException {
         File targetFile = createCsvFile(fileName);
-        for(FdcFile file: fdcFiles){
+        for (FdcFile file : fdcFiles) {
             writeFdcToCsv(file, targetFile);
         }
         return targetFile;
     }
 
-    private CSVDataLine getContributionsHeader(){
+    private CSVDataLine getContributionsHeader() {
         return CSVDataLine.builder()
                 .maatId("MAAT ID")
                 .dataFeedType("Data Feed Type")
@@ -86,12 +86,12 @@ public class CSVFileService {
     }
 
     private void writeFdcHeader(FileWriter fw) throws IOException {
-        String headerLine = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST"+System.lineSeparator();
+        String headerLine = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST" + System.lineSeparator();
         fw.append(headerLine);
     }
 
     private void writeContributionLine(FileWriter fw, CSVDataLine dataLine) throws IOException {
-        String lineOutput = dataLine.toString()+System.lineSeparator();
+        String lineOutput = dataLine.toString() + System.lineSeparator();
         fw.append(lineOutput);
     }
 
@@ -99,24 +99,23 @@ public class CSVFileService {
         fw.append(fdcLineBuilder(fdcLine));
     }
 
-    private String fdcLineBuilder(Fdc fdcLine){
-        StringBuilder sb = new StringBuilder();
-        sb.append(getFdcValue(fdcLine.getMaatId(),true));
-        sb.append(getFdcValue(fdcLine.getSentenceDate()));
-        sb.append(getFdcValue(fdcLine.getCalculationDate()));
-        sb.append(getFdcValue(fdcLine.getFinalCost(),true));
-        sb.append(getFdcValue(fdcLine.getLgfsTotal(),true));
-        sb.append(getFdcValue(fdcLine.getAgfsTotal(),false));
-        sb.append(System.lineSeparator());
-        return sb.toString();
+    private String fdcLineBuilder(Fdc fdcLine) {
+        String sb = getFdcValue(fdcLine.getMaatId(), true) +
+                getFdcValue(fdcLine.getSentenceDate()) +
+                getFdcValue(fdcLine.getCalculationDate()) +
+                getFdcValue(fdcLine.getFinalCost(), true) +
+                getFdcValue(fdcLine.getLgfsTotal(), true) +
+                getFdcValue(fdcLine.getAgfsTotal(), false) +
+                System.lineSeparator();
+        return sb;
     }
 
-    private String getFdcValue(Object o, boolean insertComma){
-        return String.format( (insertComma?FDC_FORMAT_COMMA:FDC_FORMAT),(Objects.nonNull(o)?o:EMPTY_CHARACTER));
+    private String getFdcValue(Object o, boolean insertComma) {
+        return String.format((insertComma ? FDC_FORMAT_COMMA : FDC_FORMAT), (Objects.nonNull(o) ? o : EMPTY_CHARACTER));
     }
 
-    private String getFdcValue(XMLGregorianCalendar o){
-        return ( getFdcValue(DateUtils.convertXmlGregorianToString(o),true));
+    private String getFdcValue(XMLGregorianCalendar o) {
+        return (getFdcValue(DateUtils.convertXmlGregorianToString(o), true));
     }
 
     private File createCsvFile(String fileName) throws IOException {

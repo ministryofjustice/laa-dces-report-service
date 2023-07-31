@@ -9,7 +9,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
-import uk.gov.justice.laa.crime.dces.utils.DateUtils;
+import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
+import uk.gov.service.notify.NotificationClientException;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -41,8 +42,8 @@ public class DcesReportFunctionsFactory {
             );
 
             try {
-                reportService.getContributionsReport(startDate, endDate);
-            } catch (JAXBException | IOException e) {
+                reportService.sendContributionsReport(startDate, endDate);
+            } catch (JAXBException | IOException | NotificationClientException e) {
                 throw new RuntimeException(e);
             }
         };
@@ -61,8 +62,8 @@ public class DcesReportFunctionsFactory {
             );
 
             try {
-                reportService.getFdcReport(startDate, endDate);
-            } catch (JAXBException | IOException e) {
+                reportService.sendFdcReport(startDate, endDate);
+            } catch (JAXBException | IOException | NotificationClientException e) {
                 throw new RuntimeException(e);
             }
         };
