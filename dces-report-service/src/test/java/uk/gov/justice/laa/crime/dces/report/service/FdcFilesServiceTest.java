@@ -22,7 +22,7 @@ class FdcFilesServiceTest {
     private FdcFilesService testService;
 
     @Test
-    void getsListOfContributionsXmlWithValidDateParams() throws WebClientResponseException {
+    void getsListOfFdcXmlWithValidDateParams() throws WebClientResponseException {
         // setup
         LocalDate date = LocalDate.of(2023, 6, 10);
 
@@ -32,8 +32,9 @@ class FdcFilesServiceTest {
         // assert
         assertNotNull(result);
         assertEquals(2, result.size());
-        assertTrue(result.get(0).contains("id=\"222772044"));
-        assertTrue(result.get(1).contains("id=\"222772045"));
+        assertTrue(result.get(0).contains("id=\"27783002"));
+        assertTrue(result.get(0).contains("2525925"));
+        assertTrue(result.get(1).contains("5635978"));
     }
 
     @Test
