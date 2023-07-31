@@ -39,7 +39,7 @@ emailClient:
 spring:
   mvc:
     format:
-      date: dd-MM-yyyy
+      date: dd.MM.yyyy
   application:
     name: dces-report-service
 
