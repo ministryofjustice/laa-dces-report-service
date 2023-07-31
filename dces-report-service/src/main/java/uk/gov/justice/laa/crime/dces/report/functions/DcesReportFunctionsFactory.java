@@ -11,7 +11,6 @@ import org.springframework.messaging.MessageHeaders;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
 import uk.gov.justice.laa.crime.dces.utils.DateUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,7 +24,7 @@ public class DcesReportFunctionsFactory {
     private static final String END_DATE_KEY = "todate";
 
     @Value("spring.mvc.format.date")
-    private static final String DATE_FORMAT="dd.MM.yyyy";
+    private static final String DATE_FORMAT = "dd.MM.yyyy";
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
     private final DcesReportService reportService;
 
@@ -42,7 +41,7 @@ public class DcesReportFunctionsFactory {
             );
 
             try {
-                File reportFile = reportService.getContributionsReport(startDate, endDate);
+                reportService.getContributionsReport(startDate, endDate);
             } catch (JAXBException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -62,7 +61,7 @@ public class DcesReportFunctionsFactory {
             );
 
             try {
-                File reportFile = reportService.getFdcReport(startDate, endDate);
+                reportService.getFdcReport(startDate, endDate);
             } catch (JAXBException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -78,14 +77,14 @@ public class DcesReportFunctionsFactory {
                 DateUtils.getDefaultStartDateForReport() :
                 convertDateFromHeader(START_DATE_KEY, headers)
 
-        ;
+                ;
     }
 
     private LocalDate convertEndDate(MessageHeaders headers) {
         return (shouldUseDefaultDates(headers)) ?
                 DateUtils.getDefaultEndDateForReport() :
                 convertDateFromHeader(END_DATE_KEY, headers)
-        ;
+                ;
     }
 
     private LocalDate convertDateFromHeader(String key, MessageHeaders headers) {

@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
 import uk.gov.justice.laa.crime.dces.utils.DateUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class DcesReportScheduler {
     @Value("spring.mvc.format.date")
-    private static final String DATE_FORMAT="dd.MM.yyyy";
+    private static final String DATE_FORMAT = "dd.MM.yyyy";
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
     private final DcesReportService reportService;
 
@@ -32,7 +31,7 @@ public class DcesReportScheduler {
                 fromDate.format(dateFormatter),
                 toDate.format(dateFormatter));
 
-        File reportFile = reportService.getContributionsReport(fromDate, toDate);
+        reportService.getContributionsReport(fromDate, toDate);
     }
 
     @Scheduled(cron = "${spring.scheduling.fdc.cron}")
@@ -44,6 +43,6 @@ public class DcesReportScheduler {
                 fromDate.format(dateFormatter),
                 toDate.format(dateFormatter));
 
-        File reportFile = reportService.getFdcReport(fromDate, toDate);
+        reportService.getFdcReport(fromDate, toDate);
     }
 }

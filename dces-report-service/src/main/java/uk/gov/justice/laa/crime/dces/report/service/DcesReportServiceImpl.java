@@ -20,11 +20,12 @@ public class DcesReportServiceImpl implements DcesReportService {
     @Autowired
     private ContributionFilesService contributionFilesService;
 
-    public File getContributionsReport(LocalDate start, LocalDate end) throws JAXBException, IOException {
+    @Override
+    public void getContributionsReport(LocalDate start, LocalDate end) throws JAXBException, IOException {
         List<String> contributionFiles = contributionFilesService.getFiles(start, end);
         // @TODO handle empty list
 
-        return contributionFilesService.processFiles(
+        File contributionsCSV = contributionFilesService.processFiles(
                 contributionFiles,
                 start,
                 end,
@@ -32,9 +33,10 @@ public class DcesReportServiceImpl implements DcesReportService {
         );
     }
 
-    public File getFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException {
+    @Override
+    public void getFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException {
         List<String> contributionFiles = fdcFilesService.getFiles(start, end);
         // @TODO handle empty list
-        return fdcFilesService.processFiles(contributionFiles, start, end);
+        File fdcFile = fdcFilesService.processFiles(contributionFiles, start, end);
     }
 }
