@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
-@ActiveProfiles("Test")
+@ActiveProfiles("test")
 class ControllerDateFormatTest {
     private static final String REQUEST_PATH = "/api/internal/v1/dces/report/contributions/%s/%s";
 

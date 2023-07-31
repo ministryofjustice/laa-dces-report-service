@@ -22,7 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 
 @SpringBootTest
-@ActiveProfiles("Test")
+@ActiveProfiles("test")
 class DcesReportServiceImplTest {
 
     @Autowired
