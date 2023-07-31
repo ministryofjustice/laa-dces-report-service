@@ -24,4 +24,8 @@ env:
     value: {{ .Values.maatApi.oauthScope }}
   - name: NOTIFY_KEY
     value: {{ .Values.emailClient.notify_key }}
+  - name: NOTIFY_TEMPLATEID
+    value: {{ .Values.emailClient.notify_templateId }}
+  - name: NOTIFY_RECIPIENT
+    value: {{ .Values.emailClient.notify_recipient }}
 {{- end -}}

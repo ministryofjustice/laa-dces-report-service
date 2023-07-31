@@ -52,7 +52,7 @@ final class NotifyEmailClientIntegrationTest {
                 ""
         );
         // setup template fields
-        testEmailObject.getPersonalisation().put("report_type", "contribution");
+        testEmailObject.getPersonalisation().put("report_type", "Contribution");
         testEmailObject.getPersonalisation().put("from_date", "25-07-2023");
         testEmailObject.getPersonalisation().put("to_date", "25-07-2023");
     }

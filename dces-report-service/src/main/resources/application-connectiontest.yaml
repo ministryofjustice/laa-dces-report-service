@@ -30,9 +30,9 @@ services:
 
 emailClient:
   notify:
-    key: ${NOTIFY_KEY}
-    template-id: ${NOTIFY_TEMPLATEID}
-    recipient: ${NOTIFY_RECIPIENT}
+    key: notify_test_key
+    template-id: notify-template-id
+    recipient: tariq.hossain@digital.justice.gov.uk
 
 spring:
   mvc:

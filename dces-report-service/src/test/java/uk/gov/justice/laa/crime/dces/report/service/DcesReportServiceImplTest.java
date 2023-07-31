@@ -7,8 +7,10 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
+import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
 import java.io.IOException;
@@ -20,6 +22,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 
 @SpringBootTest
+@ActiveProfiles("Test")
 class DcesReportServiceImplTest {
 
     @Autowired
@@ -30,6 +33,9 @@ class DcesReportServiceImplTest {
 
     @MockBean
     ContributionFilesClient contributionFilesClient;
+
+    @MockBean
+    NotificationClient notifyClient;
 
     @BeforeEach
     void setup() {

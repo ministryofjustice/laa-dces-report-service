@@ -6,10 +6,12 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
+import uk.gov.service.notify.NotificationClient;
 
 import java.util.List;
 
@@ -18,6 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@ActiveProfiles("Test")
 class ControllerDateFormatTest {
     private static final String REQUEST_PATH = "/api/internal/v1/dces/report/contributions/%s/%s";
 
@@ -28,6 +31,9 @@ class ControllerDateFormatTest {
 
     @MockBean
     private ContributionFilesService mockService;
+
+    @MockBean
+    NotificationClient notifyClient;
 
     @BeforeEach
     public void setup() {
