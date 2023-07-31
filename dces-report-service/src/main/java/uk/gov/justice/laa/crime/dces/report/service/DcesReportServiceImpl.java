@@ -20,26 +20,21 @@ public class DcesReportServiceImpl implements DcesReportService {
     @Autowired
     private ContributionFilesService contributionFilesService;
 
-    @Override
-    public List<String> getApiFiles(ReportFileType type, LocalDate start, LocalDate end) {
-        return getApiFilesService(type).getFiles(start, end);
+    public File getContributionsReport(LocalDate start, LocalDate end) throws JAXBException, IOException {
+        List<String> contributionFiles = contributionFilesService.getFiles(start, end);
+        // @TODO handle empty list
+
+        return contributionFilesService.processFiles(
+                contributionFiles,
+                start,
+                end,
+                contributionFilesService.getFileName(start, end)
+        );
     }
 
-    @Override
-    public File processFiles(
-            ReportFileType type,
-            List<String> files,
-            LocalDate start,
-            LocalDate end,
-            String fileName) throws JAXBException, IOException {
-        return getApiFilesService(type).processFiles(files, start, end, fileName);
-    }
-
-    private DcesReportFileService getApiFilesService(ReportFileType type) {
-        if (type.equals(ReportFileType.FDC)) {
-            return fdcFilesService;
-        }
-
-        return contributionFilesService;
+    public File getFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException {
+        List<String> contributionFiles = fdcFilesService.getFiles(start, end);
+        // @TODO handle empty list
+        return fdcFilesService.processFiles(contributionFiles, start, end);
     }
 }
