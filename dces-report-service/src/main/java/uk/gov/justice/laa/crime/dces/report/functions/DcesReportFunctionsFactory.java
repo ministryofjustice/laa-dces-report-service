@@ -21,6 +21,9 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 @Slf4j
 public class DcesReportFunctionsFactory {
+    private static final String START_DATE_KEY = "fromdate";
+    private static final String END_DATE_KEY = "todate";
+
     @Value("spring.mvc.format.date")
     private static final String DATE_FORMAT="dd.MM.yyyy";
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
@@ -30,16 +33,16 @@ public class DcesReportFunctionsFactory {
     public Consumer<Message<String>> contributionsReport() {
         return (request) -> {
             MessageHeaders headers = request.getHeaders();
-            LocalDate fromDate = convertFromDate(headers);
-            LocalDate toDate = convertToDate(headers);
+            LocalDate startDate = convertStartDate(headers);
+            LocalDate endDate = convertEndDate(headers);
 
             log.info("contributionsReport: request contribution files between [{}] and [{}]",
-                    fromDate.format(dateFormatter),
-                    toDate.format(dateFormatter)
+                    startDate.format(dateFormatter),
+                    endDate.format(dateFormatter)
             );
 
             try {
-                File reportFile = reportService.getContributionsReport(fromDate, toDate);
+                File reportFile = reportService.getContributionsReport(startDate, endDate);
             } catch (JAXBException | IOException e) {
                 throw new RuntimeException(e);
             }
@@ -50,44 +53,42 @@ public class DcesReportFunctionsFactory {
     public Consumer<Message<String>> fdcReport() {
         return (request) -> {
             MessageHeaders headers = request.getHeaders();
-            LocalDate fromDate = convertFromDate(headers);
-            LocalDate toDate = convertToDate(headers);
+            LocalDate startDate = convertStartDate(headers);
+            LocalDate endDate = convertEndDate(headers);
 
             log.info("fdcReport: request FDC files between [{}] and [{}]",
-                    fromDate.format(dateFormatter),
-                    toDate.format(dateFormatter)
+                    startDate.format(dateFormatter),
+                    endDate.format(dateFormatter)
             );
 
             try {
-                File reportFile = reportService.getFdcReport(fromDate, toDate);
+                File reportFile = reportService.getFdcReport(startDate, endDate);
             } catch (JAXBException | IOException e) {
                 throw new RuntimeException(e);
             }
         };
     }
 
-    private boolean validateInputs(MessageHeaders headers) {
-        return (headers.containsKey("fromdate") && headers.containsKey("todate"));
+    private boolean shouldUseDefaultDates(MessageHeaders headers) {
+        return !(headers.containsKey(START_DATE_KEY) && headers.containsKey(END_DATE_KEY));
     }
 
-    private LocalDate convertFromDate(MessageHeaders headers) {
-        return (validateInputs(headers)) ?
-                convertDateFromHeader("fromdate", headers) :
-                    DateUtils.getCurrentFromDate()
+    private LocalDate convertStartDate(MessageHeaders headers) {
+        return (shouldUseDefaultDates(headers)) ?
+                DateUtils.getDefaultStartDateForReport() :
+                convertDateFromHeader(START_DATE_KEY, headers)
+
         ;
     }
 
-    private LocalDate convertToDate(MessageHeaders headers) {
-        return (validateInputs(headers)) ?
-            convertDateFromHeader("todate", headers) :
-                DateUtils.getCurrentToDate()
+    private LocalDate convertEndDate(MessageHeaders headers) {
+        return (shouldUseDefaultDates(headers)) ?
+                DateUtils.getDefaultEndDateForReport() :
+                convertDateFromHeader(END_DATE_KEY, headers)
         ;
     }
 
     private LocalDate convertDateFromHeader(String key, MessageHeaders headers) {
-        if (!headers.containsKey(key))
-            return null;
-
         return LocalDate.parse(
                 headers.getOrDefault(key, null).toString(),
                 dateFormatter

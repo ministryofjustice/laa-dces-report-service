@@ -9,7 +9,6 @@ import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
 import uk.gov.justice.laa.crime.dces.utils.DateUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,8 +24,8 @@ public class DcesReportScheduler {
 
     @Scheduled(cron = "${spring.scheduling.contributions.cron}")
     public void contributionsReport() throws JAXBException, IOException {
-        LocalDate fromDate = DateUtils.getCurrentFromDate();
-        LocalDate toDate = DateUtils.getCurrentToDate();
+        LocalDate fromDate = DateUtils.getDefaultStartDateForReport();
+        LocalDate toDate = DateUtils.getDefaultEndDateForReport();
 
         log.info("CRON :: contributions: launching between [{}] and [{}]",
                 fromDate.format(dateFormatter),
@@ -37,8 +36,8 @@ public class DcesReportScheduler {
 
     @Scheduled(cron = "${spring.scheduling.fdc.cron}")
     public void fdcReport() throws JAXBException, IOException {
-        LocalDate fromDate = DateUtils.getCurrentFromDate();
-        LocalDate toDate = DateUtils.getCurrentToDate();
+        LocalDate fromDate = DateUtils.getDefaultStartDateForReport();
+        LocalDate toDate = DateUtils.getDefaultEndDateForReport();
 
         log.info("CRON :: FDC: launching between [{}] and [{}]",
                 fromDate.format(dateFormatter),
