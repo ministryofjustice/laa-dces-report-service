@@ -23,7 +23,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @WireMockTest(httpPort = 1111)
-class ContributionsReportControllerTest {
+class DcesReportControllerTest {
     private static final LocalDate startPeriod = LocalDate.of(2021, 1, 1);
     private static final LocalDate finishPeriod = LocalDate.of(2021, 1, 31);
     private static final String MAAT_ID_EXPECTED = "5635978";
@@ -32,7 +32,7 @@ class ContributionsReportControllerTest {
     ContributionFilesService fileService;
 
     @Autowired
-    ContributionsReportController controller;
+    DcesReportController controller;
 
 
     @BeforeAll
@@ -42,7 +42,7 @@ class ContributionsReportControllerTest {
 
     @Test
     void givenValidPeriod_whenGetContributionFilesIsInvoked_thenFileWithExpectedContentIsReturned() throws JAXBException, IOException {
-        File report = controller.getContributionFiles(startPeriod, finishPeriod);
+        File report = controller.getContributionsReport(startPeriod, finishPeriod);
 
         assertThat(report).isNotNull().isNotEmpty().isFile();
         assertThat(report.getName())

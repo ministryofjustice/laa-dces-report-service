@@ -1,36 +1,14 @@
-server:
-  port: 8089
+This package is intended to be a generic class for integrations requiring connection to MAAT API.
 
-management:
-  server:
-    port: 8188
-  endpoints:
-    web:
-      exposure:
-        include: health,info,metrics,prometheus
+It pretty much works out of the box but it will require some configurations. Below is a list of the configuration variables that will need to be filled in application.yaml file
 
-springdoc:
-  packagesToScan: uk.gov.justice.laa.crime.dces.report
-  show-actuator: true
-  api-docs:
-    path: /dces-report-service
-    enabled: true
-
-  swagger-ui:
-    path: /open-api/docs.html
-    enabled: true
-    operationsSorter: method
-
+```
 services:
   maat-api:
     baseUrl: ${MAAT_API_BASE_URL}
     registrationId: ${MAAT_API_REGISTRATION_ID}
     oAuthEnabled: true
     maxBufferSize: 16
-
-emailClient:
-  notify:
-    key: ${NOTIFY_KEY}
 
 spring:
   mvc:
@@ -50,8 +28,6 @@ spring:
             authorization-grant-type: client_credentials
             scope:
               - ${MAAT_API_OAUTH_SCOPE}
-  scheduling:
-    contributions:
-      cron: "0 0 5 5 * ?" # (5th of every month at 05:00am)
-    fdc:
-      cron: "0 20 5 5 * ?" # (5th of every month at 05:20am)
+```
+
+MAAT API endpoints would only need to be interfaces implementing/extending MaatApiClient interface and using HTTP Exchange mapping

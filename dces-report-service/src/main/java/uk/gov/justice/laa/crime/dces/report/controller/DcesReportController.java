@@ -14,24 +14,23 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
+import uk.gov.justice.laa.crime.dces.report.service.DcesReportServiceImpl;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 
 @Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/api/internal/v1/dces/report")
 @Tag(name = "DCES Contribution files report", description = "Rest API to retrieve and generate contribution files report")
-public class ContributionsReportController {
+public class DcesReportController {
 
-    private ContributionFilesService contributionFilesService;
+    private final DcesReportServiceImpl reportService;
 
     @GetMapping(value = "/contributions/{start}/{finish}")
-    @Operation(description = "Retrieve information regarding contribution files sent during the given period and generate a report")
+    @Operation(description = "Generate Contributions report for the given period and send it by email")
     @ApiResponse(responseCode = "200")
     @ApiResponse(responseCode = "400",
             description = "Bad request.",
@@ -45,9 +44,28 @@ public class ContributionsReportController {
                     schema = @Schema(implementation = ProblemDetail.class)
             )
     )
-    public File getContributionFiles(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException {
-        List<String> contributionFiles = contributionFilesService.getFiles(start, finish);
-        String reportFileName = contributionFilesService.getFileName(start, finish);
-        return contributionFilesService.processFiles(contributionFiles, start, finish, reportFileName);
+    public File getContributionsReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException {
+        // TODO (): send file by email
+        return reportService.getContributionsReport(start, finish);
+    }
+
+    @GetMapping(value = "/fdc/{start}/{finish}")
+    @Operation(description = "Generate FDC report for the given period and send it by email")
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "400",
+            description = "Bad request.",
+            content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )
+    )
+    @ApiResponse(responseCode = "500",
+            description = "Server Error.",
+            content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )
+    )
+    public File getFdcReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException {
+        // TODO (): send file by email
+        return reportService.getFdcReport(start, finish);
     }
 }
