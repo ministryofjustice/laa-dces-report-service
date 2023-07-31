@@ -30,4 +30,12 @@ public class DateUtils {
                 && convertedDate.compareTo(endDate)<=0);
     }
 
+    public static LocalDate getDefaultStartDateForReport() {
+        return LocalDate.now().minusMonths(1).withDayOfMonth(1);
+    }
+
+    public static LocalDate getDefaultEndDateForReport() {
+        return LocalDate.now().withDayOfMonth(1).minusDays(1);
+    }
+
 }

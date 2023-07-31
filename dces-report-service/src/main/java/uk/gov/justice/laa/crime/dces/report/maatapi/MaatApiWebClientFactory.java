@@ -66,11 +66,12 @@ public class MaatApiWebClientFactory {
                     new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations, authorizedClients);
             oauth.setDefaultClientRegistrationId(servicesConfiguration.getMaatApi().getRegistrationId());
 
+            // TODO (DCES-67): This code seemed to be for authenticating access to DCES report application. Need confirmation on this
 //            clientBuilder.defaultHeader(
 //                    AUTHORIZATION,
 //                    generateJWTForOAuth2MattApi(
-//                            "lcra7ktupqeooja6irqu3b4gqcmvml5coo5pnb7l1sf0uca78cv",
-//                            "7p9a0fi8g9bj9d5ncapsdt5kl9")
+//                            "client-secret",
+//                            "client-id")
 //            );
 
             clientBuilder.filter(oauth);
@@ -114,6 +115,7 @@ public class MaatApiWebClientFactory {
         return megaBytes * 1024 * 1024;
     }
 
+    // TODO (DCES-67): This code seemed to be for authenticating access to DCES report application. Need confirmation on this
 //    private static String generateJWTForOAuth2MattApi(String clientSecret, String issuer) {
 //        return "Bearer " + Jwts.builder()
 //                .setIssuer(issuer)
