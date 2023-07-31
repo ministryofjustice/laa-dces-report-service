@@ -1,78 +1,80 @@
 plugins {
-	id 'java'
-	id 'jacoco'
-	id 'org.springframework.boot' version '3.0.5'
-	id 'io.spring.dependency-management' version '1.1.0'
-	id "org.sonarqube" version "4.0.0.2929"
-	id 'info.solidsoft.pitest' version '1.9.11'
+    id 'java'
+    id 'jacoco'
+    id 'org.springframework.boot' version '3.0.5'
+    id 'io.spring.dependency-management' version '1.1.0'
+    id "org.sonarqube" version "4.0.0.2929"
+    id 'info.solidsoft.pitest' version '1.9.11'
 }
 
 def versions = [
-		pitestVersion                      : '1.4.10',
-		sentryVersion                      : '6.15.0',
-		springdocVersion                   : '1.6.15',
-		okhttpVersion                      : '4.9.3',
-		mockwebserverVersion               : '4.9.3',
-		reactorTestVersion                 : '3.2.3',
-		springSecurityConfig               : '6.1.2',
-		springSecurityWeb                  : '6.1.1',
-		springOAuthJose                    : '6.1.1',
-		springOAuthClient                  : '3.1.1',
-		springOAuthResource                : '3.1.1',
-		springauthserverVersion            : '1.0.1',
-		jjwtVersion                        : '0.11.5',
-		jaxbXjc                            : '4.0.0',
-		jaxbImpl                           : '4.0.0',
-		jaxbCore                           : '4.0.0',
-		jakartaActivation                  : '2.0.1',
-		jakartaXmlBindApi                  : '4.0.0',
-		glassfishJaxb                      : '4.0.2',
-		resilience4jVersion                : '2.0.2',
-		wiremockVersion                	   : '2.35.0'
+        pitestVersion          : '1.4.10',
+        sentryVersion          : '6.15.0',
+        springdocVersion       : '1.6.15',
+        okhttpVersion          : '4.9.3',
+        mockwebserverVersion   : '4.9.3',
+        reactorTestVersion     : '3.2.3',
+        springSecurityConfig   : '6.1.2',
+        springSecurityWeb      : '6.1.1',
+        springOAuthJose        : '6.1.1',
+        springOAuthClient      : '3.1.1',
+        springOAuthResource    : '3.1.1',
+        springauthserverVersion: '1.0.1',
+        jjwtVersion            : '0.11.5',
+        jaxbXjc                : '4.0.0',
+        jaxbImpl               : '4.0.0',
+        jaxbCore               : '4.0.0',
+        jakartaActivation      : '2.0.1',
+        jakartaXmlBindApi      : '4.0.0',
+        glassfishJaxb          : '4.0.2',
+        resilience4jVersion    : '2.0.2',
+        wiremockVersion        : '2.35.0',
+        notifyVersion          : '4.1.0-RELEASE'
 ]
 group = 'uk.gov.justice.laa.crime'
 
 
 dependencyManagement {
-	dependencies {
-		dependencySet(group: 'io.sentry', version: versions.sentryVersion) {
-			entry 'sentry-spring-boot-starter'
-			entry 'sentry-logback'
-		}
-	}
+    dependencies {
+        dependencySet(group: 'io.sentry', version: versions.sentryVersion) {
+            entry 'sentry-spring-boot-starter'
+            entry 'sentry-logback'
+        }
+    }
 }
 
 java {
-	sourceCompatibility = JavaVersion.VERSION_17
-	targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 project.ext {
-	jaxbTargetDir = file("src/main/java")
+    jaxbTargetDir = file("src/main/java")
 }
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
-	xsd2java
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    xsd2java
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
 }
 
 dependencies {
-	implementation platform('io.sentry:sentry-bom:6.17.0')
-	implementation('io.sentry:sentry-spring-boot-starter')
-	implementation('io.sentry:sentry-logback')
+    implementation platform('io.sentry:sentry-bom:6.17.0')
+    implementation('io.sentry:sentry-spring-boot-starter')
+    implementation('io.sentry:sentry-logback')
 
 	// Spring
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
-
+	// cloud-function is only required to support executable beans (e.g. serverless AWS Lambda)
+	implementation "org.springframework.cloud:spring-cloud-function-web:4.0.4"
 
 	// oAuth
 	implementation "org.springframework.security:spring-security-config:$versions.springSecurityConfig"
@@ -81,119 +83,125 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-oauth2-client:$versions.springOAuthClient"
 	implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
 
-//	implementation "io.jsonwebtoken:jjwt-api:$versions.jjwtVersion"
-//	runtimeOnly "io.jsonwebtoken:jjwt-impl:$versions.jjwtVersion"
-//	runtimeOnly "io.jsonwebtoken:jjwt-jackson:$versions.jjwtVersion"
+	// JJWT package is used to connect and request token for authentication for own app access
+	implementation "io.jsonwebtoken:jjwt-api:$versions.jjwtVersion"
+	runtimeOnly "io.jsonwebtoken:jjwt-impl:$versions.jjwtVersion"
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    runtimeOnly "io.jsonwebtoken:jjwt-jackson:$versions.jjwtVersion"
 
-	implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
-	implementation "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
+    implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
+    implementation "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
 
-	implementation "org.springdoc:springdoc-openapi-ui:$versions.springdocVersion"
-	implementation "io.github.resilience4j:resilience4j-spring-boot3:$versions.resilience4jVersion"
+    implementation "org.springdoc:springdoc-openapi-ui:$versions.springdocVersion"
+    implementation "io.github.resilience4j:resilience4j-spring-boot3:$versions.resilience4jVersion"
 
-	implementation("io.micrometer:micrometer-tracing-bom:1.1.3")
-	implementation("io.micrometer:micrometer-tracing-bridge-brave:1.1.3")
+    implementation "uk.gov.service.notify:notifications-java-client:$versions.notifyVersion"
 
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
+    
+    implementation("io.micrometer:micrometer-tracing-bom:1.1.3")
+	  implementation("io.micrometer:micrometer-tracing-bridge-brave:1.1.3")
 
-	testImplementation 'org.mockito:mockito-inline'
-	testImplementation "org.pitest:pitest:$versions.pitestVersion"
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testImplementation "com.squareup.okhttp3:okhttp:$versions.okhttpVersion"
-	testImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserverVersion"
-	testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:$versions.wiremockVersion"
+    testImplementation 'org.mockito:mockito-inline'
+    testImplementation "org.pitest:pitest:$versions.pitestVersion"
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation "com.squareup.okhttp3:okhttp:$versions.okhttpVersion"
+    testImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserverVersion"
+    testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:$versions.wiremockVersion"
+    
 //	testImplementation "io.projectreactor:reactor-test"
-	testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.2'
-
-	xsd2java "com.sun.xml.bind:jaxb-xjc:$versions.jaxbXjc"
-	xsd2java "com.sun.xml.bind:jaxb-impl:$versions.jaxbImpl"
-	xsd2java "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
-	xsd2java "com.sun.activation:jakarta.activation:$versions.jakartaActivation"
-	xsd2java "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.2'
 
 
-
+    xsd2java "com.sun.xml.bind:jaxb-xjc:$versions.jaxbXjc"
+    xsd2java "com.sun.xml.bind:jaxb-impl:$versions.jaxbImpl"
+    xsd2java "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
+    xsd2java "com.sun.activation:jakarta.activation:$versions.jakartaActivation"
+    xsd2java "jakarta.xml.bind:jakarta.xml.bind-api:$versions.jakartaXmlBindApi"
 }
 
 
-
 test {
-	useJUnitPlatform()
-	finalizedBy jacocoTestReport
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 
 jacoco {
-	toolVersion = "0.8.8"
+    toolVersion = "0.8.8"
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
-	finalizedBy jacocoTestReport
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 jacocoTestReport {
-	dependsOn test
-	reports {
-		xml.required = true
-		html.required = true
-	}
-	afterEvaluate {
-		classDirectories.setFrom(files(classDirectories.files.collect {
-			fileTree(dir: it, exclude: [
-					'**/entity/**',
-					'**/dto/**',
-					'**/config/**'
-			])
-		}))
-	}
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    '**/entity/**',
+                    '**/dto/**',
+                    '**/config/**'
+            ])
+        }))
+    }
 }
 
 pitest {
-	targetClasses = ['uk.gov.justice.laa.crime.dces.report.*']
-	excludedClasses = ['uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication, uk.gov.justice.laa.crime.dces.report.maatapi.*Client*']
-	threads = 5
-	outputFormats = ['XML', 'HTML']
-	timestampedReports = false
-	mutationThreshold = 60
+    targetClasses = ['uk.gov.justice.laa.crime.dces.report.*']
+    excludedClasses = ['uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication, uk.gov.justice.laa.crime.dces.report.maatapi.*Client*']
+    threads = 5
+    outputFormats = ['XML', 'HTML']
+    timestampedReports = false
+    mutationThreshold = 60
+}
+
+test {
+    exclude '**/**IntegrationTest.class'
 }
 
 sonar {
-	properties {
-		property "sonar.projectName", "laa-dces-report-service"
-		property "sonar.host.url", "https://sonarcloud.io"
-		property "sonar.organization", "ministryofjustice"
-		property "sonar.projectKey", "ministryofjustice_laa-dces-report-service"
+    properties {
+        property "sonar.projectName", "laa-dces-report-service"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.organization", "ministryofjustice"
+        property "sonar.projectKey", "ministryofjustice_laa-dces-report-service"
 
-		property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java,**/maatapi/**Client**.java,**/generated/**"
-		property "sonar.coverage.exclusions", "**/DcesReportServiceApplication.java"
-		property "sonar.coverage.jacoco.xmlReportPaths",
-				"${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-	}
+        property "sonar.exclusions", "**/entity/**.java , **/model/**.java , **/dto/**.java , **/config/**.java, **/jms/**.java,**/exception/**.java,**/handler/**.java,**/maatapi/**Client**.java,**/generated/**"
+        property "sonar.coverage.exclusions", "**/DcesReportServiceApplication.java"
+        property "sonar.coverage.jacoco.xmlReportPaths",
+                "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+    }
 }
 
 task xsd2java() {
-	doLast {
-		jaxbTargetDir.mkdirs()
+    doLast {
+        jaxbTargetDir.mkdirs()
 
-		ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.xsd2java.asPath)
-		ant.jaxbTargetDir = jaxbTargetDir
+        ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.xsd2java.asPath)
+        ant.jaxbTargetDir = jaxbTargetDir
 
-		ant.xjc(
-				destdir: '${jaxbTargetDir}',
-				package: 'uk.gov.justice.laa.crime.dces.report.model.generated',
-				schema: 'src/main/resources/contributions.xsd'
-		)
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'uk.gov.justice.laa.crime.dces.report.model.generated',
+                schema: 'src/main/resources/contributions.xsd'
+        )
 
-		ant.xjc(
-				destdir: '${jaxbTargetDir}',
-				package: 'uk.gov.justice.laa.crime.dces.report.model.generated',
-				schema: 'src/main/resources/fdc.xsd'
-		)
-	}
+        ant.xjc(
+                destdir: '${jaxbTargetDir}',
+                package: 'uk.gov.justice.laa.crime.dces.report.model.generated',
+                schema: 'src/main/resources/fdc.xsd'
+        )
+    }
 }
 
 compileJava.dependsOn xsd2java

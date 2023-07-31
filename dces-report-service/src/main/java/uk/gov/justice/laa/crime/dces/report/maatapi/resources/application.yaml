@@ -19,7 +19,6 @@ spring:
             client-id: ${MAAT_API_OAUTH_CLIENT_ID}
             client-secret: ${MAAT_API_OAUTH_CLIENT_SECRET}
             authorization-grant-type: client_credentials
-
       resourceserver:
         jwt:
           issuer-uri: ${means-assessment.security.issuer-uri}
