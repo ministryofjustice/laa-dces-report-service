@@ -100,14 +100,13 @@ public class CSVFileService {
     }
 
     private String fdcLineBuilder(Fdc fdcLine) {
-        String sb = getFdcValue(fdcLine.getMaatId(), true) +
+        return getFdcValue(fdcLine.getMaatId(), true) +
                 getFdcValue(fdcLine.getSentenceDate()) +
                 getFdcValue(fdcLine.getCalculationDate()) +
                 getFdcValue(fdcLine.getFinalCost(), true) +
                 getFdcValue(fdcLine.getLgfsTotal(), true) +
                 getFdcValue(fdcLine.getAgfsTotal(), false) +
                 System.lineSeparator();
-        return sb;
     }
 
     private String getFdcValue(Object o, boolean insertComma) {

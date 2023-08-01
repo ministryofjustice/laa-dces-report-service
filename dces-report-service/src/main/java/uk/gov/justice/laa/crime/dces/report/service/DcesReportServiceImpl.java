@@ -21,13 +21,13 @@ import java.util.List;
 public class DcesReportServiceImpl implements DcesReportService {
 
     @Autowired
-    final private FdcFilesService fdcFilesService;
+    private final FdcFilesService fdcFilesService;
 
     @Autowired
-    final private ContributionFilesService contributionFilesService;
+    private final ContributionFilesService contributionFilesService;
 
     @Autowired
-    final private NotifyEmailClient emailClient;
+    private final NotifyEmailClient emailClient;
 
     @Value("${emailClient.notify.template-id}")
     private String templateId;
