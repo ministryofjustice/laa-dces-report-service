@@ -1,0 +1,33 @@
+This package is intended to be a generic class for integrations requiring connection to MAAT API.
+
+It pretty much works out of the box but it will require some configurations. Below is a list of the configuration variables that will need to be filled in application.yaml file
+
+```
+services:
+  maat-api:
+    baseUrl: ${MAAT_API_BASE_URL}
+    registrationId: ${MAAT_API_REGISTRATION_ID}
+    oAuthEnabled: true
+    maxBufferSize: 16
+
+spring:
+  mvc:
+    format:
+      date: dd.MM.yyyy
+  security:
+    oauth2:
+      # Interactive/Web user authentication
+      client:
+        provider:
+          maatapi:
+            token-uri: ${MAAT_API_OAUTH_URL}
+        registration:
+          maatapi:
+            client-id: ${MAAT_API_OAUTH_CLIENT_ID}
+            client-secret: ${MAAT_API_OAUTH_CLIENT_SECRET}
+            authorization-grant-type: client_credentials
+            scope:
+              - ${MAAT_API_OAUTH_SCOPE}
+```
+
+MAAT API endpoints would only need to be interfaces implementing/extending MaatApiClient interface and using HTTP Exchange mapping
