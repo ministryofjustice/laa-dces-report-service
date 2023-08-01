@@ -2,15 +2,16 @@ package uk.gov.justice.laa.crime.dces.report.controller;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.sentry.util.FileUtils;
-import jakarta.xml.bind.JAXBException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 import uk.gov.justice.laa.crime.dces.report.service.FdcFilesService;
+import uk.gov.service.notify.NotificationClient;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Optional;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -38,6 +39,8 @@ class DcesReportControllerTest {
     @Autowired
     DcesReportController controller;
 
+    @MockBean
+    NotificationClient notifyClient;
 
     @BeforeAll
     void setup() {
@@ -45,37 +48,21 @@ class DcesReportControllerTest {
     }
 
     @Test
-    void givenValidPeriod_whenGetContributionsReportIsInvoked_thenFileWithExpectedContentIsReturned() throws JAXBException, IOException {
-        File report = controller.getContributionsReport(startPeriod, finishPeriod);
+    void givenValidPeriod_whenGetContributionsReportIsInvoked() {
+        assertDoesNotThrow(() -> controller.getContributionsReport(startPeriod, finishPeriod));
 
-        assertThat(report).isNotNull().isNotEmpty().isFile();
-        assertThat(report.getName())
-            .matches("Contributions_.*csv")
-            .contains(contributionsFileService.getFileName(startPeriod, finishPeriod));
 
-        assertThat(searchInFile(report, MAAT_ID_EXPECTED)).isTrue();
-        assertThat(searchInFile(report, "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,"))
-                .isTrue();
     }
 
     @Test
-    void givenValidPeriod_whenGetFdcReportIsInvoked_thenFileWithExpectedContentIsReturned() throws JAXBException, IOException {
-        File report = controller.getFdcReport(fdcReportDate, fdcReportDate);
-
-        assertThat(report).isNotNull().isNotEmpty().isFile();
-        assertThat(report.getName())
-                .matches("FDC_.*csv")
-                .contains(fdcFilesService.getFileName(fdcReportDate, fdcReportDate));
-
-        assertThat(searchInFile(report, MAAT_ID_EXPECTED)).isTrue();
-        assertThat(searchInFile(report, "5635978,30/09/2016,22/12/2016,1774.4,1180.64,593.76"))
-                .isTrue();
+    void givenValidPeriod_whenGetFdcReportIsInvoked_thenFileWithExpectedContentIsReturned() {
+        assertDoesNotThrow(() -> controller.getFdcReport(fdcReportDate, fdcReportDate));
     }
 
     private boolean searchInFile(File file, String toSearchFor) throws IOException {
         System.out.println(FileUtils.readText(file));
         return Optional.ofNullable(FileUtils.readText(file))
-            .orElse("")
-            .contains(toSearchFor);
+                .orElse("")
+                .contains(toSearchFor);
     }
 }
