@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportServiceImpl;
+import uk.gov.service.notify.NotificationClientException;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 
@@ -44,9 +44,8 @@ public class DcesReportController {
                     schema = @Schema(implementation = ProblemDetail.class)
             )
     )
-    public File getContributionsReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException {
-        // TODO (): send file by email
-        return reportService.getContributionsReport(start, finish);
+    public void getContributionsReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException, NotificationClientException {
+        reportService.sendContributionsReport(start, finish);
     }
 
     @GetMapping(value = "/fdc/{start}/{finish}")
@@ -64,8 +63,7 @@ public class DcesReportController {
                     schema = @Schema(implementation = ProblemDetail.class)
             )
     )
-    public File getFdcReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException {
-        // TODO (): send file by email
-        return reportService.getFdcReport(start, finish);
+    public void getFdcReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException, NotificationClientException {
+        reportService.sendFdcReport(start, finish);
     }
 }

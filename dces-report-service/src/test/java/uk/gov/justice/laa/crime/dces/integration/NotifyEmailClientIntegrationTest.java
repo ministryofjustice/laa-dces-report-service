@@ -6,10 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-import uk.gov.justice.laa.crime.dces.utils.email.EmailClient;
-import uk.gov.justice.laa.crime.dces.utils.email.NotifyEmailClient;
-import uk.gov.justice.laa.crime.dces.utils.email.NotifyEmailObject;
-import uk.gov.justice.laa.crime.dces.utils.email.config.EmailConfiguration;
+import uk.gov.justice.laa.crime.dces.report.utils.email.EmailClient;
+import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
+import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
+import uk.gov.justice.laa.crime.dces.report.utils.email.config.EmailConfiguration;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -52,7 +52,7 @@ final class NotifyEmailClientIntegrationTest {
                 ""
         );
         // setup template fields
-        testEmailObject.getPersonalisation().put("report_type", "contribution");
+        testEmailObject.getPersonalisation().put("report_type", "Contribution");
         testEmailObject.getPersonalisation().put("from_date", "25-07-2023");
         testEmailObject.getPersonalisation().put("to_date", "25-07-2023");
     }

@@ -5,13 +5,13 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
 import uk.gov.justice.laa.crime.dces.report.model.generated.ContributionFile;
 import uk.gov.justice.laa.crime.dces.report.model.generated.ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS;
 import uk.gov.justice.laa.crime.dces.report.model.generated.ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS.CcOutcomes.CcOutcome;
 import uk.gov.justice.laa.crime.dces.report.model.generated.ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS.Correspondence.Letter;
-import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
 import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
-import uk.gov.justice.laa.crime.dces.utils.DateUtils;
+import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class ContributionsFileMapper {
 
     private Unmarshaller unmarshaller;
     protected CSVFileService csvFileService;
-    private static final String EMPTY_CHARACTER="";
+    private static final String EMPTY_CHARACTER = "";
 
 
     @Autowired
@@ -39,7 +39,7 @@ public class ContributionsFileMapper {
 
     public File processRequest(String[] xmlData, LocalDate startDate, LocalDate endDate, String filename) throws IOException, JAXBException {
         List<CSVDataLine> csvLineList = new ArrayList<>();
-        for (String xmlString: xmlData) {
+        for (String xmlString : xmlData) {
             processXMLFile(xmlString, startDate, endDate, csvLineList);
         }
         return csvFileService.writeContributionToCsv(csvLineList, filename);
@@ -47,7 +47,7 @@ public class ContributionsFileMapper {
 
     private void processXMLFile(String xmlData, LocalDate startDate, LocalDate endDate, List<CSVDataLine> csvLineList) throws JAXBException {
         ContributionFile contributionFile = mapContributionsXmlStringToObject(xmlData);
-        for(CONTRIBUTIONS contribution : contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()){
+        for (CONTRIBUTIONS contribution : contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()) {
             csvLineList.add(buildCSVDataLine(contribution, startDate, endDate));
         }
 
@@ -62,7 +62,7 @@ public class ContributionsFileMapper {
         return (ContributionFile) unmarshaller.unmarshal(sr);
     }
 
-    public CSVDataLine buildCSVDataLine(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
+    public CSVDataLine buildCSVDataLine(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
         // Business logic inside several of these. Go to methods for details.
         return CSVDataLine.builder()
                 .maatId(getMaatId(contribution))
@@ -83,59 +83,66 @@ public class ContributionsFileMapper {
     }
 
 
-    private String getMaatId(CONTRIBUTIONS contribution){
+    private String getMaatId(CONTRIBUTIONS contribution) {
         return String.valueOf(contribution.getMaatId());
     }
-    private String getDataFeed(CONTRIBUTIONS contribution){
+
+    private String getDataFeed(CONTRIBUTIONS contribution) {
         return contribution.getFlag();
     }
-    private String getAssessmentDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
-        if(Objects.isNull(contribution.getAssessment()) || Objects.isNull(contribution.getAssessment().getEffectiveDate())
-                || !DateUtils.validateDate(contribution.getAssessment().getEffectiveDate(), startDate, endDate)){
+
+    private String getAssessmentDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
+        if (Objects.isNull(contribution.getAssessment()) || Objects.isNull(contribution.getAssessment().getEffectiveDate())
+                || !DateUtils.validateDate(contribution.getAssessment().getEffectiveDate(), startDate, endDate)) {
             return EMPTY_CHARACTER;
         }
         return DateUtils.convertXmlGregorianToString(contribution.getAssessment().getEffectiveDate());
     }
-    private String getOutcomeDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
+
+    private String getOutcomeDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
         List<CcOutcome> filteredList = contribution.getCcOutcomes().getCcOutcome()
                 .stream()
                 .filter(Objects::nonNull)
-                .filter(x->DateUtils.validateDate(x.getDate(),startDate,endDate))
+                .filter(x -> DateUtils.validateDate(x.getDate(), startDate, endDate))
                 .toList();
-        if(!filteredList.isEmpty()){
+        if (!filteredList.isEmpty()) {
             return DateUtils.convertXmlGregorianToString(filteredList.get(0).getDate());
         }
         return "";
     }
-    private String getCorrespondenceSentDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
+
+    private String getCorrespondenceSentDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
         List<Letter> filteredList = contribution.getCorrespondence().getLetter()
                 .stream()
                 .filter(Objects::nonNull)
-                .filter(x->DateUtils.validateDate(x.getCreated(),startDate,endDate))
+                .filter(x -> DateUtils.validateDate(x.getCreated(), startDate, endDate))
                 .toList();
-        if(!filteredList.isEmpty()){
+        if (!filteredList.isEmpty()) {
             return DateUtils.convertXmlGregorianToString(filteredList.get(0).getCreated());
         }
         return "";
     }
-    private String getRepOrderStatusDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
-        if(Objects.isNull(contribution.getApplication()) || Objects.isNull(contribution.getApplication().getRepStatusDate())
-                || !DateUtils.validateDate(contribution.getApplication().getRepStatusDate(), startDate, endDate)){
+
+    private String getRepOrderStatusDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
+        if (Objects.isNull(contribution.getApplication()) || Objects.isNull(contribution.getApplication().getRepStatusDate())
+                || !DateUtils.validateDate(contribution.getApplication().getRepStatusDate(), startDate, endDate)) {
             return EMPTY_CHARACTER;
         }
         return DateUtils.convertXmlGregorianToString(contribution.getApplication().getRepStatusDate());
     }
-    private String getHardshipReviewDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
-        if(Objects.isNull(contribution.getApplication())
+
+    private String getHardshipReviewDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
+        if (Objects.isNull(contribution.getApplication())
                 || Objects.isNull(contribution.getApplication().getCcHardship()) || Objects.isNull(contribution.getApplication().getCcHardship().getReviewDate())
-                || !DateUtils.validateDate(contribution.getApplication().getCcHardship().getReviewDate(), startDate, endDate)){
+                || !DateUtils.validateDate(contribution.getApplication().getCcHardship().getReviewDate(), startDate, endDate)) {
             return EMPTY_CHARACTER;
         }
         return DateUtils.convertXmlGregorianToString(contribution.getApplication().getCcHardship().getReviewDate());
     }
-    private String getPassportedDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate){
-        if( Objects.isNull(contribution.getPassported()) || Objects.isNull(contribution.getPassported().getDateCompleted())
-                || !DateUtils.validateDate(contribution.getPassported().getDateCompleted(), startDate, endDate)){
+
+    private String getPassportedDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
+        if (Objects.isNull(contribution.getPassported()) || Objects.isNull(contribution.getPassported().getDateCompleted())
+                || !DateUtils.validateDate(contribution.getPassported().getDateCompleted(), startDate, endDate)) {
             return EMPTY_CHARACTER;
         }
         return DateUtils.convertXmlGregorianToString(contribution.getPassported().getDateCompleted());

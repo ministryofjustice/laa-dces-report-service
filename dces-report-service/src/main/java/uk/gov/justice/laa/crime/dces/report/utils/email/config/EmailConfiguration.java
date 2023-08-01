@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.dces.utils.email.config;
+package uk.gov.justice.laa.crime.dces.report.utils.email.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

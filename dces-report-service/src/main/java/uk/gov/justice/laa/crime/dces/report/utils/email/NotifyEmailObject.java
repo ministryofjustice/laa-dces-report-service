@@ -1,11 +1,11 @@
-package uk.gov.justice.laa.crime.dces.utils.email;
+package uk.gov.justice.laa.crime.dces.report.utils.email;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.dces.utils.email.exceptions.EmailObjectInvalidException;
+import uk.gov.justice.laa.crime.dces.report.utils.email.exceptions.EmailObjectInvalidException;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 

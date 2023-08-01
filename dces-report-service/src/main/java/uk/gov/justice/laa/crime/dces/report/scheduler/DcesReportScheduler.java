@@ -7,9 +7,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
-import uk.gov.justice.laa.crime.dces.utils.DateUtils;
+import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
+import uk.gov.service.notify.NotificationClientException;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -19,12 +19,12 @@ import java.time.format.DateTimeFormatter;
 @RequiredArgsConstructor
 public class DcesReportScheduler {
     @Value("spring.mvc.format.date")
-    private static final String DATE_FORMAT="dd.MM.yyyy";
+    private static final String DATE_FORMAT = "dd.MM.yyyy";
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
     private final DcesReportService reportService;
 
     @Scheduled(cron = "${spring.scheduling.contributions.cron}")
-    public void contributionsReport() throws JAXBException, IOException {
+    public void contributionsReport() throws JAXBException, IOException, NotificationClientException {
         LocalDate fromDate = DateUtils.getDefaultStartDateForReport();
         LocalDate toDate = DateUtils.getDefaultEndDateForReport();
 
@@ -32,11 +32,11 @@ public class DcesReportScheduler {
                 fromDate.format(dateFormatter),
                 toDate.format(dateFormatter));
 
-        File reportFile = reportService.getContributionsReport(fromDate, toDate);
+        reportService.sendContributionsReport(fromDate, toDate);
     }
 
     @Scheduled(cron = "${spring.scheduling.fdc.cron}")
-    public void fdcReport() throws JAXBException, IOException {
+    public void fdcReport() throws JAXBException, IOException, NotificationClientException {
         LocalDate fromDate = DateUtils.getDefaultStartDateForReport();
         LocalDate toDate = DateUtils.getDefaultEndDateForReport();
 
@@ -44,6 +44,6 @@ public class DcesReportScheduler {
                 fromDate.format(dateFormatter),
                 toDate.format(dateFormatter));
 
-        File reportFile = reportService.getFdcReport(fromDate, toDate);
+        reportService.sendFdcReport(fromDate, toDate);
     }
 }

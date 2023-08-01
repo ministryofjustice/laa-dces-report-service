@@ -30,9 +30,9 @@ services:
 
 emailClient:
   notify:
-    key: ${NOTIFY_KEY}
-    template-id: ${NOTIFY_TEMPLATEID}
-    recipient: ${NOTIFY_RECIPIENT}
+    key: notify_test_key
+    template-id: notify-template-id
+    recipient: tariq.hossain@digital.justice.gov.uk
 
 spring:
   mvc:
@@ -52,8 +52,13 @@ spring:
             authorization-grant-type: client_credentials
             scope:
               - ${MAAT_API_OAUTH_SCOPE}
+  # This is only needed to add support for executable beans (e.g. for serverless and AWS Lambada)
+  cloud:
+    function:
+      web:
+        path: /report
   scheduling:
     contributions:
-      cron: "0 0 5 5 * ?" # (5th of every month at 05:00am)
+      cron: "0-30/16 */1 * * * ?" # "0 0 5 5 * ?" (5th of every month at 05:00am)
     fdc:
-      cron: "0 20 5 5 * ?" # (5th of every month at 05:20am)
+      cron: "31-59/15 */1 * * * ?" # "0 20 5 5 * ?" (5th of every month at 05:20am)

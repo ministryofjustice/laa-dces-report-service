@@ -1,14 +1,14 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import jakarta.xml.bind.JAXBException;
+import uk.gov.service.notify.NotificationClientException;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 
 public interface DcesReportService {
 
-    File getContributionsReport(LocalDate start, LocalDate end) throws JAXBException, IOException;
+    void sendContributionsReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException;
 
-    File getFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException;
+    void sendFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException;
 }
