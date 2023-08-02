@@ -34,7 +34,6 @@ dces-api:
   clientSecret: ${DCES_REPORT_API_AUTH_SECRET}
   issuerUri: http://localhost:${server.port}
 
-
 emailClient:
   notify:
     key: ${NOTIFY_KEY}
@@ -61,8 +60,8 @@ spring:
               - ${MAAT_API_OAUTH_SCOPE}
       # TODO (DCES-77): Confirm this value, required to generate access token allowing authentication
       resource-server:
-          jwt:
-            issuer-uri: ${DCES_REPORT_RESOURCE_SERVER_ISSUER_URI}
+        jwt:
+          issuer-uri: ${DCES_REPORT_RESOURCE_SERVER_ISSUER_URI}
   scheduling:
     contributions:
       cron: "0 0 5 5 * ?" # (5th of every month at 05:00am)
