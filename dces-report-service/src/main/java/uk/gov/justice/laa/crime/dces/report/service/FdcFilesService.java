@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import io.github.resilience4j.retry.annotation.Retry;
+import io.micrometer.core.annotation.Timed;
 import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ public class FdcFilesService implements DcesReportFileService {
 
     private final FdcFileMapper fdcFileMapper;
 
+    @Timed("FDC.getFiles")
     @Retry(name = SERVICE_NAME)
     public List<String> getFiles(LocalDate start, LocalDate end) {
         if (end.isBefore(start)) {
@@ -33,9 +35,10 @@ public class FdcFilesService implements DcesReportFileService {
             throw new MaatApiClientException(message);
         }
         log.info("Start - call MAAT API to collect FDC files, between {} and {}", start, end);
-        return fdcFilesClient.getContributions(start, end);
+//        return fdcFilesClient.getContributions(start, end);
+        return List.of("<?xml version=\"1.0\"?><fdc_file>    <header file_id=\"222637370\">        <filename>FDC_201807251354.xml</filename>        <dateGenerated>2018-07-25</dateGenerated>        <recordCount>6260</recordCount>    </header>    <fdc_list>        <fdc id=\"27783002\">            <maat_id>2525925</maat_id>            <sentenceDate>2016-09-30</sentenceDate>            <calculationDate>2016-12-22</calculationDate>            <final_cost>1774.4</final_cost>            <lgfs_total>1180.64</lgfs_total>            <agfs_total>593.76</agfs_total>        </fdc>    </fdc_list></fdc_file>");
     }
-
+    @Timed("FDC.processFiles")
     public File processFiles(List<String> files, LocalDate start, LocalDate finish) throws JAXBException, IOException {
         return fdcFileMapper.processRequest(files.toArray(new String[0]), getFileName(start, finish));
     }

@@ -41,26 +41,6 @@ public class MaatApiWebClientFactory {
 //    private static final String AUTHORIZATION = "Authorization";
 //    private static final long TOKEN_LIFETIME_DURATION = Duration.ofSeconds(60).toMillis();
 
-    private final ObservationRegistry registry;
-
-    @Observed
-    void calling ()  {
-
-        Observation.createNotStarted("foo", registry)
-                        .lowCardinalityKeyValue("lowTag", "valueTag")
-                                .highCardinalityKeyValue("highKey", "highValye")
-                                        .observe(() -> System.out.println("Hello hello"));
-        MeterRegistry reg = new SimpleMeterRegistry();
-        Timer.Sample sample = Timer.start(reg);
-        log.error("Error");
-        try {
-            Thread.sleep(2000);
-            sample.stop(Timer.builder("myTottalTimer").register(reg));
-        } catch (InterruptedException e) {
-
-            throw new RuntimeException(e);
-        }
-    }
     @Bean
     @Observed
     public WebClient maatApiWebClient(
@@ -68,7 +48,6 @@ public class MaatApiWebClientFactory {
             ClientRegistrationRepository clientRegistrations,  OAuth2AuthorizedClientRepository authorizedClients
     ) {
 
-        calling();
         log.info("Spring-micrometer - Setting up the Maat API Client ");
         ConnectionProvider provider = ConnectionProvider.builder("custom")
                 .maxConnections(500)

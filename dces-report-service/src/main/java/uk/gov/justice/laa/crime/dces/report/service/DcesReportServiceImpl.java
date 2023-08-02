@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
+import io.micrometer.core.annotation.Timed;
 import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ public class DcesReportServiceImpl implements DcesReportService {
     @Autowired
     private ContributionFilesService contributionFilesService;
 
+    @Timed("getContributionsReport")
     public File getContributionsReport(LocalDate start, LocalDate end) throws JAXBException, IOException {
         List<String> contributionFiles = contributionFilesService.getFiles(start, end);
         // @TODO handle empty list
@@ -32,6 +34,7 @@ public class DcesReportServiceImpl implements DcesReportService {
         );
     }
 
+    @Timed("getContributionsReport")
     public File getFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException {
         List<String> contributionFiles = fdcFilesService.getFiles(start, end);
         // @TODO handle empty list
