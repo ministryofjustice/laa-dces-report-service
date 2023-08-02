@@ -13,12 +13,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClient;
-import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration;
-import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
+import uk.gov.justice.laa.crime.dces.report.utils.maatapi.MaatApiWebClientFactory;
+import uk.gov.justice.laa.crime.dces.report.utils.maatapi.config.ServicesConfiguration;
+import uk.gov.justice.laa.crime.dces.report.utils.maatapi.model.MaatApiResponseModel;
 
 import java.io.IOException;
 
@@ -39,9 +39,7 @@ class MaatApiWebClientFactoryTest {
     @Autowired
     private ServicesConfiguration configuration;
     @MockBean
-    private ClientRegistrationRepository clientRegistrationRepo;
-    @MockBean
-    private OAuth2AuthorizedClientRepository authorizationRepo;
+    OAuth2AuthorizedClientManager authorizedClientManager;
 
 
     @BeforeAll
@@ -66,7 +64,7 @@ class MaatApiWebClientFactoryTest {
         setupValidResponse(expectedResponse);
 
         WebClient actualWebClient = maatApiWebClientFactory.maatApiWebClient(configuration,
-                clientRegistrationRepo, authorizationRepo
+                authorizedClientManager
         );
 
         assertThat(actualWebClient).isNotNull();

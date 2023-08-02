@@ -20,7 +20,7 @@ import java.util.Locale;
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles("connectiontest")
+@ActiveProfiles("localconnection")
 class ContributionsFileServiceConnectionTest {
     @InjectSoftAssertions
     private SoftAssertions softly;

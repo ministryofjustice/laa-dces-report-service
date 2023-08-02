@@ -18,9 +18,10 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 @RequiredArgsConstructor
 public class DcesReportScheduler {
-    @Value("spring.mvc.format.date")
+    @Value("${spring.mvc.format.date}")
     private static final String DATE_FORMAT = "dd.MM.yyyy";
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
+
     private final DcesReportService reportService;
 
     @Scheduled(cron = "${spring.scheduling.contributions.cron}")

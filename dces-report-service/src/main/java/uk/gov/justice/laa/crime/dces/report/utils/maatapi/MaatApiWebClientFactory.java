@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.dces.report.maatapi;
+package uk.gov.justice.laa.crime.dces.report.utils.maatapi;
 
 //import io.jsonwebtoken.Jwts;
 //import io.jsonwebtoken.SignatureAlgorithm;
@@ -13,15 +13,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.security.oauth2.client.*;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.*;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
-import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration;
-import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
+import uk.gov.justice.laa.crime.dces.report.utils.maatapi.config.ServicesConfiguration;
+import uk.gov.justice.laa.crime.dces.report.utils.maatapi.exception.MaatApiClientException;
 
 import java.time.Duration;
 import java.util.UUID;
@@ -30,13 +30,11 @@ import java.util.UUID;
 @Configuration
 public class MaatApiWebClientFactory {
     private static final String LAA_TRANSACTION_ID = "LAA-TRANSACTION-ID";
-//    private static final String AUTHORIZATION = "Authorization";
-//    private static final long TOKEN_LIFETIME_DURATION = Duration.ofSeconds(60).toMillis();
 
     @Bean
     public WebClient maatApiWebClient(
             ServicesConfiguration servicesConfiguration,
-            ClientRegistrationRepository clientRegistrations,  OAuth2AuthorizedClientRepository authorizedClients
+            OAuth2AuthorizedClientManager authorizedClientManager
     ) {
 
         ConnectionProvider provider = ConnectionProvider.builder("custom")
@@ -62,19 +60,21 @@ public class MaatApiWebClientFactory {
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
         if (servicesConfiguration.getMaatApi().isOAuthEnabled()) {
-            ServletOAuth2AuthorizedClientExchangeFilterFunction oauth =
-                    new ServletOAuth2AuthorizedClientExchangeFilterFunction(clientRegistrations, authorizedClients);
-            oauth.setDefaultClientRegistrationId(servicesConfiguration.getMaatApi().getRegistrationId());
+            ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =
+                    new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
 
-            // TODO (DCES-67): This code seemed to be for authenticating access to DCES report application. Need confirmation on this
+            oauth2Client.setDefaultClientRegistrationId(
+                    servicesConfiguration.getMaatApi().getRegistrationId()
+            );
+
+            // TODO (DCES-77): This code seemed to be for authenticating access to DCES report application. Need confirmation on this
 //            clientBuilder.defaultHeader(
 //                    AUTHORIZATION,
 //                    generateJWTForOAuth2MattApi(
-//                            "client-secret",
-//                            "client-id")
+//                            "SECRET", "ISSUER")
 //            );
 
-            clientBuilder.filter(oauth);
+            clientBuilder.filter(oauth2Client);
         }
 
         final ExchangeStrategies strategies = ExchangeStrategies.builder()
@@ -85,6 +85,26 @@ public class MaatApiWebClientFactory {
         clientBuilder.exchangeStrategies(strategies);
 
         return clientBuilder.build();
+    }
+
+    @Bean
+    public OAuth2AuthorizedClientManager authorizedClientManager(
+            ClientRegistrationRepository clientRegistrationRepository,
+            OAuth2AuthorizedClientService clientService) {
+        OAuth2AuthorizedClientProvider authorizedClientProvider =
+            OAuth2AuthorizedClientProviderBuilder.builder()
+                .refreshToken()
+                .clientCredentials()
+                .build();
+
+        AuthorizedClientServiceOAuth2AuthorizedClientManager authorizedClientManager =
+            new AuthorizedClientServiceOAuth2AuthorizedClientManager(
+                clientRegistrationRepository, clientService
+        );
+
+        authorizedClientManager.setAuthorizedClientProvider(authorizedClientProvider);
+
+        return authorizedClientManager;
     }
 
     private ExchangeFilterFunction errorResponse() {
@@ -115,7 +135,7 @@ public class MaatApiWebClientFactory {
         return megaBytes * 1024 * 1024;
     }
 
-    // TODO (DCES-67): This code seemed to be for authenticating access to DCES report application. Need confirmation on this
+    // TODO (DCES-77): This code seems to be for authenticating access to DCES report application. Need confirmation on this
 //    private static String generateJWTForOAuth2MattApi(String clientSecret, String issuer) {
 //        return "Bearer " + Jwts.builder()
 //                .setIssuer(issuer)

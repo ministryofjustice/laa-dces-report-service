@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.dces.report.maatapi.client;
+package uk.gov.justice.laa.crime.dces.report.utils.maatapi.client;
 
 import org.springframework.web.service.annotation.GetExchange;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionFilesResponse;

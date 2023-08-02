@@ -52,6 +52,9 @@ spring:
             authorization-grant-type: client_credentials
             scope:
               - ${MAAT_API_OAUTH_SCOPE}
+      resource-server:
+        jwt:
+          issuer-uri: localhost:999/token
   # This is only needed to add support for executable beans (e.g. for serverless and AWS Lambada)
   cloud:
     function:

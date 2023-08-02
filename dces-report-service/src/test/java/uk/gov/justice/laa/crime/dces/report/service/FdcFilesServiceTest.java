@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
+import uk.gov.justice.laa.crime.dces.report.utils.maatapi.exception.MaatApiClientException;
 
 import java.time.LocalDate;
 import java.util.List;
