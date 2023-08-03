@@ -33,13 +33,14 @@ public class DcesReportAuthenticationConfig {
                     // TODO (DCES-77): if authentication is required leave authenticated(), otherwise maybe change to deny
                     .anyRequest().authenticated()
             )
-            // TODO (DCES-77): confirm what level of authentication security will be required to access this service
-            .oauth2ResourceServer(
-                oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults())
-            )
             .sessionManagement(
-                sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            );
+                    sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            )
+            // TODO (DCES-77): confirm what level of authentication security will be required to access this service
+//            .oauth2ResourceServer(
+//                oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults())
+//            )
+            ;
         return http.build();
     }
 }
