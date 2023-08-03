@@ -19,6 +19,9 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class FdcFilesService implements DcesReportFileService {
+
+    public static String REPORT_TYPE = "Final Defence Cost";
+
     private static final String SERVICE_NAME = "dcesReportFdc";
     private static final String FILE_NAME_TEMPLATE = "FDC_%s_%s";
 

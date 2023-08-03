@@ -18,6 +18,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ContributionFilesService implements DcesReportFileService {
+
+    public static String REPORT_TYPE = "Contributions";
+
     private static final String SERVICE_NAME = "dcesReportContributions";
     public static final String FILE_NAME_TEMPLATE = "Contributions_%s_%s";
 
