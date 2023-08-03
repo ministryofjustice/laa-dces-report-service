@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import io.github.resilience4j.retry.annotation.Retry;
+import io.micrometer.core.annotation.Timed;
 import jakarta.xml.bind.JAXBException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class FdcFilesService implements DcesReportFileService {
 
     private final FdcFileMapper fdcFileMapper;
 
+    @Timed("Fdc.getFiles")
     @Retry(name = SERVICE_NAME)
     public List<String> getFiles(LocalDate start, LocalDate end) {
         if (end.isBefore(start)) {
@@ -39,6 +41,7 @@ public class FdcFilesService implements DcesReportFileService {
         return fdcFilesClient.getContributions(start, end);
     }
 
+    @Timed("Fdc.processFiles")
     public File processFiles(List<String> files, LocalDate start, LocalDate finish) throws JAXBException, IOException {
         return fdcFileMapper.processRequest(files.toArray(new String[0]), getFileName(start, finish));
     }
