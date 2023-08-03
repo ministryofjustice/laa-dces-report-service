@@ -19,7 +19,7 @@ import java.util.List;
 @Slf4j
 public class ContributionFilesService implements DcesReportFileService {
 
-    public static String REPORT_TYPE = "Contributions";
+    private static final String reportType = "Contributions";
 
     private static final String SERVICE_NAME = "dcesReportContributions";
     public static final String FILE_NAME_TEMPLATE = "Contributions_%s_%s";
@@ -42,5 +42,10 @@ public class ContributionFilesService implements DcesReportFileService {
 
     public String getFileName(LocalDate start, LocalDate finish) {
         return String.format(FILE_NAME_TEMPLATE, start, finish);
+    }
+
+    @Override
+    public String getType() {
+        return reportType;
     }
 }
