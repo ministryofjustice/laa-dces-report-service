@@ -28,6 +28,12 @@ services:
     oAuthEnabled: true
     maxBufferSize: 16
 
+# TODO (DCES-77): It seems for other projects, these values are generated to allow token generation and allow authentication
+#dces-api:
+#  baseUrl: ${DCES_REPORT_API_URL}
+#  clientSecret: ${DCES_REPORT_API_AUTH_SECRET}
+#  issuerUri: http://localhost:${server.port}
+
 emailClient:
   notify:
     key: ${NOTIFY_KEY}
@@ -52,6 +58,10 @@ spring:
             authorization-grant-type: client_credentials
             scope:
               - ${MAAT_API_OAUTH_SCOPE}
+      # TODO (DCES-77): Confirm this value, required to generate access token allowing authentication
+  #      resource-server:
+  #        jwt:
+  #          issuer-uri: ${DCES_REPORT_RESOURCE_SERVER_ISSUER_URI}
   scheduling:
     contributions:
       cron: "0 0 5 5 * ?" # (5th of every month at 05:00am)

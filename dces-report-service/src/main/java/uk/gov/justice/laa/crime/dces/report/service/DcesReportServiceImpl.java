@@ -39,7 +39,7 @@ public class DcesReportServiceImpl implements DcesReportService {
     @Override
     public void sendContributionsReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
         List<String> contributionFiles = contributionFilesService.getFiles(start, end);
-        // @TODO handle empty list
+        // TODO (DCES-78):  handle empty list
 
         File file = contributionFilesService.processFiles(
                 contributionFiles,
@@ -54,7 +54,7 @@ public class DcesReportServiceImpl implements DcesReportService {
     @Override
     public void sendFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
         List<String> contributionFiles = fdcFilesService.getFiles(start, end);
-        // @TODO handle empty list
+        // TODO (DCES-78):  handle empty list
         File fdcFile = fdcFilesService.processFiles(contributionFiles, start, end);
 
         sendEmailWithAttachment(fdcFile, "Final Defence Cost", start, end);
