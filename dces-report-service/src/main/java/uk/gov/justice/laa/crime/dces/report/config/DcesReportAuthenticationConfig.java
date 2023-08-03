@@ -33,7 +33,7 @@ public class DcesReportAuthenticationConfig {
                     .anyRequest().authenticated()
             )
             .sessionManagement(
-                    sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             )
             // TODO (DCES-77): confirm what level of authentication security will be required to access this service
 //            .oauth2ResourceServer(
