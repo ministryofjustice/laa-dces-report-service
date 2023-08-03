@@ -48,7 +48,7 @@ public class DcesReportServiceImpl implements DcesReportService {
                 contributionFilesService.getFileName(start, end)
         );
 
-        sendEmailWithAttachment(file, "Contributions", start, end);
+        sendEmailWithAttachment(file, contributionFilesService.getType(), start, end);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class DcesReportServiceImpl implements DcesReportService {
         // TODO (DCES-78):  handle empty list
         File fdcFile = fdcFilesService.processFiles(contributionFiles, start, end);
 
-        sendEmailWithAttachment(fdcFile, "Final Defence Cost", start, end);
+        sendEmailWithAttachment(fdcFile, fdcFilesService.getType(), start, end);
     }
 
     private void sendEmailWithAttachment(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {

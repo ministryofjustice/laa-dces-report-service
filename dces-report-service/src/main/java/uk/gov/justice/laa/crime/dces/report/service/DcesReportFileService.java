@@ -11,4 +11,6 @@ public interface DcesReportFileService {
     List<String> getFiles(LocalDate start, LocalDate end);
 
     String getFileName(LocalDate start, LocalDate finish);
+
+    String getType();
 }
