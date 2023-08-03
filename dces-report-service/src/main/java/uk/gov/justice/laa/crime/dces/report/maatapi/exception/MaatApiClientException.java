@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.dces.report.utils.maatapi.exception;
+package uk.gov.justice.laa.crime.dces.report.maatapi.exception;
 
 public class MaatApiClientException extends RuntimeException {
 

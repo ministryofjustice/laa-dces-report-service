@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.dces.report.utils.maatapi.model;
+package uk.gov.justice.laa.crime.dces.report.maatapi.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;

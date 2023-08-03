@@ -3,7 +3,7 @@ package uk.gov.justice.laa.crime.dces.report.maatapi;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.justice.laa.crime.dces.report.utils.maatapi.model.MaatApiResponseModel;
+import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

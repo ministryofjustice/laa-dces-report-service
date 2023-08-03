@@ -16,9 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClient;
-import uk.gov.justice.laa.crime.dces.report.utils.maatapi.MaatApiWebClientFactory;
-import uk.gov.justice.laa.crime.dces.report.utils.maatapi.config.ServicesConfiguration;
-import uk.gov.justice.laa.crime.dces.report.utils.maatapi.model.MaatApiResponseModel;
+import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration;
+import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
 
 import java.io.IOException;
 

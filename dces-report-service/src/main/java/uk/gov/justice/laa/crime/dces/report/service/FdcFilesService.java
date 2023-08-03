@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
-import uk.gov.justice.laa.crime.dces.report.utils.maatapi.exception.MaatApiClientException;
+import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.mapper.FdcFileMapper;
 
 import java.io.File;

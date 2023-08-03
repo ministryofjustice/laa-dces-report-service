@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.justice.laa.crime.dces.report.utils.maatapi.config.ServicesConfiguration;
+import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
