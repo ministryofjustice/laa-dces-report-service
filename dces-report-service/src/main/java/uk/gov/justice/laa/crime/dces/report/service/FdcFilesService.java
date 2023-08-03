@@ -20,7 +20,7 @@ import java.util.List;
 @Slf4j
 public class FdcFilesService implements DcesReportFileService {
 
-    private static final String reportType = "Final Defence Cost";
+    private static final String REPORT_TYPE = "Final Defence Cost";
 
     private static final String SERVICE_NAME = "dcesReportFdc";
     private static final String FILE_NAME_TEMPLATE = "FDC_%s_%s";
@@ -49,6 +49,6 @@ public class FdcFilesService implements DcesReportFileService {
 
     @Override
     public String getType() {
-        return reportType;
+        return REPORT_TYPE;
     }
 }
