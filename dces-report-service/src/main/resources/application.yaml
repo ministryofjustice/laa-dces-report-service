@@ -59,9 +59,9 @@ spring:
             scope:
               - ${MAAT_API_OAUTH_SCOPE}
       # TODO (DCES-77): Confirm this value, required to generate access token allowing authentication
-#      resource-server:
-#        jwt:
-#          issuer-uri: ${DCES_REPORT_RESOURCE_SERVER_ISSUER_URI}
+  #      resource-server:
+  #        jwt:
+  #          issuer-uri: ${DCES_REPORT_RESOURCE_SERVER_ISSUER_URI}
   scheduling:
     contributions:
       cron: "0 0 5 5 * ?" # (5th of every month at 05:00am)
