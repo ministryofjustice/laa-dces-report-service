@@ -82,11 +82,12 @@ dependencies {
 	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$versions.springOAuthResource"
 	implementation "org.springframework.boot:spring-boot-starter-oauth2-client:$versions.springOAuthClient"
 	implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
-	// JJWT package is used to connect and request token for authentication for own app access
-	implementation "io.jsonwebtoken:jjwt-api:$versions.jjwtVersion"
-	runtimeOnly "io.jsonwebtoken:jjwt-impl:$versions.jjwtVersion"
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    runtimeOnly "io.jsonwebtoken:jjwt-jackson:$versions.jjwtVersion"
+    // TODO (DCES-77): Only needed for authentication access to DCES report service
+//    // JJWT package is used to connect and request token for authentication for own app access
+//	implementation "io.jsonwebtoken:jjwt-api:$versions.jjwtVersion"
+//	runtimeOnly "io.jsonwebtoken:jjwt-impl:$versions.jjwtVersion"
+//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+//    runtimeOnly "io.jsonwebtoken:jjwt-jackson:$versions.jjwtVersion"
 
     implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
     implementation "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
