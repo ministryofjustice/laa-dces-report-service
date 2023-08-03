@@ -71,7 +71,8 @@ public class MaatApiWebClientFactory {
 //            clientBuilder.defaultHeader(
 //                    AUTHORIZATION,
 //                    generateJWTForOAuth2MattApi(
-//                            "SECRET", "ISSUER")
+//                            "client-secret",
+//                            "client-id")
 //            );
 
             clientBuilder.filter(oauth2Client);

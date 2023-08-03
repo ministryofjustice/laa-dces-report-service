@@ -8,12 +8,6 @@ spring:
   mvc:
     format:
       date: dd.MM.yyyy
-  security:
-    oauth2:
-      # MAAT REST API authentication
-      resource-server:
-        jwt:
-          issuer-uri: localhost:999/token
   web:
     locale: en_GB
     locale-resolver: fixed
