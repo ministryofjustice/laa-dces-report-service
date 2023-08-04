@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.dces.report.utils.email;
 
-import io.micrometer.core.annotation.Timed;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,6 @@ public final class NotifyEmailClient implements EmailClient {
     @Autowired
     private NotificationClient client;
 
-    @Timed("email.send")
     @Override
     public void send(EmailObject emailObject) throws EmailClientException, EmailObjectInvalidException {
         NotifyEmailObject mail = (NotifyEmailObject) emailObject;

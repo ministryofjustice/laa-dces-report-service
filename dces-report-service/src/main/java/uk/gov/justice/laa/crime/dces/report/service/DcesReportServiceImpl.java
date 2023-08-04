@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
+import io.micrometer.core.annotation.Timed;
 import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,7 @@ public class DcesReportServiceImpl implements DcesReportService {
         sendEmailWithAttachment(fdcFile, fdcFilesService.getType(), start, end);
     }
 
+    @Timed("sendEmail")
     private void sendEmailWithAttachment(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
         HashMap<String, Object> personalisation = new HashMap<>();
         personalisation.put("report_type", reportType);
