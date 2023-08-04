@@ -20,6 +20,9 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class FdcFilesService implements DcesReportFileService {
+
+    private static final String REPORT_TYPE = "Final Defence Cost";
+
     private static final String SERVICE_NAME = "dcesReportFdc";
     private static final String FILE_NAME_TEMPLATE = "FDC_%s_%s";
 
@@ -45,5 +48,10 @@ public class FdcFilesService implements DcesReportFileService {
 
     public String getFileName(LocalDate start, LocalDate finish) {
         return String.format(FILE_NAME_TEMPLATE, start, finish);
+    }
+
+    @Override
+    public String getType() {
+        return REPORT_TYPE;
     }
 }
