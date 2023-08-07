@@ -14,8 +14,7 @@ import org.springframework.security.web.util.matcher.IpAddressMatcher;
 @Configuration
 @EnableWebSecurity
 public class DcesReportAuthenticationConfig {
-    public static final String API_PATH_CONTRIBUTIONS = "/api/internal/v1/dces/report/contributions/**";
-    public static final String API_PATH_FDC = "/api/internal/v1/dces/report/fdc/**";
+    public static final String API_REQUEST_PATH = "/api/internal/v1/dces/report/**";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -26,11 +25,7 @@ public class DcesReportAuthenticationConfig {
                     .requestMatchers("/swagger-ui/**").permitAll()
                     .requestMatchers("/api-docs/**").permitAll()
                     .requestMatchers("/actuator/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, API_PATH_FDC).access(
-                        (authentication, context) ->
-                            new AuthorizationDecision(isRequestFromLocal(context.getRequest()))
-                    )
-                    .requestMatchers(HttpMethod.GET, API_PATH_CONTRIBUTIONS).access(
+                    .requestMatchers(HttpMethod.GET, API_REQUEST_PATH).access(
                         (authentication, context) ->
                             new AuthorizationDecision(isRequestFromLocal(context.getRequest()))
                     )
