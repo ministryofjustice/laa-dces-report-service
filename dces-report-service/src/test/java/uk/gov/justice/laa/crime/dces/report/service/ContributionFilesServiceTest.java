@@ -41,9 +41,8 @@ class ContributionFilesServiceTest {
         System.out.println(startPeriod);
         System.out.println(finishPeriod);
         List<String> result = contributionFilesReportService.getFiles(startPeriod, finishPeriod);
-
         assertNotNull(result);
-        assertEquals(2, result.size());
+        assertEquals((2*(startPeriod.datesUntil(finishPeriod).count()+1)), result.size()); // 2* as the file contains 2 contributions.
         assertTrue(result.get(0).contains("id=\"222772044"));
         assertTrue(result.get(1).contains("id=\"222772045"));
     }
