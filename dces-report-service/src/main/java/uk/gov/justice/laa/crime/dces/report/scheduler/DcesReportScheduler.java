@@ -34,6 +34,9 @@ public class DcesReportScheduler {
                 toDate.format(dateFormatter));
 
         reportService.sendContributionsReport(fromDate, toDate);
+
+        log.info("Processing finished successfully for contribution files between {} and {}",
+                fromDate.format(dateFormatter), toDate.format(dateFormatter));
     }
 
     @Scheduled(cron = "${spring.scheduling.fdc.cron}")
@@ -46,5 +49,8 @@ public class DcesReportScheduler {
                 toDate.format(dateFormatter));
 
         reportService.sendFdcReport(fromDate, toDate);
+
+        log.info("Processing finished successfully for FDC files between {} and {}",
+                fromDate.format(dateFormatter), toDate.format(dateFormatter));
     }
 }
