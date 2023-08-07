@@ -37,7 +37,7 @@ public class ContributionFilesService implements DcesReportFileService {
         LocalDate currentDate = LocalDate.parse(start.toString());
         List<String> resultList = new ArrayList<>();
         while (!currentDate.isAfter(finish)){
-            resultList.addAll(contributionFilesClient.getContributions(start, finish));
+            resultList.addAll(contributionFilesClient.getContributions(currentDate, currentDate));
             currentDate = currentDate.plusDays(1);
         }
         return resultList;

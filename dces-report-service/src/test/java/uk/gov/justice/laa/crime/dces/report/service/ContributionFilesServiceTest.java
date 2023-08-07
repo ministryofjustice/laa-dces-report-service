@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ContributionFilesServiceTest {
 //    @DateTimeFormat(pattern = MaatApiClient.DEFAULT_DATE_FORMAT)
     private static final LocalDate startPeriod = LocalDate.of(2023, 1, 1);
+    private static final LocalDate dayNumberTestDate = LocalDate.of(2020, 1, 1);
 //    @DateTimeFormat(pattern = MaatApiClient.DEFAULT_DATE_FORMAT)
     private static final LocalDate finishPeriod = LocalDate.of(2023, 1, 31);
 
@@ -42,9 +43,26 @@ class ContributionFilesServiceTest {
         System.out.println(finishPeriod);
         List<String> result = contributionFilesReportService.getFiles(startPeriod, finishPeriod);
         assertNotNull(result);
-        assertEquals((2*(startPeriod.datesUntil(finishPeriod).count()+1)), result.size()); // 2* as the file contains 2 contributions.
+        assertEquals((2*(startPeriod.datesUntil(finishPeriod).count()+1)), result.size()); // 2* as the file contains 2 contributions. +1 as datesuntil is exclusive.
         assertTrue(result.get(0).contains("id=\"222772044"));
         assertTrue(result.get(1).contains("id=\"222772045"));
+    }
+
+    @Test
+    void given16DaysRange_whenGetFilesIsInvoked_thenCorrectNumberOfDaysTraversed()  throws WebClientResponseException {
+        System.out.println(startPeriod);
+        System.out.println(finishPeriod.minusDays(15));
+        assertTrue(assertSizeCorrect(contributionFilesReportService.getFiles(dayNumberTestDate, dayNumberTestDate.plusDays(15)),15));
+        assertTrue(assertSizeCorrect(contributionFilesReportService.getFiles(dayNumberTestDate, dayNumberTestDate.plusDays(8)),8));
+        assertTrue(assertSizeCorrect(contributionFilesReportService.getFiles(dayNumberTestDate, dayNumberTestDate.plusDays(12)),12));
+
+    }
+
+
+    private boolean assertSizeCorrect(List<String> resultList, int daysAdded){
+        assertNotNull(resultList);
+        assertEquals((2*(daysAdded+1)), resultList.size()); // 2* as the file contains 2 contributions. 1->1+15 = 1->16
+        return true;
     }
 
     @Test
