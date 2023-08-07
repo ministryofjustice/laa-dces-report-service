@@ -3,6 +3,7 @@ package uk.gov.justice.laa.crime.dces.report.service;
 import io.micrometer.core.annotation.Timed;
 import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DcesReportServiceImpl implements DcesReportService {
@@ -40,9 +42,10 @@ public class DcesReportServiceImpl implements DcesReportService {
 
     @Override
     public void sendContributionsReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
+        log.info("Start processing Contributions Report Service");
         List<String> contributionFiles = contributionFilesService.getFiles(start, end);
-        // TODO (DCES-78):  handle empty list
 
+        log.info("Files received and starting processing XML files");
         File file = contributionFilesService.processFiles(
                 contributionFiles,
                 start,
@@ -55,6 +58,7 @@ public class DcesReportServiceImpl implements DcesReportService {
 
     @Override
     public void sendFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
+        log.info("Start processing FDC Report");
         List<String> contributionFiles = fdcFilesService.getFiles(start, end);
         // TODO (DCES-78):  handle empty list
         File fdcFile = fdcFilesService.processFiles(contributionFiles, start, end);
@@ -64,6 +68,7 @@ public class DcesReportServiceImpl implements DcesReportService {
 
     @Timed("sendEmail")
     private void sendEmailWithAttachment(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
+        log.info("Start sending email for report type {}", reportType);
         HashMap<String, Object> personalisation = new HashMap<>();
         personalisation.put("report_type", reportType);
         personalisation.put("from_date", start.toString());
