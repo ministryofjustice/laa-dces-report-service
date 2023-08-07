@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.dces.report.maatapi;
 
-
 import io.netty.resolver.DefaultAddressResolverGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
