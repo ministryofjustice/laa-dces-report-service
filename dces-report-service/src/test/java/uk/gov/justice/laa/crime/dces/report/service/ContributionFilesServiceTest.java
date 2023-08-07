@@ -57,7 +57,7 @@ class ContributionFilesServiceTest {
     }
 
     @Test
-    void given16DaysRange_whenGetFilesIsInvoked_thenCorrectNumberOfDaysTraversed()  throws WebClientResponseException {
+    void givenDaysRange_whenGetFilesIsInvoked_thenCorrectNumberOfDaysTraversed()  throws WebClientResponseException {
         softly.assertThat(testDateFunctionality(15)).isTrue();
         softly.assertThat(testDateFunctionality(21)).isTrue();
         softly.assertThat(testDateFunctionality(8)).isTrue();
