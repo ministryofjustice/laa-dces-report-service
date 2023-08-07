@@ -1,9 +1,14 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -15,26 +20,30 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Locale;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 @SpringBootTest
+@ExtendWith(SoftAssertionsExtension.class)
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @WireMockTest(httpPort = 1111)
 class ContributionFilesServiceTest {
-//    @DateTimeFormat(pattern = MaatApiClient.DEFAULT_DATE_FORMAT)
     private static final LocalDate startPeriod = LocalDate.of(2023, 1, 1);
     private static final LocalDate dayNumberTestDate = LocalDate.of(2020, 1, 1);
-//    @DateTimeFormat(pattern = MaatApiClient.DEFAULT_DATE_FORMAT)
     private static final LocalDate finishPeriod = LocalDate.of(2023, 1, 31);
 
     @Autowired
     ContributionFilesService contributionFilesReportService;
 
+    @InjectSoftAssertions
+    private SoftAssertions softly;
+
     @BeforeAll
     void setup() {
         Locale.setDefault(new Locale("en", "GB"));
+    }
+
+    @AfterEach
+    void assertAll(){
+        softly.assertAll();
     }
 
     @Test
@@ -42,27 +51,29 @@ class ContributionFilesServiceTest {
         System.out.println(startPeriod);
         System.out.println(finishPeriod);
         List<String> result = contributionFilesReportService.getFiles(startPeriod, finishPeriod);
-        assertNotNull(result);
-        assertEquals((2*(startPeriod.datesUntil(finishPeriod).count()+1)), result.size()); // 2* as the file contains 2 contributions. +1 as datesuntil is exclusive.
-        assertTrue(result.get(0).contains("id=\"222772044"));
-        assertTrue(result.get(1).contains("id=\"222772045"));
+        softly.assertThat(assertSizeCorrect(result,(int)startPeriod.datesUntil(finishPeriod).count())).isTrue();
+        softly.assertThat(result.get(0)).contains("id=\"222772044");
+        softly.assertThat(result.get(1)).contains("id=\"222772045");
     }
 
     @Test
     void given16DaysRange_whenGetFilesIsInvoked_thenCorrectNumberOfDaysTraversed()  throws WebClientResponseException {
-        System.out.println(startPeriod);
-        System.out.println(finishPeriod.minusDays(15));
-        assertTrue(assertSizeCorrect(contributionFilesReportService.getFiles(dayNumberTestDate, dayNumberTestDate.plusDays(15)),15));
-        assertTrue(assertSizeCorrect(contributionFilesReportService.getFiles(dayNumberTestDate, dayNumberTestDate.plusDays(8)),8));
-        assertTrue(assertSizeCorrect(contributionFilesReportService.getFiles(dayNumberTestDate, dayNumberTestDate.plusDays(12)),12));
-
+        softly.assertThat(testDateFunctionality(15)).isTrue();
+        softly.assertThat(testDateFunctionality(21)).isTrue();
+        softly.assertThat(testDateFunctionality(8)).isTrue();
+        softly.assertThat(testDateFunctionality(0)).isTrue();
+        softly.assertThat(testDateFunctionality(1)).isTrue();
     }
 
 
     private boolean assertSizeCorrect(List<String> resultList, int daysAdded){
-        assertNotNull(resultList);
-        assertEquals((2*(daysAdded+1)), resultList.size()); // 2* as the file contains 2 contributions. 1->1+15 = 1->16
+        softly.assertThat(resultList).isNotNull();
+        softly.assertThat(resultList.size()).isEqualTo(2*(daysAdded+1));
         return true;
+    }
+
+    private boolean testDateFunctionality( int numberOfDays){
+        return assertSizeCorrect(contributionFilesReportService.getFiles(dayNumberTestDate, dayNumberTestDate.plusDays(numberOfDays)),numberOfDays);
     }
 
     @Test
@@ -71,13 +82,11 @@ class ContributionFilesServiceTest {
         LocalDate date = LocalDate.of(5500, 5, 5);
 
         // execute
-        Exception exception = assertThrows(HttpServerErrorException.class,
-                () -> contributionFilesReportService.getFiles(date, date));
-
         String expectedMessage = "500 Received error 500";
-        String actualMessage = exception.getMessage();
-        // assert
-        assertTrue(actualMessage.contains(expectedMessage));
+
+        softly.assertThatThrownBy(() -> contributionFilesReportService.getFiles(date, date))
+                .isInstanceOf(HttpServerErrorException.class)
+                .hasMessageContaining(expectedMessage);
     }
 
     @Test
@@ -85,15 +94,11 @@ class ContributionFilesServiceTest {
         // setup
         LocalDate date = LocalDate.of(4404, 4, 4);
 
-        // execute
-        Exception exception = assertThrows(WebClientResponseException.class,
-                () -> contributionFilesReportService.getFiles(date, date)
-        );
-
         String expectedMessage = "404 Not Found";
-        String actualMessage = exception.getMessage();
-        // assert
-        assertTrue(actualMessage.contains(expectedMessage));
+
+        softly.assertThatThrownBy(() -> contributionFilesReportService.getFiles(date, date))
+                .isInstanceOf(WebClientResponseException.class)
+                .hasMessageContaining(expectedMessage);
     }
 
     @Test
@@ -101,14 +106,11 @@ class ContributionFilesServiceTest {
         // setup
         LocalDate date = LocalDate.of(4400, 4, 4);
 
-        // execute
-        Exception exception = assertThrows(MaatApiClientException.class,
-                () -> contributionFilesReportService.getFiles(date, date)
-        );
-
         String expectedMessage = "Received error 400";
-        String actualMessage = exception.getMessage();
-        // assert
-        assertTrue(actualMessage.contains(expectedMessage));
+
+        softly.assertThatThrownBy(() -> contributionFilesReportService.getFiles(date, date))
+                .isInstanceOf(MaatApiClientException.class)
+                .hasMessageContaining(expectedMessage);
+
     }
 }
