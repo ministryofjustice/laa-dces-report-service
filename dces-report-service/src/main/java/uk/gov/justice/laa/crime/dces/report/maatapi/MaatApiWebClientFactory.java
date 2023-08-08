@@ -1,10 +1,5 @@
 package uk.gov.justice.laa.crime.dces.report.maatapi;
 
-// TODO (DCES-77): Json web token package is only used for authentication
-//import io.jsonwebtoken.Jwts;
-//import io.jsonwebtoken.SignatureAlgorithm;
-//import io.jsonwebtoken.io.Decoders;
-//import io.jsonwebtoken.security.Keys;
 import io.netty.resolver.DefaultAddressResolverGroup;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -68,14 +63,6 @@ public class MaatApiWebClientFactory {
                     servicesConfiguration.getMaatApi().getRegistrationId()
             );
 
-            // TODO (DCES-77): This code seemed to be for authenticating access to DCES report application. Need confirmation on this
-//            clientBuilder.defaultHeader(
-//                    AUTHORIZATION,
-//                    generateJWTForOAuth2MattApi(
-//                            "client-secret",
-//                            "client-id")
-//            );
-
             clientBuilder.filter(oauth2Client);
         }
 
@@ -137,15 +124,4 @@ public class MaatApiWebClientFactory {
         return megaBytes * 1024 * 1024;
     }
 
-    // TODO (DCES-77): This code seems to be for authenticating access to DCES report application. Need confirmation on this
-//    private static String generateJWTForOAuth2MattApi(String clientSecret, String issuer) {
-//        return "Bearer " + Jwts.builder()
-//                .setIssuer(issuer)
-//                .setIssuedAt(new Date(System.currentTimeMillis()))
-//                .setExpiration(new Date(System.currentTimeMillis() + TOKEN_LIFETIME_DURATION))
-//                .signWith(Keys.hmacShaKeyFor(Decoders.BASE64.decode(clientSecret))
-//                        , SignatureAlgorithm.HS256
-//                )
-//                .compact();
-//    }
 }
