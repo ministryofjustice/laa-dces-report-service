@@ -12,6 +12,7 @@ import uk.gov.justice.laa.crime.dces.report.mapper.ContributionsFileMapper;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -33,8 +34,13 @@ public class ContributionFilesService implements DcesReportFileService {
     @Retry(name = SERVICE_NAME)
     public List<String> getFiles(LocalDate start, LocalDate finish) {
         log.info("Start - call MAAT API to collect contribution files date between {} and {}", start.toString(), finish.toString());
-        return contributionFilesClient.getContributions(start, finish);
-
+        LocalDate currentDate = LocalDate.parse(start.toString());
+        List<String> resultList = new ArrayList<>();
+        while (!currentDate.isAfter(finish)){
+            resultList.addAll(contributionFilesClient.getContributions(currentDate, currentDate));
+            currentDate = currentDate.plusDays(1);
+        }
+        return resultList;
     }
     @Timed("Contributions.processFiles")
     public File processFiles(List<String> files, LocalDate start, LocalDate finish, String fileName) throws JAXBException, IOException {

@@ -50,8 +50,6 @@ class DcesReportControllerTest {
     @Test
     void givenValidPeriod_whenGetContributionsReportIsInvoked() {
         assertDoesNotThrow(() -> controller.getContributionsReport(startPeriod, finishPeriod));
-
-
     }
 
     @Test
