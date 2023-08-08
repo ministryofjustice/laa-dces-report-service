@@ -14,6 +14,7 @@ import uk.gov.service.notify.NotificationClientException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -82,5 +83,6 @@ public class DcesReportServiceImpl implements DcesReportService {
         emailObject.addAttachment(attachment);
 
         emailClient.send(emailObject);
+        Files.delete(attachment.toPath());
     }
 }
