@@ -3,7 +3,7 @@ plugins {
     id 'jacoco'
     id 'org.springframework.boot' version '3.0.5'
     id 'io.spring.dependency-management' version '1.1.0'
-    id "org.sonarqube" version "4.0.0.2929"
+    id 'org.sonarqube' version '4.0.0.2929'
     id 'info.solidsoft.pitest' version '1.9.11'
 }
 
@@ -41,6 +41,7 @@ dependencyManagement {
         dependencySet(group: 'io.sentry', version: versions.sentryVersion) {
             entry 'sentry-spring-boot-starter'
             entry 'sentry-logback'
+            entry 'sentry-log4j2'
         }
     }
 }
@@ -69,22 +70,28 @@ dependencies {
     implementation platform('io.sentry:sentry-bom:6.17.0')
     implementation('io.sentry:sentry-spring-boot-starter')
     implementation('io.sentry:sentry-logback')
+    implementation 'io.sentry:sentry-log4j2'
+    modules {
+        module('org.springframework.boot:spring-boot-starter-logging') {
+            replacedBy('org.springframework.boot:spring-boot-starter-log4j2', 'Use Log4j2 instead of Logback')
+        }
+    }
 
-	// Spring
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-webflux'
-	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
+    // Spring
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
-	// cloud-function is only required to support executable beans (e.g. serverless AWS Lambda)
-	implementation "org.springframework.cloud:spring-cloud-function-web:4.0.4"
+    // cloud-function is only required to support executable beans (e.g. serverless AWS Lambda)
+    implementation "org.springframework.cloud:spring-cloud-function-web:4.0.4"
 
-	// oAuth
-	implementation "org.springframework.security:spring-security-config:$versions.springSecurityConfig"
-	implementation "org.springframework.security:spring-security-web:$versions.springSecurityWeb"
-	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$versions.springOAuthResource"
-	implementation "org.springframework.boot:spring-boot-starter-oauth2-client:$versions.springOAuthClient"
-	implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
+    // oAuth
+    implementation "org.springframework.security:spring-security-config:$versions.springSecurityConfig"
+    implementation "org.springframework.security:spring-security-web:$versions.springSecurityWeb"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$versions.springOAuthResource"
+    implementation "org.springframework.boot:spring-boot-starter-oauth2-client:$versions.springOAuthClient"
+    implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
     // TODO (DCES-77): Only needed for authentication access to DCES report service
 //    // JJWT package is used to connect and request token for authentication for own app access
 //	implementation "io.jsonwebtoken:jjwt-api:$versions.jjwtVersion"

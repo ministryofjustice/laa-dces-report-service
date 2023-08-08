@@ -1,0 +1,5 @@
+com:
+  fasterxml:
+    jackson:
+      core: jackson-databind
+      dataformat: jackson-dataformat-yml

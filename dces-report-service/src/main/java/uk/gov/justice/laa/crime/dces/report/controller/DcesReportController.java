@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.controller;
 
+import io.sentry.Sentry;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -65,5 +66,20 @@ public class DcesReportController {
     )
     public void getFdcReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException, NotificationClientException {
         reportService.sendFdcReport(start, finish);
+    }
+
+    @ApiResponse(responseCode = "403",
+            description = "Bad request.",
+            content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+                    schema = @Schema(implementation = ProblemDetail.class)
+            )
+    )
+    @GetMapping(value = "/oopsie")
+    public void testSentry() {
+        try {
+            throw new Exception("This is a test.");
+        } catch (Exception e) {
+            Sentry.captureException(e);
+        }
     }
 }
