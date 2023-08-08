@@ -53,4 +53,40 @@ docker-compose build
 docker-compose up
 ```
 
-laa-dces-report-service application will be running on http://localhost:8088
+laa-dces-report-service application will be running on http://localhost:8089
+
+### How to generate reports on demand
+
+If it is required to trigger the report manually follow these simple instructions:
+1. get access to the container where the app is running
+2. launch a CURL command to the corresponding endpoint
+3. Make sure to specify the start and end date in the correct format (dd.MM.yyyy)
+ 
+#### For contributions:
+    `curl -G localhost:8089/api/internal/v1/dces/report/contributions/{startDate}/{endDate}`
+
+Example
+ 
+    `curl -G localhost:8089/api/internal/v1/dces/report/contributions/01.01.2021/26.01.2021`
+
+#### For FDCs:
+    `curl -G localhost:8089/api/internal/v1/dces/report/fdc/{startDate}/{endDate}`  
+
+
+
+Example    
+
+    `curl -G localhost:8089/api/internal/v1/dces/report/fdc/01.01.2021/26.01.2021`
+
+
+Alternatively you can opt to use the simplified bash commands:  
+
+#### Alternative for contributions
+    `contributionsReportAdHoc.sh {startDate} {endDate}`  
+Example: `./contributions.sh 01.01.2021 26.01.2021`  
+  
+#### Alternative for FDCs
+
+    `fdcReportAdHoc.sh {startDate} {endDate}`  
+Example: `./fdcReportAdHoc.sh 01.01.2021 26.01.2021`  
+  
