@@ -15,6 +15,8 @@ import org.springframework.security.web.util.matcher.IpAddressMatcher;
 @EnableWebSecurity
 public class DcesReportAuthenticationConfig {
     public static final String API_REQUEST_PATH = "/api/internal/v1/dces/report/**";
+    private static final String LOCALHOST_IPV4 = "127.0.0.1";
+    private static final String LOCALHOST_IPV6 = "::1";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,9 +40,8 @@ public class DcesReportAuthenticationConfig {
     }
 
     private boolean isRequestFromLocal(HttpServletRequest request) {
-        IpAddressMatcher hasIpAddress = new IpAddressMatcher("127.0.0.1");
-        IpAddressMatcher hasIp6Address = new IpAddressMatcher("::1");
-
+        IpAddressMatcher hasIpAddress = new IpAddressMatcher(LOCALHOST_IPV4);
+        IpAddressMatcher hasIp6Address = new IpAddressMatcher(LOCALHOST_IPV6);
         return hasIpAddress.matches(request) || hasIp6Address.matches(request);
     }
 }
