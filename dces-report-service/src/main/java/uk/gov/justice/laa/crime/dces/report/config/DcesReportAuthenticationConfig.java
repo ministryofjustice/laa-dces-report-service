@@ -1,25 +1,25 @@
 package uk.gov.justice.laa.crime.dces.report.config;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.IpAddressMatcher;
 
 @Configuration
 @EnableWebSecurity
 public class DcesReportAuthenticationConfig {
-    public static final String API_PATH_CONTRIBUTIONS = "/api/internal/v1/dces/report/contributions/**";
-    public static final String API_PATH_FDC = "/api/internal/v1/dces/report/fdc/**";
+    public static final String API_REQUEST_PATH = "/api/internal/v1/dces/report/**";
+    private static final String LOCALHOST_IPV4 = "127.0.0.1";
+    private static final String LOCALHOST_IPV6 = "::1";
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // TODO (DCES-77): confirm what level of authentication security will be required to access this service
-//        OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
-//        http.oauth2Login(Customizer.withDefaults());
-
         http
             .authorizeHttpRequests(
                 authorizeHttpRequests -> authorizeHttpRequests
@@ -27,19 +27,21 @@ public class DcesReportAuthenticationConfig {
                     .requestMatchers("/swagger-ui/**").permitAll()
                     .requestMatchers("/api-docs/**").permitAll()
                     .requestMatchers("/actuator/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, API_PATH_CONTRIBUTIONS).permitAll()
-                    .requestMatchers(HttpMethod.GET, API_PATH_FDC).permitAll()
-                    // TODO (DCES-77): if authentication is required leave authenticated(), otherwise maybe change to deny
+                    .requestMatchers(HttpMethod.GET, API_REQUEST_PATH).access(
+                        (authentication, context) ->
+                            new AuthorizationDecision(isRequestFromLocal(context.getRequest()))
+                    )
                     .anyRequest().authenticated()
             )
             .sessionManagement(
-                    session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            )
-            // TODO (DCES-77): confirm what level of authentication security will be required to access this service
-//            .oauth2ResourceServer(
-//                oauth2ResourceServer -> oauth2ResourceServer.jwt(Customizer.withDefaults())
-//            )
-            ;
+                session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            );
         return http.build();
+    }
+
+    private boolean isRequestFromLocal(HttpServletRequest request) {
+        IpAddressMatcher hasIpAddress = new IpAddressMatcher(LOCALHOST_IPV4);
+        IpAddressMatcher hasIp6Address = new IpAddressMatcher(LOCALHOST_IPV6);
+        return hasIpAddress.matches(request) || hasIp6Address.matches(request);
     }
 }

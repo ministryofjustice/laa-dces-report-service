@@ -47,6 +47,11 @@ public class ContributionsFileMapper {
 
     private void processXMLFile(String xmlData, LocalDate startDate, LocalDate endDate, List<CSVDataLine> csvLineList) throws JAXBException {
         ContributionFile contributionFile = mapContributionsXmlStringToObject(xmlData);
+        if(Objects.isNull(contributionFile)
+                || Objects.isNull(contributionFile.getCONTRIBUTIONSLIST())
+                || Objects.isNull(contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS())){
+            return;
+        }
         for (CONTRIBUTIONS contribution : contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()) {
             csvLineList.add(buildCSVDataLine(contribution, startDate, endDate));
         }
@@ -100,25 +105,31 @@ public class ContributionsFileMapper {
     }
 
     private String getOutcomeDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
-        List<CcOutcome> filteredList = contribution.getCcOutcomes().getCcOutcome()
-                .stream()
-                .filter(Objects::nonNull)
-                .filter(x -> DateUtils.validateDate(x.getDate(), startDate, endDate))
-                .toList();
-        if (!filteredList.isEmpty()) {
-            return DateUtils.convertXmlGregorianToString(filteredList.get(0).getDate());
+        if(Objects.nonNull(contribution.getCcOutcomes())
+                && Objects.nonNull(contribution.getCcOutcomes().getCcOutcome())) {
+            List<CcOutcome> filteredList = contribution.getCcOutcomes().getCcOutcome()
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .filter(x -> DateUtils.validateDate(x.getDate(), startDate, endDate))
+                    .toList();
+            if (!filteredList.isEmpty()) {
+                return DateUtils.convertXmlGregorianToString(filteredList.get(0).getDate());
+            }
         }
         return "";
     }
 
     private String getCorrespondenceSentDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
-        List<Letter> filteredList = contribution.getCorrespondence().getLetter()
-                .stream()
-                .filter(Objects::nonNull)
-                .filter(x -> DateUtils.validateDate(x.getCreated(), startDate, endDate))
-                .toList();
-        if (!filteredList.isEmpty()) {
-            return DateUtils.convertXmlGregorianToString(filteredList.get(0).getCreated());
+        if(Objects.nonNull(contribution.getCorrespondence())
+                && Objects.nonNull(contribution.getCorrespondence().getLetter())) {
+            List<Letter> filteredList = contribution.getCorrespondence().getLetter()
+                    .stream()
+                    .filter(Objects::nonNull)
+                    .filter(x -> DateUtils.validateDate(x.getCreated(), startDate, endDate))
+                    .toList();
+            if (!filteredList.isEmpty()) {
+                return DateUtils.convertXmlGregorianToString(filteredList.get(0).getCreated());
+            }
         }
         return "";
     }

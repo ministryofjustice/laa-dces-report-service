@@ -77,27 +77,19 @@ dependencies {
         }
     }
 
-    // Spring
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
+	// Spring
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
-    // cloud-function is only required to support executable beans (e.g. serverless AWS Lambda)
-    implementation "org.springframework.cloud:spring-cloud-function-web:4.0.4"
 
-    // oAuth
-    implementation "org.springframework.security:spring-security-config:$versions.springSecurityConfig"
-    implementation "org.springframework.security:spring-security-web:$versions.springSecurityWeb"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$versions.springOAuthResource"
-    implementation "org.springframework.boot:spring-boot-starter-oauth2-client:$versions.springOAuthClient"
-    implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
-    // TODO (DCES-77): Only needed for authentication access to DCES report service
-//    // JJWT package is used to connect and request token for authentication for own app access
-//	implementation "io.jsonwebtoken:jjwt-api:$versions.jjwtVersion"
-//	runtimeOnly "io.jsonwebtoken:jjwt-impl:$versions.jjwtVersion"
-//    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-//    runtimeOnly "io.jsonwebtoken:jjwt-jackson:$versions.jjwtVersion"
+	// oAuth
+	implementation "org.springframework.security:spring-security-config:$versions.springSecurityConfig"
+	implementation "org.springframework.security:spring-security-web:$versions.springSecurityWeb"
+	implementation "org.springframework.boot:spring-boot-starter-oauth2-resource-server:$versions.springOAuthResource"
+	implementation "org.springframework.boot:spring-boot-starter-oauth2-client:$versions.springOAuthClient"
+	implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
 
     implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
     implementation "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
@@ -122,7 +114,6 @@ dependencies {
     testImplementation "com.squareup.okhttp3:okhttp:$versions.okhttpVersion"
     testImplementation "com.squareup.okhttp3:mockwebserver:$versions.mockwebserverVersion"
     testImplementation "com.github.tomakehurst:wiremock-jre8-standalone:$versions.wiremockVersion"
-//	testImplementation "io.projectreactor:reactor-test"
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.2'
 
     xsd2java "com.sun.xml.bind:jaxb-xjc:$versions.jaxbXjc"

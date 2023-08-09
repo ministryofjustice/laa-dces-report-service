@@ -46,6 +46,7 @@ public class DcesReportController {
             )
     )
     public void getContributionsReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException, NotificationClientException {
+        log.info("Start processing Contributions Report");
         reportService.sendContributionsReport(start, finish);
     }
 
@@ -65,6 +66,7 @@ public class DcesReportController {
             )
     )
     public void getFdcReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException, NotificationClientException {
+        log.info("Start processing FDC Report");
         reportService.sendFdcReport(start, finish);
     }
 
