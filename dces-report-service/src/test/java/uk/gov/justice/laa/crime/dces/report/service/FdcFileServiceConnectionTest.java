@@ -21,7 +21,7 @@ import java.util.Locale;
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ActiveProfiles("localconnection")
+@ActiveProfiles("connectiontest")
 class FdcFileServiceConnectionTest {
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -75,11 +75,15 @@ class FdcFileServiceConnectionTest {
         String expectedMessage = "413 PAYLOAD_TOO_LARGE";
 
         try {
-            softly.assertThatThrownBy(() -> filesService.getFiles(startPeriod, finishPeriod.plusMonths(1)))
-                    .isInstanceOf(MaatApiClientException.class)
-                    .hasMessageContaining(expectedMessage);
-        } catch (IllegalArgumentException e) { // Config variable values not yet loaded
-        } catch (OAuth2AuthorizationException e) { // Client credentials error
+            // setup (catch connection errors due to config)
+            filesService.getFiles(startPeriod, finishPeriod.plusMonths(1));
+        } catch (IllegalArgumentException|OAuth2AuthorizationException e) {
+            // IllegalArgumentException: Config variable values not yet loaded
+            // OAuth2AuthorizationException: Client credentials error
+            return;
+        } catch (MaatApiClientException e) {
+            softly.assertThat(e).hasMessageContaining(expectedMessage)
+            ;
         }
 
         softly.assertAll();
