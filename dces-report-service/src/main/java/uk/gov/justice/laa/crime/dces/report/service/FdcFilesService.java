@@ -33,7 +33,7 @@ public class FdcFilesService implements DcesReportFileService {
 
     private final FdcFileMapper fdcFileMapper;
 
-    @Timed("Fdc.getFiles")
+    @Timed("laa_dces_report_service_fdc_get_file")
     @Retry(name = SERVICE_NAME)
     public List<String> getFiles(LocalDate start, LocalDate end) {
         if (end.isBefore(start)) {
@@ -48,7 +48,7 @@ public class FdcFilesService implements DcesReportFileService {
         ;
     }
 
-    @Timed("Fdc.processFiles")
+    @Timed("laa_dces_report_service_fdc_process_file")
     public File processFiles(List<String> files, LocalDate start, LocalDate finish)
             throws JAXBException, IOException, DcesReportSourceFilesDataNotFound {
         if (files.isEmpty()) {
