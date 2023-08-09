@@ -1,6 +1,8 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Timer;
 import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -77,7 +79,9 @@ public class DcesReportService {
         );
         emailObject.addAttachment(attachment);
 
-        emailClient.send(emailObject);
+        Timer timer = Metrics.globalRegistry.timer("laa_dces_report_service_send_email");
+        timer.record(() -> emailClient.send(emailObject));
+        timer.close();
         Files.delete(attachment.toPath());
     }
 }
