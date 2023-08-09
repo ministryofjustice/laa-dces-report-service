@@ -44,8 +44,8 @@ class ContributionsFileServiceConnectionTest {
         try {
             contributionFiles = filesService.getFiles(startPeriod, finishPeriod);
 
-            // TODO (DCES-78): Once MAAT API data is resolved, if statement can be deleted
-            if (!contributionFiles.isEmpty()) { // It seems MATT API stop returning data
+            // Because MATT API can have no data for test, connection test can be skipped as optional
+            if (!contributionFiles.isEmpty()) {
                 softly.assertThat(contributionFiles).isNotNull();
                 softly.assertThat(contributionFiles).isNotEmpty();
             }
