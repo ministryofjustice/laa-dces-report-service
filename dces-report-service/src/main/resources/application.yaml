@@ -60,5 +60,7 @@ spring:
 
 sentry:
   dsn: https://1793d75ecbcf9679795c3fb39704068d@o4505662201200640.ingest.sentry.io/4505662214897664
+  tracesSampleRate: 1.0
+  exception-resolver-order: -2147483647
   send-default-pii: true
   in-app-includes: uk.gov.justice.laa.crime.dces
