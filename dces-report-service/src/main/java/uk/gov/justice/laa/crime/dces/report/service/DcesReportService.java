@@ -56,7 +56,6 @@ public class DcesReportService {
     public void sendFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
         log.info("Start processing FDC Report");
         List<String> contributionFiles = fdcFilesService.getFiles(start, end);
-        // TODO (DCES-78):  handle empty list
         File fdcFile = fdcFilesService.processFiles(contributionFiles, start, end);
 
         sendEmailWithAttachment(fdcFile, fdcFilesService.getType(), start, end);

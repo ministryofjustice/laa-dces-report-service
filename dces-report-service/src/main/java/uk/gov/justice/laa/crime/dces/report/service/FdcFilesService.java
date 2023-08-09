@@ -44,7 +44,7 @@ public class FdcFilesService implements DcesReportFileService {
         return fdcFilesClient.getContributions(start, end)
             .stream()
             .filter(Objects::nonNull)
-            .collect(Collectors.toList())
+            .toList()
         ;
     }
 
