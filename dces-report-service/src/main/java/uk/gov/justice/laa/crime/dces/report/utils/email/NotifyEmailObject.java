@@ -11,6 +11,8 @@ import uk.gov.service.notify.NotificationClientException;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.apache.commons.io.FileUtils.readFileToByteArray;
@@ -45,5 +47,32 @@ public final class NotifyEmailObject implements EmailObject {
     public void addAttachment(File file) throws IOException, NotificationClientException {
         byte[] fileContents = readFileToByteArray(file);
         personalisation.put(uploadKey, NotificationClient.prepareUpload(fileContents, true));
+    }
+
+    public static NotifyEmailObject getReportEmail(
+            File file,
+            String reportType,
+            LocalDate fromDate,
+            LocalDate toDate,
+            String templateId,
+            String recipient) throws NotificationClientException, IOException {
+        HashMap<String, Object> personalisation = new HashMap<>() {{
+            put("report_type", reportType);
+            put("from_date", fromDate.toString());
+            put("to_date", toDate.toString());
+        }};
+
+
+        NotifyEmailObject emailObject = new NotifyEmailObject(
+                templateId,
+                recipient,
+                personalisation,
+                "_ref",
+                ""
+        );
+
+        emailObject.addAttachment(file);
+
+        return emailObject;
     }
 }

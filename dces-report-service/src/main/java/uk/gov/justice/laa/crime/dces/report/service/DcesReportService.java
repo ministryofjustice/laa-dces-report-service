@@ -19,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
 
 @Slf4j
@@ -45,12 +44,12 @@ public class DcesReportService {
 
     public void sendContributionsReport(LocalDate start, LocalDate end)
             throws JAXBException, IOException,
-                   DcesReportSourceFilesDataNotFound, NotificationClientException {
+            DcesReportSourceFilesDataNotFound, NotificationClientException {
         log.info("Start processing Contributions Report Service");
         List<String> contributionFiles = contributionFilesService.getFiles(start, end);
 
         log.info("Files received and starting processing XML files");
-        File file = contributionFilesService.processFiles(contributionFiles, start,end);
+        File file = contributionFilesService.processFiles(contributionFiles, start, end);
 
         sendEmailWithAttachment(file, contributionFilesService.getType(), start, end);
     }
@@ -65,19 +64,8 @@ public class DcesReportService {
 
     @Timed("sendEmail")
     private void sendEmailWithAttachment(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
-        log.info("Start sending email for report type {}", reportType);
-        HashMap<String, Object> personalisation = new HashMap<>();
-        personalisation.put("report_type", reportType);
-        personalisation.put("from_date", start.toString());
-        personalisation.put("to_date", end.toString());
-        EmailObject emailObject = new NotifyEmailObject(
-                templateId,
-                recipient,
-                personalisation,
-                "_ref",
-                ""
-        );
-        emailObject.addAttachment(attachment);
+        log.info("Prepare email for report type {}", reportType);
+        EmailObject emailObject = NotifyEmailObject.getReportEmail(attachment, reportType, start, end, templateId, recipient);
 
         Timer timer = Metrics.globalRegistry.timer("laa_dces_report_service_send_email");
         timer.record(() -> emailClient.send(emailObject));
