@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
-import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Timer;
 import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,7 +67,6 @@ public class DcesReportServiceImpl implements DcesReportService {
         sendEmailWithAttachment(fdcFile, fdcFilesService.getType(), start, end);
     }
 
-    @Timed("sendEmail")
     private void sendEmailWithAttachment(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
         log.info("Start sending email for report type {}", reportType);
         HashMap<String, Object> personalisation = new HashMap<>();
@@ -82,7 +82,10 @@ public class DcesReportServiceImpl implements DcesReportService {
         );
         emailObject.addAttachment(attachment);
 
-        emailClient.send(emailObject);
+        Timer timer = Metrics.globalRegistry.timer("laa_dces_report_service_send_email");
+        timer.record(() -> emailClient.send(emailObject));
+        timer.close();
+
         Files.delete(attachment.toPath());
     }
 }

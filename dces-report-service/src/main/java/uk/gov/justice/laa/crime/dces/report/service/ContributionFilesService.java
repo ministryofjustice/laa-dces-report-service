@@ -30,7 +30,7 @@ public class ContributionFilesService implements DcesReportFileService {
 
     private final ContributionsFileMapper contributionFilesMapper;
 
-    @Timed("Contributions.getFiles")
+    @Timed("laa_dces_report_service_contributions_get_file")
     @Retry(name = SERVICE_NAME)
     public List<String> getFiles(LocalDate start, LocalDate finish) {
         log.info("Start - call MAAT API to collect contribution files date between {} and {}", start.toString(), finish.toString());
@@ -42,7 +42,7 @@ public class ContributionFilesService implements DcesReportFileService {
         }
         return resultList;
     }
-    @Timed("Contributions.processFiles")
+    @Timed("laa_dces_report_service_contributions_process_file")
     public File processFiles(List<String> files, LocalDate start, LocalDate finish, String fileName) throws JAXBException, IOException {
         return contributionFilesMapper.processRequest(files.toArray(new String[0]), start, finish, fileName);
     }
