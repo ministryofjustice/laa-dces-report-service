@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
+import jakarta.xml.bind.JAXBException;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -14,9 +15,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -112,5 +117,27 @@ class ContributionFilesServiceTest {
                 .isInstanceOf(MaatApiClientException.class)
                 .hasMessageContaining(expectedMessage);
 
+    }
+
+    @Test
+    void givenDateWithNoData_whenGetFilesIsInvoked_thenEmptyListIsReturned() {
+        // setup
+        LocalDate testDate = LocalDate.of(2474, 10, 3);
+        List<String> resultFiles = contributionFilesReportService.getFiles(testDate, testDate);
+
+        softly.assertThat(resultFiles).isNotNull();
+        softly.assertThat(resultFiles).isEmpty();
+    }
+
+    @Test
+    void givenEmptyFileList_whenProcessFilesIsInvoked_thenDcesReportSourceFilesDataNotFoundExceptionIsThrown() throws JAXBException, IOException {
+        // setup
+        LocalDate testDate = LocalDate.now();
+        List<String> testFiles = new ArrayList<>();
+        String expectedMessage = "NOT FOUND";
+
+        softly.assertThatThrownBy(() -> contributionFilesReportService.processFiles(testFiles, testDate, testDate))
+            .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
+            .hasMessageContaining(expectedMessage);
     }
 }

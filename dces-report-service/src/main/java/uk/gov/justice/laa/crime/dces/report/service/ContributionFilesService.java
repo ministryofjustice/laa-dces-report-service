@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
+import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.mapper.ContributionsFileMapper;
 
 import java.io.File;
@@ -36,14 +37,26 @@ public class ContributionFilesService implements DcesReportFileService {
         log.info("Start - call MAAT API to collect contribution files date between {} and {}", start.toString(), finish.toString());
         LocalDate currentDate = LocalDate.parse(start.toString());
         List<String> resultList = new ArrayList<>();
-        while (!currentDate.isAfter(finish)){
-            resultList.addAll(contributionFilesClient.getContributions(currentDate, currentDate));
+
+        while (!currentDate.isAfter(finish)) {
+            List<String> filesForDay = contributionFilesClient.getContributions(currentDate, currentDate);
+            resultList.addAll(filesForDay);
             currentDate = currentDate.plusDays(1);
         }
+
         return resultList;
     }
+
     @Timed("Contributions.processFiles")
-    public File processFiles(List<String> files, LocalDate start, LocalDate finish, String fileName) throws JAXBException, IOException {
+    public File processFiles(List<String> files, LocalDate start, LocalDate finish)
+            throws JAXBException, IOException, DcesReportSourceFilesDataNotFound {
+        if (files.isEmpty()) {
+            throw new DcesReportSourceFilesDataNotFound(
+                    String.format("NOT FOUND: No Contributions Files data between %s and %s", start, finish)
+            );
+        }
+
+        String fileName = getFileName(start, finish);
         return contributionFilesMapper.processRequest(files.toArray(new String[0]), start, finish, fileName);
     }
 
