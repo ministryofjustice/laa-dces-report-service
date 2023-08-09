@@ -65,7 +65,7 @@ public class DcesReportService {
     @Timed("sendEmail")
     private void sendEmailWithAttachment(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
         log.info("Prepare email for report type {}", reportType);
-        EmailObject emailObject = NotifyEmailObject.getReportEmail(attachment, reportType, start, end, templateId, recipient);
+        EmailObject emailObject = NotifyEmailObject.createEmail(attachment, reportType, start, end, templateId, recipient);
 
         Timer timer = Metrics.globalRegistry.timer("laa_dces_report_service_send_email");
         timer.record(() -> emailClient.send(emailObject));

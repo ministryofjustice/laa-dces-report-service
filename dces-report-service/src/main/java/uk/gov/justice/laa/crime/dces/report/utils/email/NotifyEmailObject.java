@@ -49,20 +49,18 @@ public final class NotifyEmailObject implements EmailObject {
         personalisation.put(uploadKey, NotificationClient.prepareUpload(fileContents, true));
     }
 
-    public static NotifyEmailObject getReportEmail(
+    public static NotifyEmailObject createEmail(
             File file,
             String reportType,
             LocalDate fromDate,
             LocalDate toDate,
             String templateId,
             String recipient) throws NotificationClientException, IOException {
-        HashMap<String, Object> personalisation = new HashMap<>() {{
-            put("report_type", reportType);
-            put("from_date", fromDate.toString());
-            put("to_date", toDate.toString());
-        }};
-
-
+        HashMap<String, Object> personalisation = new HashMap<>();
+        personalisation.put("report_type", reportType);
+        personalisation.put("from_date", fromDate.toString());
+        personalisation.put("to_date", toDate.toString());
+            
         NotifyEmailObject emailObject = new NotifyEmailObject(
                 templateId,
                 recipient,
