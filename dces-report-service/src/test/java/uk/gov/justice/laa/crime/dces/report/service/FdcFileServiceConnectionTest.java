@@ -4,9 +4,7 @@ package uk.gov.justice.laa.crime.dces.report.service;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -37,6 +35,9 @@ class FdcFileServiceConnectionTest {
         Locale.setDefault(new Locale("en", "GB"));
     }
 
+    @AfterEach
+    void postTest() { softly.assertAll(); }
+
     @Test
     void givenValidPeriod_whenGetContributionFilesIsInvoked_thenFileWithExpectedContentIsReturned() {
         List<String> resultFiles;
@@ -48,8 +49,6 @@ class FdcFileServiceConnectionTest {
         } catch (IllegalArgumentException e) { // Config variable values not yet loaded
         } catch (OAuth2AuthorizationException e) { // Client credentials error
         }
-
-        softly.assertAll();
     }
 
     @Test
@@ -66,8 +65,6 @@ class FdcFileServiceConnectionTest {
         } catch (IllegalArgumentException e) { // Config variable values not yet loaded
         } catch (OAuth2AuthorizationException e) { // Client credentials error
         }
-
-        softly.assertAll();
     }
 
     @Test
@@ -80,12 +77,10 @@ class FdcFileServiceConnectionTest {
         } catch (IllegalArgumentException|OAuth2AuthorizationException e) {
             // IllegalArgumentException: Config variable values not yet loaded
             // OAuth2AuthorizationException: Client credentials error
-            return;
         } catch (MaatApiClientException e) {
-            softly.assertThat(e).hasMessageContaining(expectedMessage)
-            ;
+            // Not using assertThatThrownBy because tests with no deployment fail throwingIllegalArg exception
+            // which needs to be skipped for those scenarios
+            softly.assertThat(e).hasMessageContaining(expectedMessage);
         }
-
-        softly.assertAll();
     }
 }
