@@ -42,6 +42,8 @@ public class DcesReportAuthenticationConfig {
     private boolean isRequestFromLocal(HttpServletRequest request) {
         IpAddressMatcher hasIpAddress = new IpAddressMatcher(LOCALHOST_IPV4);
         IpAddressMatcher hasIp6Address = new IpAddressMatcher(LOCALHOST_IPV6);
-        return hasIpAddress.matches(request) || hasIp6Address.matches(request);
+        return hasIpAddress.matches(request) || hasIp6Address.matches(request) ||
+                hasIpAddress.matches(request.getServerName())
+        ;
     }
 }

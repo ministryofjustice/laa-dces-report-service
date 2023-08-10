@@ -116,7 +116,6 @@ class ContributionFilesServiceTest {
         softly.assertThatThrownBy(() -> contributionFilesReportService.getFiles(date, date))
                 .isInstanceOf(MaatApiClientException.class)
                 .hasMessageContaining(expectedMessage);
-
     }
 
     @Test

@@ -5,10 +5,7 @@ import jakarta.xml.bind.JAXBException;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +45,11 @@ class DcesReportServiceTest {
 
     @MockBean
     NotificationClient notifyClient;
+
+    @AfterEach
+    void postTest() {
+        softly.assertAll();
+    }
 
     void setupMockitoForTest() {
         given(fdcFilesClient.getContributions(any(), any())).willReturn(List.of("<?xml version=\"1.0\"?><fdc_file>    <header file_id=\"222637370\">        <filename>FDC_201807251354.xml</filename>        <dateGenerated>2018-07-25</dateGenerated>        <recordCount>6260</recordCount>    </header>    <fdc_list>        <fdc id=\"27783002\">            <maat_id>2525925</maat_id>            <sentenceDate>2016-09-30</sentenceDate>            <calculationDate>2016-12-22</calculationDate>            <final_cost>1774.4</final_cost>            <lgfs_total>1180.64</lgfs_total>            <agfs_total>593.76</agfs_total>        </fdc>    </fdc_list></fdc_file>"));

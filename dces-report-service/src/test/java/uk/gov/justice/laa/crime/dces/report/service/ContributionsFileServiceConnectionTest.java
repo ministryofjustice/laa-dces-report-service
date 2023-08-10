@@ -4,6 +4,7 @@ package uk.gov.justice.laa.crime.dces.report.service;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -37,6 +38,9 @@ class ContributionsFileServiceConnectionTest {
         Locale.setDefault(new Locale("en", "GB"));
     }
 
+    @AfterEach
+    void postTest() { softly.assertAll(); }
+
     @Test
     void givenValidPeriod_whenGetContributionFilesIsInvoked_thenFileWithExpectedContentIsReturned() {
         List<String> contributionFiles;
@@ -52,8 +56,6 @@ class ContributionsFileServiceConnectionTest {
         } catch (IllegalArgumentException e) { // Config variable values not yet loaded
         } catch (OAuth2AuthorizationException e) { // Client credentials error
         }
-
-        softly.assertAll();
     }
 
     @Test
@@ -69,7 +71,5 @@ class ContributionsFileServiceConnectionTest {
         } catch (IllegalArgumentException e) { // Config variable values not yet loaded
         } catch (OAuth2AuthorizationException e) { // Client credentials error
         }
-
-        softly.assertAll();
     }
 }
