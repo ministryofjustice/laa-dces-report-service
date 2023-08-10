@@ -4,6 +4,13 @@
     <xsd:element name="contribution_file">
         <xsd:complexType>
             <xsd:sequence>
+                <xsd:element name="header">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="dateGenerated" type="xsd:date" />
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
                 <xsd:element name="CONTRIBUTIONS_LIST">
                     <xsd:complexType>
                         <xsd:sequence>
