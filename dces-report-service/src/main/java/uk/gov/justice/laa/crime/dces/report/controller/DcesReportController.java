@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.controller;
 
+import io.sentry.Sentry;
+import io.sentry.SentryLevel;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -46,6 +48,7 @@ public class DcesReportController {
     )
     public void getContributionsReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException, NotificationClientException {
         log.info("Start processing Contributions Report");
+        Sentry.captureMessage("Processing contri", SentryLevel.INFO);
         reportService.sendContributionsReport(start, finish);
     }
 
