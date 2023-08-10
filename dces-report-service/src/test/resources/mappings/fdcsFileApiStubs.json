@@ -24,6 +24,28 @@
           "<?xml version=\"1.0\"?><fdc_file><header file_id=\"222637370\"><filename>FDC_201807251354.xml</filename><dateGenerated>2018-07-25</dateGenerated><recordCount>6260</recordCount></header><fdc_list><fdc id=\"27783002\"><maat_id>5635978</maat_id><sentenceDate>2016-09-30</sentenceDate><calculationDate>2016-12-22</calculationDate><final_cost>1774.4</final_cost><lgfs_total>1180.64</lgfs_total><agfs_total>593.76</agfs_total></fdc></fdc_list></fdc_file>"
         ]
       }
+    },
+    {
+      "scenarioName": "successNoDataRequest",
+      "request": {
+        "urlPath": "/debt-collection-enforcement/final-defence-cost",
+        "queryParameters": {
+          "fromDate": {
+            "matches": "03.10.2474"
+          },
+          "toDate": {
+            "matches": "03.10.2474"
+          }
+        },
+        "method": "GET"
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "jsonBody": []
+      }
     }
   ]
 }
