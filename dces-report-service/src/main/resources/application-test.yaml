@@ -11,6 +11,11 @@ spring:
   web:
     locale: en_GB
     locale-resolver: fixed
+  scheduling:
+    contributions:
+      cron: "0-30/16 */5 * * * ?"
+    fdc:
+      cron: "31-59/15 */5 * * * ?"
 
 emailClient:
   notify:
