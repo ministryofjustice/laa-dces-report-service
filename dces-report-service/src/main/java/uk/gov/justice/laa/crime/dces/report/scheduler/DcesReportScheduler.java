@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.scheduler;
 
+import io.micrometer.core.annotation.Timed;
 import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +25,7 @@ public class DcesReportScheduler {
 
     private final DcesReportService reportService;
 
+    @Timed("laa_dces_report_service_scheduled_contributions")
     @Scheduled(cron = "${spring.scheduling.contributions.cron}")
     public void contributionsReport() throws JAXBException, IOException, NotificationClientException {
         LocalDate fromDate = DateUtils.getDefaultStartDateForReport();
@@ -39,6 +41,7 @@ public class DcesReportScheduler {
                 fromDate.format(dateFormatter), toDate.format(dateFormatter));
     }
 
+    @Timed("laa_dces_report_service_scheduled_fdc")
     @Scheduled(cron = "${spring.scheduling.fdc.cron}")
     public void fdcReport() throws JAXBException, IOException, NotificationClientException {
         LocalDate fromDate = DateUtils.getDefaultStartDateForReport();
