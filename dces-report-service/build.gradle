@@ -96,6 +96,8 @@ dependencies {
     implementation "io.micrometer:micrometer-tracing-bridge-brave:$versions.micrometerio"
     implementation "io.micrometer:micrometer-registry-prometheus:$versions.prometheus"
 
+    implementation 'io.sentry:sentry-spring-boot-starter-jakarta:6.27.0'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'

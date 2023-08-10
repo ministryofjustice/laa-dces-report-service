@@ -57,3 +57,16 @@ spring:
       cron: "0 0 5 5 * ?" # (5th of every month at 05:00am)
     fdc:
       cron: "0 20 5 5 * ?" # (5th of every month at 05:20am)
+
+sentry:
+  debug: on
+  dsn: https://cda1d7406f2ac58d5484fbbcea12d22c@o345774.ingest.sentry.io/4505674155753472
+  traces-sample-rate: 1.0
+  environment: DEV
+  release: 1.0.0
+  servername: aws-eks-container
+  send-default-pii: true
+  attach-stacktrace: true
+  sample-rate: 0.05
+  logging:
+    minimum-event-level: info
