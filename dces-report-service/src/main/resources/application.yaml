@@ -54,6 +54,6 @@ spring:
               - ${MAAT_API_OAUTH_SCOPE}
   scheduling:
     contributions:
-      cron: "0 0 5 5 * ?" # (5th of every month at 05:00am)
+      cron: ${DCES_CRON_CONTRIBUTIONS} # "0 0 5 5 * ?" # (5th of every month at 05:00am)
     fdc:
-      cron: "0 20 5 5 * ?" # (5th of every month at 05:20am)
+      cron: ${DCES_CRON_FDC} # "0 20 5 5 * ?" # (5th of every month at 05:20am)
