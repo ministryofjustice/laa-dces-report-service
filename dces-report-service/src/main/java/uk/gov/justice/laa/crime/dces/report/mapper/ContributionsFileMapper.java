@@ -5,7 +5,7 @@ import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
+import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
 import uk.gov.justice.laa.crime.dces.report.model.generated.ContributionFile;
 import uk.gov.justice.laa.crime.dces.report.model.generated.ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS;
 import uk.gov.justice.laa.crime.dces.report.model.generated.ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS.CcOutcomes.CcOutcome;
@@ -38,22 +38,23 @@ public class ContributionsFileMapper {
     }
 
     public File processRequest(String[] xmlData, LocalDate startDate, LocalDate endDate, String filename) throws IOException, JAXBException {
-        List<CSVDataLine> csvLineList = new ArrayList<>();
+        List<ContributionCSVDataLine> csvLineList = new ArrayList<>();
         for (String xmlString : xmlData) {
             processXMLFile(xmlString, startDate, endDate, csvLineList);
         }
         return csvFileService.writeContributionToCsv(csvLineList, filename);
     }
 
-    private void processXMLFile(String xmlData, LocalDate startDate, LocalDate endDate, List<CSVDataLine> csvLineList) throws JAXBException {
+    private void processXMLFile(String xmlData, LocalDate startDate, LocalDate endDate, List<ContributionCSVDataLine> csvLineList) throws JAXBException {
         ContributionFile contributionFile = mapContributionsXmlStringToObject(xmlData);
         if(Objects.isNull(contributionFile)
                 || Objects.isNull(contributionFile.getCONTRIBUTIONSLIST())
                 || Objects.isNull(contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS())){
             return;
         }
+        String dateGenerated = DateUtils.convertXmlGregorianToString(contributionFile.getHeader().getDateGenerated());
         for (CONTRIBUTIONS contribution : contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()) {
-            csvLineList.add(buildCSVDataLine(contribution, startDate, endDate));
+            csvLineList.add(buildCSVDataLine(contribution, startDate, endDate, dateGenerated));
         }
 
     }
@@ -67,9 +68,9 @@ public class ContributionsFileMapper {
         return (ContributionFile) unmarshaller.unmarshal(sr);
     }
 
-    public CSVDataLine buildCSVDataLine(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
+    public ContributionCSVDataLine buildCSVDataLine(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate, String dateGenerated) {
         // Business logic inside several of these. Go to methods for details.
-        return CSVDataLine.builder()
+        return ContributionCSVDataLine.builder()
                 .maatId(getMaatId(contribution))
                 .dataFeedType(getDataFeed(contribution))
                 // Uses start and end date to control visibility. If a date entry is outside of the range, it is not used.
@@ -84,6 +85,7 @@ public class ContributionsFileMapper {
                 // Otherwise returns ""
                 .ccOutcomeDate(getOutcomeDate(contribution, startDate, endDate))
                 .correspondenceSentDate(getCorrespondenceSentDate(contribution, startDate, endDate))
+                .dateGenerated(dateGenerated)
                 .build();
     }
 

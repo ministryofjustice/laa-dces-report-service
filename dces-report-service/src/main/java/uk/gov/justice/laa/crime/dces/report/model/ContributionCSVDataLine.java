@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CSVDataLine {
+public class ContributionCSVDataLine {
 
     String maatId;
     String dataFeedType;
@@ -19,6 +19,7 @@ public class CSVDataLine {
     String repOrderStatusDate;
     String hardshipReviewDate;
     String passportedDate;
+    String dateGenerated;
 
     public String toString(){
         return maatId + "," +
@@ -28,7 +29,8 @@ public class CSVDataLine {
                 correspondenceSentDate + "," +
                 repOrderStatusDate + "," +
                 hardshipReviewDate + "," +
-                passportedDate;
+                passportedDate + "," +
+                dateGenerated;
 
 
     }

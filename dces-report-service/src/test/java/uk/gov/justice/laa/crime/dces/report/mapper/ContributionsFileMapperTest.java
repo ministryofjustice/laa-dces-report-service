@@ -196,9 +196,9 @@ class ContributionsFileMapperTest {
             softly.assertThat(f).isNotNull();
             String csvOutput = FileUtils.readText(f);
             // check header present
-            softly.assertThat(csvOutput).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date");
+            softly.assertThat(csvOutput).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Date Generated");
             // verify content has been mapped
-            softly.assertThat(csvOutput).contains("5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,");
+            softly.assertThat(csvOutput).contains("5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021");
             softly.assertAll();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
@@ -218,12 +218,12 @@ class ContributionsFileMapperTest {
             softly.assertThat(f).isNotNull();
             String csvOutput = FileUtils.readText(f);
             // check header present
-            softly.assertThat(csvOutput).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date");
+            softly.assertThat(csvOutput).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Date Generated");
             // verify content has been mapped
             softly.assertThat(csvOutput).contains("5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,");
-            softly.assertThat(csvOutput).isEqualTo("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date\n" +
-                    "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,\n" +
-                    "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,");
+            softly.assertThat(csvOutput).isEqualTo("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Date Generated\n" +
+                    "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021\n" +
+                    "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021");
             softly.assertAll();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());

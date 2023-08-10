@@ -12,7 +12,7 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList.Fdc;
-import uk.gov.justice.laa.crime.dces.report.model.CSVDataLine;
+import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
 
 
 import javax.xml.datatype.DatatypeConfigurationException;
@@ -37,10 +37,10 @@ class CSVFileServiceTest {
     private CSVFileService CSVFileService;
     private static final Long testMaatId=123456789L;
 
-    private List<CSVDataLine> buildTestContributionFile(){
-        var contribution = new CSVDataLine();
+    private List<ContributionCSVDataLine> buildTestContributionFile(){
+        var contribution = new ContributionCSVDataLine();
         contribution.setMaatId("123456789");
-        ArrayList<CSVDataLine> contributionList = new ArrayList<>();
+        ArrayList<ContributionCSVDataLine> contributionList = new ArrayList<>();
         contributionList.add(contribution);
         return contributionList;
     }
@@ -52,7 +52,7 @@ class CSVFileServiceTest {
         try {
             file = File.createTempFile( "test", ".csv");
 
-            List<CSVDataLine> contFile = buildTestContributionFile();
+            List<ContributionCSVDataLine> contFile = buildTestContributionFile();
             CSVFileService.writeContributionToCsv(contFile, file);
             String output = FileUtils.readText(file);
             softly.assertThat(output).contains(contFile.get(0).getMaatId());
@@ -93,6 +93,10 @@ class CSVFileServiceTest {
 
         var fdcFile = new FdcFile();
         fdcFile.setFdcList(fdcList);
+
+        FdcFile.Header header = new FdcFile.Header();
+        header.setDateGenerated(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar(2020, Calendar.JUNE,30,4,0,0)));
+        fdcFile.setHeader(header);
         return fdcFile;
 
     }
