@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
+import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.mapper.FdcFileMapper;
 
@@ -14,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -30,7 +33,7 @@ public class FdcFilesService implements DcesReportFileService {
 
     private final FdcFileMapper fdcFileMapper;
 
-    @Timed("Fdc.getFiles")
+    @Timed("laa_dces_report_service_fdc_get_file")
     @Retry(name = SERVICE_NAME)
     public List<String> getFiles(LocalDate start, LocalDate end) {
         if (end.isBefore(start)) {
@@ -38,11 +41,22 @@ public class FdcFilesService implements DcesReportFileService {
             throw new MaatApiClientException(message);
         }
         log.info("Start - call MAAT API to collect FDC files, between {} and {}", start, end);
-        return fdcFilesClient.getContributions(start, end);
+        return fdcFilesClient.getContributions(start, end)
+            .stream()
+            .filter(Objects::nonNull)
+            .toList()
+        ;
     }
 
-    @Timed("Fdc.processFiles")
-    public File processFiles(List<String> files, LocalDate start, LocalDate finish) throws JAXBException, IOException {
+    @Timed("laa_dces_report_service_fdc_process_file")
+    public File processFiles(List<String> files, LocalDate start, LocalDate finish)
+            throws JAXBException, IOException, DcesReportSourceFilesDataNotFound {
+        if (files.isEmpty()) {
+            throw new DcesReportSourceFilesDataNotFound(
+                    String.format("NOT FOUND: No FDC Files data between %s and %s", start, finish)
+            );
+        }
+
         return fdcFileMapper.processRequest(files.toArray(new String[0]), getFileName(start, finish));
     }
 
