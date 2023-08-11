@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 
+import io.github.resilience4j.retry.RetryRegistry;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -33,6 +34,9 @@ class ContributionsFileServiceConnectionTest {
     @Autowired
     ContributionFilesService filesService;
 
+    @Autowired
+    private RetryRegistry registry;
+
     @BeforeAll
     void setup() {
         Locale.setDefault(new Locale("en", "GB"));
@@ -44,6 +48,12 @@ class ContributionsFileServiceConnectionTest {
     @Test
     void givenValidPeriod_whenGetContributionFilesIsInvoked_thenFileWithExpectedContentIsReturned() {
         List<String> contributionFiles;
+        Long expectedFailedCallsWithRetryAttempt = registry
+                .retry("dcesReportContributions")
+                .getMetrics()
+                .getNumberOfFailedCallsWithRetryAttempt() + 1
+        ;
+        Long expectedFailedCallsWithoutRetryAttempt = 0L;
 
         try {
             contributionFiles = filesService.getFiles(startPeriod, finishPeriod);
@@ -54,6 +64,12 @@ class ContributionsFileServiceConnectionTest {
                 softly.assertThat(contributionFiles).isNotEmpty();
             }
         } catch (IllegalArgumentException e) { // Config variable values not yet loaded
+            softly.assertThat(
+                    registry.retry("dcesReportContributions").getMetrics().getNumberOfFailedCallsWithRetryAttempt()
+            ).isEqualTo(expectedFailedCallsWithRetryAttempt);
+            softly.assertThat(
+                    registry.retry("dcesReportContributions").getMetrics().getNumberOfFailedCallsWithoutRetryAttempt()
+            ).isEqualTo(expectedFailedCallsWithoutRetryAttempt);
         } catch (OAuth2AuthorizationException e) { // Client credentials error
         }
     }
@@ -61,6 +77,12 @@ class ContributionsFileServiceConnectionTest {
     @Test
     void givenPeriodWithNoData_whenGetContributionFilesIsInvoked_thenFileWithExpectedContentIsReturned() {
         List<String> contributionFiles;
+        Long expectedFailedCallsWithRetryAttempt = registry
+                .retry("dcesReportContributions")
+                .getMetrics()
+                .getNumberOfFailedCallsWithRetryAttempt() + 1
+                ;
+        Long expectedFailedCallsWithoutRetryAttempt = 0L;
 
         try {
             LocalDate fromDate = LocalDate.now().minusYears(10).minusDays(10);
@@ -69,6 +91,12 @@ class ContributionsFileServiceConnectionTest {
             softly.assertThat(contributionFiles).isNotNull();
             softly.assertThat(contributionFiles).isEmpty();
         } catch (IllegalArgumentException e) { // Config variable values not yet loaded
+            softly.assertThat(
+                    registry.retry("dcesReportContributions").getMetrics().getNumberOfFailedCallsWithRetryAttempt()
+            ).isEqualTo(expectedFailedCallsWithRetryAttempt);
+            softly.assertThat(
+                    registry.retry("dcesReportContributions").getMetrics().getNumberOfFailedCallsWithoutRetryAttempt()
+            ).isEqualTo(expectedFailedCallsWithoutRetryAttempt);
         } catch (OAuth2AuthorizationException e) { // Client credentials error
         }
     }

@@ -1,5 +1,5 @@
 server:
-  port: 8089
+  port: 8089 # Remember to keep Docker's ENV variable DCES_SERVER_PORT up to date with this
 
 management:
   server:
@@ -52,6 +52,9 @@ spring:
             authorization-grant-type: client_credentials
             scope:
               - ${MAAT_API_OAUTH_SCOPE}
+  # Cron template: second   minute  hour  day-of-month  month  day-of-week
+  # * is used to indicate include all; ? is used to ignore
+  # secs and min range from 0-59, hour 0-23, month 1-12, day-of-month 1-31 (be aware of month day restrictions, day-of-week 1-7)
   scheduling:
     contributions:
       cron: ${DCES_CRON_CONTRIBUTIONS} # "0 0 5 5 * ?" # (5th of every month at 05:00am)
