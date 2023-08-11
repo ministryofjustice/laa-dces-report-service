@@ -91,5 +91,4 @@ Example: `./contributions.sh 01.01.2021 26.01.2021`
 
     `fdcReportAdHoc.sh {startDate} {endDate}`
 
-Example: `./fdcReportAdHoc.sh 01.01.2021 26.01.2021`  
-
+Example: `./fdcReportAdHoc.sh 01.01.2021 26.01.2021`
