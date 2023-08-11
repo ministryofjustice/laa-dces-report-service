@@ -11,6 +11,9 @@ spring:
   web:
     locale: en_GB
     locale-resolver: fixed
+  # Cron template: second   minute  hour  day-of-month  month  day-of-week
+  # * is used to indicate include all; ? is used to ignore
+  # secs and min range from 0-59, hour 0-23, month 1-12, day-of-month 1-31 (be aware of month day restrictions, day-of-week 1-7)
   scheduling:
     contributions:
       cron: "0-30/16 */5 * * * ?"
