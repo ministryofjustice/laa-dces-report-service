@@ -1,0 +1,59 @@
+server:
+  port: 8089
+
+management:
+  server:
+    port: 8188
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+
+springdoc:
+  packagesToScan: uk.gov.justice.laa.crime.dces.report
+  show-actuator: true
+  api-docs:
+    path: /dces-report-service
+    enabled: true
+
+  swagger-ui:
+    path: /open-api/docs.html
+    enabled: true
+    operationsSorter: method
+
+services:
+  maat-api:
+    baseUrl: https://maat-cd-api.dev.legalservices.gov.uk/api/internal/v1
+    registrationId: maatapi
+    oAuthEnabled: true
+    maxBufferSize: 32
+
+emailClient:
+  notify:
+    key: dces_service-e696f564-9692-4c1c-81fc-77e4954ecbc9-11c1dbf1-f542-46d2-a278-7fa3841a80da
+    template-id: 7008e285-0ef0-4f29-bc95-8f59840810a7
+    recipient: tomas.novellino@digital.justice.gov.uk
+
+spring:
+  mvc:
+    format:
+      date: dd.MM.yyyy
+  security:
+    oauth2:
+      # Interactive/Web user authentication
+      client:
+        provider:
+          maatapi:
+            token-uri: https://maat-cd-api-dev.auth.eu-west-2.amazoncognito.com/oauth2/token
+        registration:
+          maatapi:
+            client-id: 8s4ui1o5gq3dt49d5dfkjs54h
+            client-secret: 1f4vlht03f0n7o2foaan28tlqk83d1od4ntvo17npb81grj8r3fe
+            authorization-grant-type: client_credentials
+            scope:
+              - maat-cd-api/standard
+  scheduling:
+    contributions:
+      cron: "0 0 9-18 * * ?" # (every day every hour from 9am to 6pm)
+    fdc:
+      cron: "0 0 9-18 * * ?" # (every day, every hour from 9am to 6pm)
