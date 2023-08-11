@@ -4,7 +4,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,10 +26,7 @@ public class DcesReportAuthenticationConfig {
                     .requestMatchers("/swagger-ui/**").permitAll()
                     .requestMatchers("/api-docs/**").permitAll()
                     .requestMatchers("/actuator/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, API_REQUEST_PATH).access(
-                        (authentication, context) ->
-                            new AuthorizationDecision(isRequestFromLocal(context.getRequest()))
-                    )
+                    .requestMatchers(HttpMethod.GET, API_REQUEST_PATH).permitAll()
                     .anyRequest().authenticated()
             )
             .sessionManagement(
