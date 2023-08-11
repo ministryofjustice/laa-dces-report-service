@@ -79,7 +79,7 @@ Example
 
     `curl -G localhost:8089/api/internal/v1/dces/report/fdc/01.01.2021/26.01.2021`
 
-Alternatively you can opt to use the simplified bash commands which are also copied during docker build: 
+Alternatively you can opt to use the simplified bash commands which are also copied during docker build:
 
 #### Alternative for contributions
 
