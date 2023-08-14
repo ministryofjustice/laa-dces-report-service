@@ -115,7 +115,7 @@ public class MaatApiWebClientFactory {
                                 null, null, null);
                     }
 
-                    return new MaatApiClientException(errorMessage);
+                    return new MaatApiClientException(httpStatus, errorMessage);
                 }
         );
     }
