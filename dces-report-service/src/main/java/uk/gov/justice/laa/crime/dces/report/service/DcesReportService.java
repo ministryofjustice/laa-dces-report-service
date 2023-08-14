@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
+import uk.gov.justice.laa.crime.dces.report.utils.email.EmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
-import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -35,7 +35,7 @@ public class DcesReportService {
     private final ContributionFilesService contributionFilesService;
 
     @Autowired
-    private final NotifyEmailClient emailClient;
+    private final EmailClient emailClient;
 
     @Value("${emailClient.notify.template-id}")
     private String templateId;
@@ -53,7 +53,7 @@ public class DcesReportService {
         log.info("Files received and starting processing XML files");
         File file = contributionFilesService.processFiles(contributionFiles, start, end);
 
-        sendEmailWithAttachment(file, contributionFilesService.getType(), start, end);
+        sendEmailReport(file, contributionFilesService.getType(), start, end);
     }
 
     public void sendFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
@@ -61,11 +61,11 @@ public class DcesReportService {
         List<String> contributionFiles = fdcFilesService.getFiles(start, end);
         File fdcFile = fdcFilesService.processFiles(contributionFiles, start, end);
 
-        sendEmailWithAttachment(fdcFile, fdcFilesService.getType(), start, end);
+        sendEmailReport(fdcFile, fdcFilesService.getType(), start, end);
     }
 
     @Timed("sendEmail")
-    private void sendEmailWithAttachment(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
+    private void sendEmailReport(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
         log.info("Prepare email for report type {}", reportType);
         EmailObject emailObject = NotifyEmailObject.createEmail(attachment, reportType, start, end, templateId, recipient);
 
