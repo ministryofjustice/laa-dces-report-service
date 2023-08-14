@@ -66,7 +66,7 @@ sentry:
   debug: on
   dsn: https://cda1d7406f2ac58d5484fbbcea12d22c@o345774.ingest.sentry.io/4505674155753472
   traces-sample-rate: 1.0
-  environment: DEV
+  environment: ${SENTRY_ENV}
   release: 1.0.0
   servername: aws-eks-container
   send-default-pii: true
