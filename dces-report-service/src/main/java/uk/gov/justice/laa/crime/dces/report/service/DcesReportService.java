@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
+import uk.gov.justice.laa.crime.dces.report.utils.email.EmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
-import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -19,8 +19,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
+
+import static uk.gov.justice.laa.crime.dces.report.service.MailerService.sendEmail;
 
 @Slf4j
 @Service
@@ -34,7 +35,7 @@ public class DcesReportService {
     private final ContributionFilesService contributionFilesService;
 
     @Autowired
-    private final NotifyEmailClient emailClient;
+    private final EmailClient emailClient;
 
     @Value("${emailClient.notify.template-id}")
     private String templateId;
@@ -45,14 +46,14 @@ public class DcesReportService {
 
     public void sendContributionsReport(LocalDate start, LocalDate end)
             throws JAXBException, IOException,
-                   DcesReportSourceFilesDataNotFound, NotificationClientException {
+            DcesReportSourceFilesDataNotFound, NotificationClientException {
         log.info("Start processing Contributions Report Service");
         List<String> contributionFiles = contributionFilesService.getFiles(start, end);
 
         log.info("Files received and starting processing XML files");
-        File file = contributionFilesService.processFiles(contributionFiles, start,end);
+        File file = contributionFilesService.processFiles(contributionFiles, start, end);
 
-        sendEmailWithAttachment(file, contributionFilesService.getType(), start, end);
+        sendEmailReport(file, contributionFilesService.getType(), start, end);
     }
 
     public void sendFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
@@ -60,27 +61,16 @@ public class DcesReportService {
         List<String> contributionFiles = fdcFilesService.getFiles(start, end);
         File fdcFile = fdcFilesService.processFiles(contributionFiles, start, end);
 
-        sendEmailWithAttachment(fdcFile, fdcFilesService.getType(), start, end);
+        sendEmailReport(fdcFile, fdcFilesService.getType(), start, end);
     }
 
     @Timed("sendEmail")
-    private void sendEmailWithAttachment(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
-        log.info("Start sending email for report type {}", reportType);
-        HashMap<String, Object> personalisation = new HashMap<>();
-        personalisation.put("report_type", reportType);
-        personalisation.put("from_date", start.toString());
-        personalisation.put("to_date", end.toString());
-        EmailObject emailObject = new NotifyEmailObject(
-                templateId,
-                recipient,
-                personalisation,
-                "_ref",
-                ""
-        );
-        emailObject.addAttachment(attachment);
+    private void sendEmailReport(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
+        log.info("Prepare email for report type {}", reportType);
+        EmailObject emailObject = NotifyEmailObject.createEmail(attachment, reportType, start, end, templateId, recipient);
 
         Timer timer = Metrics.globalRegistry.timer("laa_dces_report_service_send_email");
-        timer.record(() -> emailClient.send(emailObject));
+        timer.record(() -> sendEmail(emailObject, emailClient));
         timer.close();
         Files.delete(attachment.toPath());
     }
