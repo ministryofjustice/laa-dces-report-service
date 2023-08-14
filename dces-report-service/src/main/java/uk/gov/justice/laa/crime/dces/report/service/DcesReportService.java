@@ -21,6 +21,8 @@ import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.List;
 
+import static uk.gov.justice.laa.crime.dces.report.service.MailerService.sendEmail;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -68,7 +70,7 @@ public class DcesReportService {
         EmailObject emailObject = NotifyEmailObject.createEmail(attachment, reportType, start, end, templateId, recipient);
 
         Timer timer = Metrics.globalRegistry.timer("laa_dces_report_service_send_email");
-        timer.record(() -> emailClient.send(emailObject));
+        timer.record(() -> sendEmail(emailObject, emailClient));
         timer.close();
         Files.delete(attachment.toPath());
     }
