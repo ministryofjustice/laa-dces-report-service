@@ -1,5 +1,5 @@
 server:
-  port: 8089 # Remember to keep Docker's ENV variable DCES_SERVER_PORT up to date with this
+  port: 8089 # remember to keep Docker's ENV variable DCES_SERVER_PORT up to date with port number here
 
 management:
   server:
@@ -56,6 +56,7 @@ spring:
   # * is used to indicate include all; ? is used to ignore
   # secs and min range from 0-59, hour 0-23, month 1-12, day-of-month 1-31 (be aware of month day restrictions, day-of-week 1-7)
   scheduling:
+    enabled: ${DCES_CRON_ENABLED}
     contributions:
       cron: ${DCES_CRON_CONTRIBUTIONS} # "0 0 5 5 * ?" # (5th of every month at 05:00am)
     fdc:

@@ -53,6 +53,7 @@ spring:
             scope:
               - ${MAAT_API_OAUTH_SCOPE}
   scheduling:
+    enabled: true
     contributions:
       cron: "0-30/16 */5 * * * ?"
     fdc:
