@@ -1,5 +1,5 @@
 server:
-  port: 8089
+  port: 8089 # Remember to keep Docker's ENV variable DCES_SERVER_PORT up to date with this
 
 management:
   server:

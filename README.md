@@ -79,7 +79,7 @@ Example
 
     `curl -G localhost:8089/api/internal/v1/dces/report/fdc/01.01.2021/26.01.2021`
 
-Alternatively you can opt to use the simplified bash commands:
+Alternatively you can opt to use the simplified bash commands which are also copied during docker build:
 
 #### Alternative for contributions
 
@@ -91,5 +91,4 @@ Example: `./contributions.sh 01.01.2021 26.01.2021`
 
     `fdcReportAdHoc.sh {startDate} {endDate}`
 
-Example: `./fdcReportAdHoc.sh 01.01.2021 26.01.2021`  
-
+Example: `./fdcReportAdHoc.sh 01.01.2021 26.01.2021`
