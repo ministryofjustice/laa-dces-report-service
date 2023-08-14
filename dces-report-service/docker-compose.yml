@@ -3,7 +3,7 @@ version: "3.9"
 services:
   app:
     environment:
-      - DCES_SERVER_PORT=8089 # should match server.port in application.yaml
+      - DCES_SERVER_PORT=8089 # port number should match server.port in application.yaml
     build:
       context: .
     ports:
