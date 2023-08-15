@@ -20,8 +20,7 @@ import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 import uk.gov.justice.laa.crime.dces.report.service.FdcFilesService;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
-import uk.gov.justice.laa.crime.dces.report.utils.email.exceptions.EmailClientException;
-import uk.gov.service.notify.NotificationClient;
+import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailClientException;
 import uk.gov.service.notify.NotificationClientException;
 
 import java.io.File;

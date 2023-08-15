@@ -1,4 +1,4 @@
-package uk.gov.justice.laa.crime.dces.report.utils.email.exceptions;
+package uk.gov.justice.laa.crime.dces.report.utils.email.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
