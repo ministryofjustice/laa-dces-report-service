@@ -18,7 +18,10 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 import uk.gov.justice.laa.crime.dces.report.service.FdcFilesService;
-import uk.gov.service.notify.NotificationClient;
+import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
+import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
+import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailClientException;
+import uk.gov.service.notify.NotificationClientException;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,6 +30,8 @@ import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doThrow;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
@@ -50,7 +55,7 @@ class DcesReportControllerTest {
     DcesReportController controller;
 
     @MockBean
-    NotificationClient notifyClient;
+    NotifyEmailClient mockEmailClient;
 
     @BeforeAll
     void setup() {
@@ -117,6 +122,22 @@ class DcesReportControllerTest {
         // execute
         softly.assertThatThrownBy(() -> controller.getFdcReport(testDate, testDate))
                 .isInstanceOf(WebClientResponseException.class)
+                .hasMessageContaining(expectedMessage);
+    }
+
+    @Test
+    void givenInvalidEmailMock_whenGetContributionsReportIsInvoked_thenEmailClientExceptionIsThrown() throws NotificationClientException {
+        // setup
+        String expectedMessage = "400 BAD REQUEST";
+        doThrow(new EmailClientException(expectedMessage))
+                .when(mockEmailClient)
+                .send(any(EmailObject.class))
+        ;
+
+        // execute
+        softly.assertThatThrownBy(() ->
+                        controller.getContributionsReport(startPeriod, finishPeriod))
+                .isInstanceOf(EmailClientException.class)
                 .hasMessageContaining(expectedMessage);
     }
 
