@@ -25,6 +25,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
+import static uk.gov.justice.laa.crime.dces.report.service.MailerService.setEnvironment;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
@@ -114,5 +115,40 @@ class NotifyEmailClientTest {
                 .isInstanceOf(EmailClientException.class)
                 .hasMessageContaining(expectedMessage);
         softly.assertAll();
+    }
+
+    @Test
+    void givenEnvironmentIsProductionNoEnvPersonalisationShouldNotBeSet() {
+        Map<String, Object> personalisation = new HashMap<>();
+        NotifyEmailObject productionEmail = new NotifyEmailObject(
+                "",
+                List.of(),
+                personalisation,
+                "",
+                "",
+                "production"
+        );
+
+        setEnvironment(productionEmail);
+        productionEmail.getPersonalisation().get("env");
+        softly.assertThat(!productionEmail.getPersonalisation().containsKey("env"));
+    }
+
+    @Test
+    void givenEnvironmentIsNotProductionNoEnvPersonalisationShouldBeSet() {
+        Map<String, Object> personalisation = new HashMap<>();
+        NotifyEmailObject productionEmail = new NotifyEmailObject(
+                "",
+                List.of(),
+                personalisation,
+                "",
+                "",
+                "development"
+        );
+
+        setEnvironment(productionEmail);
+        productionEmail.getPersonalisation().get("env");
+        softly.assertThat(productionEmail.getPersonalisation().containsKey("env"));
+        softly.assertThat(productionEmail.getPersonalisation().get("env") == "development");
     }
 }
