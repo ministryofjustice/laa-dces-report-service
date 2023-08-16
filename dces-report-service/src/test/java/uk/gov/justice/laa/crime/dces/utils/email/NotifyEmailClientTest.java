@@ -77,10 +77,10 @@ class NotifyEmailClientTest {
     @Test
     void givenInvalidEmailAddress_whenSendIsInvoked_thenNotificationClientExceptionIsThrown() throws NotificationClientException {
         // setup
-        mockEmailObject.setEmailAddress("mock1@email.com,mock2@email.com");
+        mockEmailObject.setEmailAddresses(List.of("mock2mickeymouse.com"));
         given(mockNotifyClient.sendEmail(
                 mockEmailObject.getTemplateId(),
-                mockEmailObject.getEmailAddress(),
+                mockEmailObject.getEmailAddresses().get(0),
                 mockEmailObject.getPersonalisation(),
                 mockEmailObject.getReference(),
                 mockEmailObject.getEmailReplyToId()
@@ -98,10 +98,10 @@ class NotifyEmailClientTest {
     @Test
     void givenInvalidEmailAddress_whenSendIsInvokedAndNotificationClientExceptionIsThrown_thenEmailClientExceptionIsReThrown() throws NotificationClientException {
         // setup
-        mockEmailObject.setEmailAddress("mock1@email.com,mock2@email.com");
+        mockEmailObject.setEmailAddresses(List.of("mock2mickeymouse.com"));
         given(mockNotifyClient.sendEmail(
                 mockEmailObject.getTemplateId(),
-                mockEmailObject.getEmailAddress(),
+                mockEmailObject.getEmailAddresses().get(0),
                 mockEmailObject.getPersonalisation(),
                 mockEmailObject.getReference(),
                 mockEmailObject.getEmailReplyToId()
