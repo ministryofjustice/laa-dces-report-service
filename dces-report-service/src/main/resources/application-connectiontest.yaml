@@ -32,7 +32,7 @@ emailClient:
   notify:
     key: notify_test_key
     template-id: notify-template-id
-    recipient: tariq.hossain@digital.justice.gov.uk
+    recipient: 'tariq.hossain@digital.justice.gov.uk'
 
 spring:
   mvc:
@@ -58,3 +58,6 @@ spring:
       cron: "0-30/16 */5 * * * ?"
     fdc:
       cron: "31-59/15 */5 * * * ?"
+
+sentry:
+  environment: development

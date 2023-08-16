@@ -10,6 +10,7 @@ import uk.gov.justice.laa.crime.dces.report.utils.email.exceptions.EmailObjectIn
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +26,7 @@ class NotifyEmailObjectTest {
     void setup() {
         Map<String, Object> personalisation = new HashMap<>();
         notifyEmailObject = new NotifyEmailObject();
-        notifyEmailObject.setEmailAddress("emailAdd");
+        notifyEmailObject.setEmailAddresses(List.of("emailAdd"));
         notifyEmailObject.setTemplateId("templateId");
         notifyEmailObject.setPersonalisation(personalisation);
         notifyEmailObject.setEmailReplyToId("");
@@ -43,7 +44,7 @@ class NotifyEmailObjectTest {
 
     @Test
     void testInitEmailObject() {
-        assertEquals("emailAdd", notifyEmailObject.getEmailAddress());
+        assertEquals("emailAdd", notifyEmailObject.getEmailAddresses().get(0));
         assertEquals("templateId", notifyEmailObject.getTemplateId());
         assertEquals("ref", notifyEmailObject.getReference());
         assertEquals("", notifyEmailObject.getEmailReplyToId());
@@ -53,7 +54,7 @@ class NotifyEmailObjectTest {
     void emailObjectWithEmailAddressEmptyIsInValid() {
         // setup
         notifyEmailObject.getPersonalisation().put("link_to_file", "linkMissing");
-        notifyEmailObject.setEmailAddress("");
+        notifyEmailObject.setEmailAddresses(List.of());
 
         // execute
         Exception exception = assertThrows(EmailObjectInvalidException.class, () -> notifyEmailObject.validate());
@@ -65,9 +66,10 @@ class NotifyEmailObjectTest {
         Map<String, Object> personalisation = new HashMap<>();
         NotifyEmailObject emailObject = new NotifyEmailObject(
                 "id",
-                "email",
+                List.of("emailAddress"),
                 personalisation,
                 "voTest",
+                "",
                 ""
         );
         // execute

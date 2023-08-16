@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.dces.integration;
 
-import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,25 +9,27 @@ import uk.gov.justice.laa.crime.dces.report.utils.email.EmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
 import uk.gov.justice.laa.crime.dces.report.utils.email.config.EmailConfiguration;
-import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static uk.gov.justice.laa.crime.dces.report.service.MailerService.sendEmail;
+import static uk.gov.justice.laa.crime.dces.report.service.MailerService.setEnvironment;
+import static uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject.createEmail;
 
 @SpringBootTest
 @ContextConfiguration(classes = {NotifyEmailClient.class, NotifyEmailObject.class, EmailConfiguration.class})
 final class NotifyEmailClientIntegrationTest {
 
     // test template may need to be
-    private static final String TEMPLATE_ID = "7008e285-0ef0-4f29-bc95-8f59840810a7";
+    private static final String TEMPLATE_ID = "bd605f8d-3cc5-423f-95fb-6465535a452a";
 
     // UPDATE RECIPIENT EMAIL ADDRESS BEFORE RUNNING TEST
-    private static final String TEST_RECIPIENT = "rahodav340@rc3s.com";
+    private static final List<String> TEST_RECIPIENT = List.of("rahodav340@rc3s.com");
 
     private NotifyEmailObject testEmailObject;
 
@@ -39,26 +40,18 @@ final class NotifyEmailClientIntegrationTest {
     void setup() throws IOException, NotificationClientException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("testContributionReport.csv").getFile());
-        byte[] fileContents = FileUtils.readFileToByteArray(file);
 
-        Map<String, Object> personalisation = new HashMap<>();
-        personalisation.put("link_to_file", NotificationClient.prepareUpload(fileContents, true));
-
-        testEmailObject = new NotifyEmailObject(
-                TEMPLATE_ID,
-                TEST_RECIPIENT,
-                personalisation,
-                "voTest",
-                ""
+        testEmailObject = createEmail(
+                file,
+                "Contribution",
+                LocalDate.of(2023, 8, 10), LocalDate.now(),
+                TEMPLATE_ID, TEST_RECIPIENT
         );
-        // setup template fields
-        testEmailObject.getPersonalisation().put("report_type", "Contribution");
-        testEmailObject.getPersonalisation().put("from_date", "25-07-2023");
-        testEmailObject.getPersonalisation().put("to_date", "25-07-2023");
     }
 
     @Test
     void testSendingEmail() {
-        assertDoesNotThrow(() -> testNotifyEmailClient.send(testEmailObject));
+        setEnvironment(testEmailObject);
+        assertDoesNotThrow(() -> sendEmail(testEmailObject, testNotifyEmailClient));
     }
 }

@@ -23,17 +23,24 @@ public final class NotifyEmailClient implements EmailClient {
         log.info("attempt to send email...");
         try {
             mail.validate();
-            client.sendEmail(
-                    mail.getTemplateId(),
-                    mail.getEmailAddress(),
-                    mail.getPersonalisation(),
-                    mail.getReference(),
-                    mail.getEmailReplyToId()
-            );
+
+            for (String emailAddress : mail.getEmailAddresses()) {
+                sendEmailWithSingleRecipient(mail, emailAddress);
+            }
         } catch (NotificationClientException e) {
             log.error("sending email failed with error : {}", e.getMessage());
             throw new EmailClientException(e.getMessage());
         }
         log.info("email sent successfully");
+    }
+
+    private void sendEmailWithSingleRecipient(NotifyEmailObject mail, String recipient) throws NotificationClientException {
+        client.sendEmail(
+                mail.getTemplateId(),
+                recipient,
+                mail.getPersonalisation(),
+                mail.getReference(),
+                mail.getEmailReplyToId()
+        );
     }
 }

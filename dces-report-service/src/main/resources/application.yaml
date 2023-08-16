@@ -32,7 +32,7 @@ emailClient:
   notify:
     key: ${NOTIFY_KEY}
     template-id: ${NOTIFY_TEMPLATEID}
-    recipient: ${NOTIFY_RECIPIENT}
+    recipient: ${ NOTIFY_RECIPIENT }
 
 spring:
   mvc:

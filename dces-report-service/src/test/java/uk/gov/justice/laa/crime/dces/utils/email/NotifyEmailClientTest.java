@@ -15,6 +15,7 @@ import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -40,7 +41,7 @@ class NotifyEmailClientTest {
     void setup() {
         Map<String, Object> personalisation = new HashMap<>();
         given(mockEmailObject.getTemplateId()).willReturn("template_id");
-        given(mockEmailObject.getEmailAddress()).willReturn("email");
+        given(mockEmailObject.getEmailAddresses()).willReturn(List.of("email"));
         given(mockEmailObject.getPersonalisation()).willReturn(personalisation);
         given(mockEmailObject.getReference()).willReturn("ref");
         given(mockEmailObject.getEmailReplyToId()).willReturn("replyTo_id");
@@ -57,7 +58,7 @@ class NotifyEmailClientTest {
         // setup
         given(mockNotifyClient.sendEmail(
                 mockEmailObject.getTemplateId(),
-                mockEmailObject.getEmailAddress(),
+                mockEmailObject.getEmailAddresses().get(0),
                 mockEmailObject.getPersonalisation(),
                 mockEmailObject.getReference(),
                 mockEmailObject.getEmailReplyToId()
