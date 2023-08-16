@@ -4,8 +4,8 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.dces.report.utils.email.exceptions.EmailClientException;
-import uk.gov.justice.laa.crime.dces.report.utils.email.exceptions.EmailObjectInvalidException;
+import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailClientException;
+import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailObjectInvalidException;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 

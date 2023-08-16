@@ -6,7 +6,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
-import uk.gov.justice.laa.crime.dces.report.utils.email.exceptions.EmailObjectInvalidException;
+import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailObjectInvalidException;
 
 import java.io.File;
 import java.util.HashMap;

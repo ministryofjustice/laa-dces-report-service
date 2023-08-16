@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import uk.gov.justice.laa.crime.dces.report.utils.email.exceptions.EmailObjectInvalidException;
+import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailObjectInvalidException;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 

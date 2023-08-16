@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.utils.email;
 
-import uk.gov.justice.laa.crime.dces.report.utils.email.exceptions.EmailObjectInvalidException;
+import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailObjectInvalidException;
 import uk.gov.service.notify.NotificationClientException;
 
 import java.io.File;
