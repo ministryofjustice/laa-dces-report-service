@@ -18,14 +18,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static uk.gov.justice.laa.crime.dces.report.service.MailerService.sendEmail;
-import static uk.gov.justice.laa.crime.dces.report.service.MailerService.setEnvironment;
 import static uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject.createEmail;
 
 @SpringBootTest
 @ContextConfiguration(classes = {NotifyEmailClient.class, NotifyEmailObject.class, EmailConfiguration.class})
 final class NotifyEmailClientIntegrationTest {
 
-    // test template may need to be
+    // test template may need to be updated prior to running test
     private static final String TEMPLATE_ID = "bd605f8d-3cc5-423f-95fb-6465535a452a";
 
     // UPDATE RECIPIENT EMAIL ADDRESS BEFORE RUNNING TEST
@@ -44,14 +43,15 @@ final class NotifyEmailClientIntegrationTest {
         testEmailObject = createEmail(
                 file,
                 "Contribution",
-                LocalDate.of(2023, 8, 10), LocalDate.now(),
-                TEMPLATE_ID, TEST_RECIPIENT
+                LocalDate.of(2023, 8, 10),
+                LocalDate.now(),
+                TEMPLATE_ID,
+                TEST_RECIPIENT
         );
     }
 
     @Test
     void testSendingEmail() {
-        setEnvironment(testEmailObject);
         assertDoesNotThrow(() -> sendEmail(testEmailObject, testNotifyEmailClient));
     }
 }

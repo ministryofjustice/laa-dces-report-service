@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
-import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObjectEnvironmentAware;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -23,7 +22,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static uk.gov.justice.laa.crime.dces.report.service.MailerService.sendEmail;
-import static uk.gov.justice.laa.crime.dces.report.service.MailerService.setEnvironment;
 
 @Slf4j
 @Service
@@ -70,8 +68,6 @@ public class DcesReportService {
     private void sendEmailReport(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
         log.info("prepare email for report type {}", reportType);
         EmailObject emailObject = NotifyEmailObject.createEmail(attachment, reportType, start, end, templateId, recipients);
-        log.info("attempt to set email environment");
-        setEnvironment((EmailObjectEnvironmentAware) emailObject);
 
         Timer timer = Metrics.globalRegistry.timer("laa_dces_report_service_send_email");
         timer.record(() -> sendEmail(emailObject, emailClient));

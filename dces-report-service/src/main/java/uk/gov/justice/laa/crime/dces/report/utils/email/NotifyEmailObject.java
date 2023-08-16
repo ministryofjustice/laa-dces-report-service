@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.utils.email;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +25,7 @@ import static org.apache.commons.io.FileUtils.readFileToByteArray;
 @Getter
 @Setter
 @Component
-public final class NotifyEmailObject implements EmailObject, EmailObjectEnvironmentAware {
+public final class NotifyEmailObject implements EmailObject {
 
     private static String uploadKey = "link_to_file";
     private static String envKey = "link_to_file";
@@ -35,7 +36,8 @@ public final class NotifyEmailObject implements EmailObject, EmailObjectEnvironm
     private String reference;
     private String emailReplyToId;
 
-    @Value("${sentry.environment}")
+    @Value(value = "${sentry.environment}")
+    @Nullable
     private final String environment;
 
     @Override
@@ -66,32 +68,14 @@ public final class NotifyEmailObject implements EmailObject, EmailObjectEnvironm
         personalisation.put("report_type", reportType);
         personalisation.put("from_date", fromDate.toString());
         personalisation.put("to_date", toDate.toString());
-        personalisation.put("env_set", "no");
-        personalisation.put("env", "");
 
-        NotifyEmailObject emailObject = new NotifyEmailObject(
-                templateId,
-                recipients,
-                personalisation,
-                "_ref",
-                "",
-                ""
-        );
-
+        NotifyEmailObject emailObject = new NotifyEmailObject();
+        emailObject.setEmailAddresses(recipients);
+        emailObject.setTemplateId(templateId);
+        emailObject.setPersonalisation(personalisation);
+        emailObject.getPersonalisation().put("env", emailObject.getEnvironment());
         emailObject.addAttachment(file);
 
         return emailObject;
-    }
-
-    @Override
-    public String getEnvironment() {
-        return environment;
-    }
-
-    @Override
-    public void
-    setEnvironment() {
-        personalisation.put("env_set", "yes");
-        personalisation.put("env", environment);
     }
 }
