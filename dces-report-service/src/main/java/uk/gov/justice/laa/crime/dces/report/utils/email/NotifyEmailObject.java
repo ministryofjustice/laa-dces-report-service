@@ -61,7 +61,7 @@ public final class NotifyEmailObject implements EmailObject, EmailObjectEnvironm
             LocalDate fromDate,
             LocalDate toDate,
             String templateId,
-            List<String> recipient) throws NotificationClientException, IOException {
+            List<String> recipients) throws NotificationClientException, IOException {
         HashMap<String, Object> personalisation = new HashMap<>();
         personalisation.put("report_type", reportType);
         personalisation.put("from_date", fromDate.toString());
@@ -71,7 +71,7 @@ public final class NotifyEmailObject implements EmailObject, EmailObjectEnvironm
 
         NotifyEmailObject emailObject = new NotifyEmailObject(
                 templateId,
-                recipient,
+                recipients,
                 personalisation,
                 "_ref",
                 "",
