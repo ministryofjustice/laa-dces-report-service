@@ -9,15 +9,21 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
+import uk.gov.justice.laa.crime.dces.report.utils.email.config.EmailConfiguration;
 import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailClientException;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +35,8 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@ContextConfiguration(classes = NotifyEmailClient.class)
+@EnableConfigurationProperties(value = EmailConfiguration.class)
+@ContextConfiguration(classes = {NotifyEmailClient.class, EmailConfiguration.class})
 class NotifyEmailClientTest {
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -37,11 +44,17 @@ class NotifyEmailClientTest {
     @Autowired
     NotifyEmailClient testEmailClient;
 
+    @Autowired
+    private EmailConfiguration emailConfiguration;
+
     @Mock
     NotifyEmailObject mockEmailObject;
 
     @MockBean
     NotificationClient mockNotifyClient;
+
+    @Value("${sentry.environment}")
+    private String environment;
 
     @BeforeEach
     void setup() {
@@ -117,18 +130,11 @@ class NotifyEmailClientTest {
     }
 
     @Test
-    void givenEnvironmentIsNotProductionNoEnvPersonalisationShouldBeSet() {
-        Map<String, Object> personalisation = new HashMap<>();
-        NotifyEmailObject productionEmail = new NotifyEmailObject(
-                "",
-                List.of(),
-                personalisation,
-                "",
-                "",
-                "development"
-        );
+    void givenEnvironmentIsNotProductionNoEnvPersonalisationShouldBeSet() throws NotificationClientException, IOException {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("testContributionReport.csv").getFile());
+        NotifyEmailObject emailObject = emailConfiguration.getNotify().createEmail(file, "Contribution", LocalDate.of(2023, 8, 10), LocalDate.now(), "templateId", List.of("email@address.com"));
 
-        productionEmail.getPersonalisation().get("env");
-        softly.assertThat(productionEmail.getPersonalisation().get("env") == "development");
+        softly.assertThat(emailObject.getPersonalisation().get("env")).isEqualTo(environment);
     }
 }

@@ -69,7 +69,6 @@ class NotifyEmailObjectTest {
                 List.of("emailAddress"),
                 personalisation,
                 "voTest",
-                "",
                 ""
         );
         // execute

@@ -18,7 +18,6 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static uk.gov.justice.laa.crime.dces.report.service.MailerService.sendEmail;
-import static uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject.createEmail;
 
 @SpringBootTest
 @ContextConfiguration(classes = {NotifyEmailClient.class, NotifyEmailObject.class, EmailConfiguration.class})
@@ -33,6 +32,9 @@ final class NotifyEmailClientIntegrationTest {
     private NotifyEmailObject testEmailObject;
 
     @Autowired
+    private EmailConfiguration emailConfiguration;
+
+    @Autowired
     private EmailClient testNotifyEmailClient;
 
     @BeforeEach
@@ -40,7 +42,7 @@ final class NotifyEmailClientIntegrationTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("testContributionReport.csv").getFile());
 
-        testEmailObject = createEmail(
+        testEmailObject = emailConfiguration.getNotify().createEmail(
                 file,
                 "Contribution",
                 LocalDate.of(2023, 8, 10),
