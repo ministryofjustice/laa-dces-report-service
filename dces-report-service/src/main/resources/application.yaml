@@ -63,7 +63,7 @@ spring:
       cron: ${DCES_CRON_FDC} # "0 20 5 5 * ?" # (5th of every month at 05:20am)
 
 sentry:
-  debug: on
+  debug: off
   dsn: https://cda1d7406f2ac58d5484fbbcea12d22c@o345774.ingest.sentry.io/4505674155753472
   traces-sample-rate: 1.0
   environment: ${SENTRY_ENV}
