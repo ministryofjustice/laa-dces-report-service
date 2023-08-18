@@ -156,9 +156,9 @@ class FdcFileMapperTest {
             softly.assertThat(f).isNotNull();
             String csvOutput = FileUtils.readText(f);
             // check header present
-            softly.assertThat(csvOutput).contains("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Date Generated");
+            softly.assertThat(csvOutput).contains("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date");
             // verify content has been mapped
-            softly.assertThat(csvOutput).isEqualTo("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Date Generated\n" +
+            softly.assertThat(csvOutput).isEqualTo("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date\n" +
                     "2525925,30/09/2016,22/12/2016,1774.40,1180.64,593.76,25/07/2018\n" +
                     "2492027,04/02/2011,04/07/2018,1479.23,569.92,909.31,25/07/2018\n" +
                     "5275089,19/08/2016,02/09/2016,2849.95,1497.60,1352.35,25/07/2018\n" +

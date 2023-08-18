@@ -196,9 +196,31 @@ class ContributionsFileMapperTest {
             softly.assertThat(f).isNotNull();
             String csvOutput = FileUtils.readText(f);
             // check header present
-            softly.assertThat(csvOutput).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Date Generated");
+            softly.assertThat(csvOutput).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date");
             // verify content has been mapped
             softly.assertThat(csvOutput).contains("5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021");
+            softly.assertAll();
+        } catch (JAXBException | IOException e) {
+            fail("Exception occurred in mapping test:"+e.getMessage());
+        } finally {
+            closeFile(f);
+        }
+    }
+
+    @Test
+    void testProcessRequestFileDateOutOfRangeGeneration(){
+        File f = null;
+        try {
+            LocalDate startDate = getDate("01-01-2022");
+            LocalDate endDate = getDate("02-02-2022");
+            f = contributionsFileMapper.processRequest(new String[]{getXMLString()}, startDate, endDate, filename);
+
+            softly.assertThat(f).isNotNull();
+            String csvOutput = FileUtils.readText(f);
+            // check header present
+            softly.assertThat(csvOutput).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date");
+            // verify content has been mapped
+            softly.assertThat(csvOutput).contains("5635978,update,,,,,,,12/02/2021");
             softly.assertAll();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:"+e.getMessage());
@@ -218,10 +240,10 @@ class ContributionsFileMapperTest {
             softly.assertThat(f).isNotNull();
             String csvOutput = FileUtils.readText(f);
             // check header present
-            softly.assertThat(csvOutput).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Date Generated");
+            softly.assertThat(csvOutput).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date");
             // verify content has been mapped
             softly.assertThat(csvOutput).contains("5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,");
-            softly.assertThat(csvOutput).isEqualTo("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Date Generated\n" +
+            softly.assertThat(csvOutput).isEqualTo("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date\n" +
                     "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021\n" +
                     "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021");
             softly.assertAll();

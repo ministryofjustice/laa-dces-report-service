@@ -83,12 +83,12 @@ public class CSVFileService {
                 .repOrderStatusDate("Rep Order Status Date")
                 .hardshipReviewDate("Hardship Review Date")
                 .passportedDate("Passported Date")
-                .dateGenerated("Date Generated")
+                .dateGenerated("Transmission Date")
                 .build();
     }
 
     private void writeFdcHeader(FileWriter fw) throws IOException {
-        String headerLine = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Date Generated" + System.lineSeparator();
+        String headerLine = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date" + System.lineSeparator();
         fw.append(headerLine);
     }
 
