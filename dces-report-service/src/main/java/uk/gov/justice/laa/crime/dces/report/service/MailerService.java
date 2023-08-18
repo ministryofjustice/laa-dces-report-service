@@ -6,8 +6,9 @@ import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
 
 @Component
 public final class MailerService {
-    
+
     private MailerService() {
+        // intentionally empty
     }
 
     public static void sendEmail(EmailObject emailObject, EmailClient emailClient) {

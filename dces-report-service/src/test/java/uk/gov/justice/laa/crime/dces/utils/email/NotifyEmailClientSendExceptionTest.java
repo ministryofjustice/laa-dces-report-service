@@ -5,47 +5,36 @@ import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
-import uk.gov.justice.laa.crime.dces.report.utils.email.config.NotifyConfiguration;
 import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailClientException;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
-import java.io.File;
-import java.io.IOException;
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@EnableConfigurationProperties(value = NotifyConfiguration.class)
-@ContextConfiguration(classes = {NotifyEmailClient.class, NotifyConfiguration.class})
-class NotifyEmailClientTest {
+@ContextConfiguration(classes = NotifyEmailClient.class)
+class NotifyEmailClientSendExceptionTest {
     @InjectSoftAssertions
     private SoftAssertions softly;
 
     @Autowired
     NotifyEmailClient testEmailClient;
-
-    @Autowired
-    private NotifyConfiguration notifyConfiguration;
 
     @Mock
     NotifyEmailObject mockEmailObject;
@@ -53,17 +42,20 @@ class NotifyEmailClientTest {
     @MockBean
     NotificationClient mockNotifyClient;
 
-    @Value("${sentry.environment}")
-    private String environment;
+    @MockBean
+    NotificationClientException mock403Exception;
 
     @BeforeEach
     void setup() {
         Map<String, Object> personalisation = new HashMap<>();
         given(mockEmailObject.getTemplateId()).willReturn("template_id");
-        given(mockEmailObject.getEmailAddresses()).willReturn(List.of("email"));
+        given(mockEmailObject.getEmailAddresses()).willReturn(List.of("email1", "email2", "email3"));
         given(mockEmailObject.getPersonalisation()).willReturn(personalisation);
         given(mockEmailObject.getReference()).willReturn("ref");
         given(mockEmailObject.getEmailReplyToId()).willReturn("replyTo_id");
+
+        given(mock403Exception.getMessage()).willReturn("403 Error: Your system clock must be accurate to within 30 seconds");
+        given(mock403Exception.getHttpResult()).willReturn(403);
     }
 
 
@@ -73,7 +65,7 @@ class NotifyEmailClientTest {
     }
 
     @Test
-    void emailSendFailsWithRuntimeException() throws NotificationClientException {
+    void emailSendingContinuesWith$400RuntimeException() throws NotificationClientException {
         // setup
         given(mockNotifyClient.sendEmail(
                 mockEmailObject.getTemplateId(),
@@ -81,60 +73,55 @@ class NotifyEmailClientTest {
                 mockEmailObject.getPersonalisation(),
                 mockEmailObject.getReference(),
                 mockEmailObject.getEmailReplyToId()
-        )).willThrow(new NotificationClientException("invalid request"));
+        )).willThrow(new NotificationClientException("invalid request with invalid email1"));
 
-        // execute
-        assertThrows(EmailClientException.class, () -> testEmailClient.send(mockEmailObject));
-    }
-
-    @Test
-    void givenInvalidEmailAddress_whenSendIsInvoked_thenNotificationClientExceptionIsThrown() throws NotificationClientException {
-        // setup
-        mockEmailObject.setEmailAddresses(List.of("mock2mickeymouse.com"));
         given(mockNotifyClient.sendEmail(
                 mockEmailObject.getTemplateId(),
-                mockEmailObject.getEmailAddresses().get(0),
+                mockEmailObject.getEmailAddresses().get(1),
                 mockEmailObject.getPersonalisation(),
                 mockEmailObject.getReference(),
                 mockEmailObject.getEmailReplyToId()
-        )).willThrow(new EmailClientException("400 BAD REQUEST - email_address Not a valid email address"));
+        )).willThrow(new NotificationClientException("invalid request with invalid email2"));
 
-        String expectedMessage = "BAD REQUEST";
-
-        // execute
+        // assert / Assert
         softly.assertThatThrownBy(() -> testEmailClient.send(mockEmailObject))
                 .isInstanceOf(EmailClientException.class)
-                .hasMessageContaining(expectedMessage);
+                .hasMessageContaining("invalid request with invalid email1")
+                .hasCauseInstanceOf(NotificationClientException.class);
         softly.assertAll();
+
+        // asssert that the third email is still sent despite the first two failing
+        Mockito.verify(mockNotifyClient, times(1)).sendEmail(mockEmailObject.getTemplateId(),
+                mockEmailObject.getEmailAddresses().get(2),
+                mockEmailObject.getPersonalisation(),
+                mockEmailObject.getReference(),
+                mockEmailObject.getEmailReplyToId());
     }
 
     @Test
-    void givenInvalidEmailAddress_whenSendIsInvokedAndNotificationClientExceptionIsThrown_thenEmailClientExceptionIsReThrown() throws NotificationClientException {
+    void emailSendFailsWithNonUserRequestErrorRuntimeException() throws NotificationClientException {
         // setup
-        mockEmailObject.setEmailAddresses(List.of("mock2mickeymouse.com"));
         given(mockNotifyClient.sendEmail(
                 mockEmailObject.getTemplateId(),
                 mockEmailObject.getEmailAddresses().get(0),
                 mockEmailObject.getPersonalisation(),
                 mockEmailObject.getReference(),
                 mockEmailObject.getEmailReplyToId()
-        )).willThrow(new NotificationClientException("400 BAD REQUEST - email_address Not a valid email address"));
+        )).willThrow(mock403Exception);
 
-        String expectedMessage = "BAD REQUEST";
 
-        // execute
+        // assert / Assert
         softly.assertThatThrownBy(() -> testEmailClient.send(mockEmailObject))
                 .isInstanceOf(EmailClientException.class)
-                .hasMessageContaining(expectedMessage);
+                .hasMessageContaining("403 Error: Your system clock must be accurate to within 30 seconds")
+                .hasCauseInstanceOf(NotificationClientException.class);
         softly.assertAll();
-    }
 
-    @Test
-    void givenEnvironmentIsNotProductionNoEnvPersonalisationShouldBeSet() throws NotificationClientException, IOException {
-        ClassLoader classLoader = getClass().getClassLoader();
-        File file = new File(classLoader.getResource("testContributionReport.csv").getFile());
-        NotifyEmailObject emailObject = notifyConfiguration.createEmail(file, "Contribution", LocalDate.of(2023, 8, 10), LocalDate.now(), "templateId", List.of("email@address.com"));
-
-        softly.assertThat(emailObject.getPersonalisation().get("env")).isEqualTo(environment);
+        // assert that sending emails stops with non 400 http status error
+        Mockito.verify(mockNotifyClient, times(0)).sendEmail(mockEmailObject.getTemplateId(),
+                mockEmailObject.getEmailAddresses().get(1),
+                mockEmailObject.getPersonalisation(),
+                mockEmailObject.getReference(),
+                mockEmailObject.getEmailReplyToId());
     }
 }

@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.dces.report.utils.email;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailClientException;
@@ -21,19 +22,42 @@ public final class NotifyEmailClient implements EmailClient {
     public void send(EmailObject emailObject) throws EmailClientException, EmailObjectInvalidException {
         NotifyEmailObject mail = (NotifyEmailObject) emailObject;
         log.info("attempt to send email...");
+        mail.validate();
         try {
-            mail.validate();
-            client.sendEmail(
-                    mail.getTemplateId(),
-                    mail.getEmailAddress(),
-                    mail.getPersonalisation(),
-                    mail.getReference(),
-                    mail.getEmailReplyToId()
-            );
+            sendToMultipleRecipients(mail);
         } catch (NotificationClientException e) {
-            log.error("sending email failed with error : {}", e.getMessage());
-            throw new EmailClientException(e.getMessage());
+            String message = e.getMessage().isEmpty() ? e.getSuppressed()[0].getMessage() : e.getMessage();
+            log.error("sending email failed with error : {}", message);
+            throw new EmailClientException(message, e);
         }
         log.info("email sent successfully");
+    }
+
+    // As notify does not support sending to multiple recipients in a single api call
+    // we iterate over the recipients instead.
+    private void sendToMultipleRecipients(NotifyEmailObject mail) throws NotificationClientException {
+        NotificationClientException exceptionStack = new NotificationClientException("");
+        for (String emailAddress : mail.getEmailAddresses()) {
+            try {
+                client.sendEmail(
+                        mail.getTemplateId(),
+                        emailAddress,
+                        mail.getPersonalisation(),
+                        mail.getReference(),
+                        mail.getEmailReplyToId()
+                );
+            } catch (NotificationClientException sendingException) {
+                if (sendingException.getHttpResult() == HttpStatus.SC_BAD_REQUEST) {
+                    log.error("failed sending email to recipient with error: {}", sendingException.getMessage());
+                    exceptionStack.addSuppressed(sendingException);
+                    continue;
+                }
+                throw sendingException;
+            }
+        }
+
+        if (exceptionStack.getSuppressed().length > 0) {
+            throw exceptionStack;
+        }
     }
 }

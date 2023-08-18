@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
-import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
+import uk.gov.justice.laa.crime.dces.report.utils.email.config.NotifyConfiguration;
 import uk.gov.service.notify.NotificationClientException;
 
 import java.io.File;
@@ -40,8 +40,11 @@ public class DcesReportService {
     @Value("${emailClient.notify.template-id}")
     private String templateId;
 
-    @Value("${emailClient.notify.recipient}")
-    private String recipient;
+    @Value("#{'${emailClient.notify.recipient}'.split(',')}")
+    private List<String> recipients;
+
+    @Autowired
+    private NotifyConfiguration notifyConfiguration;
 
 
     public void sendContributionsReport(LocalDate start, LocalDate end)
@@ -66,8 +69,8 @@ public class DcesReportService {
 
     @Timed("sendEmail")
     private void sendEmailReport(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
-        log.info("Prepare email for report type {}", reportType);
-        EmailObject emailObject = NotifyEmailObject.createEmail(attachment, reportType, start, end, templateId, recipient);
+        log.info("prepare email for report type {}", reportType);
+        EmailObject emailObject = notifyConfiguration.createEmail(attachment, reportType, start, end, templateId, recipients);
 
         Timer timer = Metrics.globalRegistry.timer("laa_dces_report_service_send_email");
         timer.record(() -> sendEmail(emailObject, emailClient));

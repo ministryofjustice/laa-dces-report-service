@@ -11,30 +11,30 @@ import uk.gov.service.notify.NotificationClientException;
 
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.io.FileUtils.readFileToByteArray;
 
 @AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(force = true)
 @Getter
 @Setter
 @Component
 public final class NotifyEmailObject implements EmailObject {
 
     private static String uploadKey = "link_to_file";
+    private static String envKey = "link_to_file";
 
     private String templateId;
-    private String emailAddress;
+    private List<String> emailAddresses;
     private Map<String, Object> personalisation;
     private String reference;
     private String emailReplyToId;
 
     @Override
     public void validate() throws EmailObjectInvalidException {
-        if (emailAddress.isEmpty()) {
+        if (emailAddresses.isEmpty()) {
             throw new EmailObjectInvalidException("email address cannot be empty on email object");
         }
 
@@ -47,30 +47,5 @@ public final class NotifyEmailObject implements EmailObject {
     public void addAttachment(File file) throws IOException, NotificationClientException {
         byte[] fileContents = readFileToByteArray(file);
         personalisation.put(uploadKey, NotificationClient.prepareUpload(fileContents, true));
-    }
-
-    public static NotifyEmailObject createEmail(
-            File file,
-            String reportType,
-            LocalDate fromDate,
-            LocalDate toDate,
-            String templateId,
-            String recipient) throws NotificationClientException, IOException {
-        HashMap<String, Object> personalisation = new HashMap<>();
-        personalisation.put("report_type", reportType);
-        personalisation.put("from_date", fromDate.toString());
-        personalisation.put("to_date", toDate.toString());
-            
-        NotifyEmailObject emailObject = new NotifyEmailObject(
-                templateId,
-                recipient,
-                personalisation,
-                "_ref",
-                ""
-        );
-
-        emailObject.addAttachment(file);
-
-        return emailObject;
     }
 }

@@ -4,4 +4,8 @@ public class EmailClientException extends RuntimeException {
     public EmailClientException(String message) {
         super(message);
     }
+
+    public EmailClientException(String message, Throwable throwable) {
+        super(message, throwable);
+    }
 }
