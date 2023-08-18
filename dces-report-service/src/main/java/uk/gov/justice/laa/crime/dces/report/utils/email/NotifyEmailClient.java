@@ -10,8 +10,6 @@ import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailObjectInv
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
-import java.util.Arrays;
-
 @Slf4j
 @NoArgsConstructor
 @Component
@@ -28,7 +26,7 @@ public final class NotifyEmailClient implements EmailClient {
         try {
             sendToMultipleRecipients(mail);
         } catch (NotificationClientException e) {
-            String message = e.getMessage().isEmpty() ? Arrays.stream(e.getSuppressed()).findFirst().toString() : e.getMessage();
+            String message = e.getMessage().isEmpty() ? e.getSuppressed()[0].getMessage() : e.getMessage();
             log.error("sending email failed with error : {}", message);
             throw new EmailClientException(message, e);
         }
@@ -50,6 +48,7 @@ public final class NotifyEmailClient implements EmailClient {
                 );
             } catch (NotificationClientException sendingException) {
                 if (sendingException.getHttpResult() == HttpStatus.SC_BAD_REQUEST) {
+                    log.error("failed sending email to recipient with error: {}", sendingException.getMessage());
                     exceptionStack.addSuppressed(sendingException);
                     continue;
                 }
