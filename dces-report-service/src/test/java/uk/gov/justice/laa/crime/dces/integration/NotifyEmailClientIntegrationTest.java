@@ -8,7 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
-import uk.gov.justice.laa.crime.dces.report.utils.email.config.EmailConfiguration;
+import uk.gov.justice.laa.crime.dces.report.utils.email.config.NotifyConfiguration;
 import uk.gov.service.notify.NotificationClientException;
 
 import java.io.File;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static uk.gov.justice.laa.crime.dces.report.service.MailerService.sendEmail;
 
 @SpringBootTest
-@ContextConfiguration(classes = {NotifyEmailClient.class, NotifyEmailObject.class, EmailConfiguration.class})
+@ContextConfiguration(classes = {NotifyEmailClient.class, NotifyEmailObject.class, NotifyConfiguration.class})
 final class NotifyEmailClientIntegrationTest {
 
     // test template may need to be updated prior to running test
@@ -32,7 +32,7 @@ final class NotifyEmailClientIntegrationTest {
     private NotifyEmailObject testEmailObject;
 
     @Autowired
-    private EmailConfiguration emailConfiguration;
+    private NotifyConfiguration notifyConfiguration;
 
     @Autowired
     private EmailClient testNotifyEmailClient;
@@ -42,7 +42,7 @@ final class NotifyEmailClientIntegrationTest {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("testContributionReport.csv").getFile());
 
-        testEmailObject = emailConfiguration.getNotify().createEmail(
+        testEmailObject = notifyConfiguration.createEmail(
                 file,
                 "Contribution",
                 LocalDate.of(2023, 8, 10),

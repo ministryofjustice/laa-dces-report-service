@@ -16,7 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
-import uk.gov.justice.laa.crime.dces.report.utils.email.config.EmailConfiguration;
+import uk.gov.justice.laa.crime.dces.report.utils.email.config.NotifyConfiguration;
 import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailClientException;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -35,8 +35,8 @@ import static org.mockito.BDDMockito.given;
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@EnableConfigurationProperties(value = EmailConfiguration.class)
-@ContextConfiguration(classes = {NotifyEmailClient.class, EmailConfiguration.class})
+@EnableConfigurationProperties(value = NotifyConfiguration.class)
+@ContextConfiguration(classes = {NotifyEmailClient.class, NotifyConfiguration.class})
 class NotifyEmailClientTest {
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -45,7 +45,7 @@ class NotifyEmailClientTest {
     NotifyEmailClient testEmailClient;
 
     @Autowired
-    private EmailConfiguration emailConfiguration;
+    private NotifyConfiguration notifyConfiguration;
 
     @Mock
     NotifyEmailObject mockEmailObject;
@@ -133,7 +133,7 @@ class NotifyEmailClientTest {
     void givenEnvironmentIsNotProductionNoEnvPersonalisationShouldBeSet() throws NotificationClientException, IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("testContributionReport.csv").getFile());
-        NotifyEmailObject emailObject = emailConfiguration.getNotify().createEmail(file, "Contribution", LocalDate.of(2023, 8, 10), LocalDate.now(), "templateId", List.of("email@address.com"));
+        NotifyEmailObject emailObject = notifyConfiguration.createEmail(file, "Contribution", LocalDate.of(2023, 8, 10), LocalDate.now(), "templateId", List.of("email@address.com"));
 
         softly.assertThat(emailObject.getPersonalisation().get("env")).isEqualTo(environment);
     }
