@@ -51,13 +51,12 @@ public class EmailConfiguration {
             personalisation.put("report_type", reportType);
             personalisation.put("from_date", fromDate.toString());
             personalisation.put("to_date", toDate.toString());
+            personalisation.put("env", environment);
 
             NotifyEmailObject emailObject = new NotifyEmailObject();
             emailObject.setEmailAddresses(recipients);
             emailObject.setTemplateId(templateId);
             emailObject.setPersonalisation(personalisation);
-            System.out.println(emailObject);
-            emailObject.getPersonalisation().put("env", environment);
             emailObject.addAttachment(file);
 
             return emailObject;
