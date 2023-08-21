@@ -7,5 +7,5 @@ API_ENDPOINT="api/internal/v1/dces/report/fdc"
 REQUEST_URI="localhost:${API_PORT}/$API_ENDPOINT/$FROM_DATE/$TO_DATE"
 
 echo "$REQUEST_URI"
-curl -G $REQUEST_URI -i
+curl $REQUEST_URI -i
 echo "  \n"
