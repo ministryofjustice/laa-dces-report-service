@@ -33,7 +33,7 @@ emailClient:
     key: ${NOTIFY_KEY}
     template-id: ${NOTIFY_TEMPLATEID}
     recipient: ${NOTIFY_RECIPIENT}
-    environment: ${SENTRY_ENV}
+    environment: ${HOST_ENV}
 
 spring:
   mvc:
@@ -67,7 +67,7 @@ sentry:
   debug: off
   dsn: https://cda1d7406f2ac58d5484fbbcea12d22c@o345774.ingest.sentry.io/4505674155753472
   traces-sample-rate: 1.0
-  environment: ${SENTRY_ENV}
+  environment: ${HOST_ENV}
   release: 1.0.0
   servername: aws-eks-container
   send-default-pii: true
