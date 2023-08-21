@@ -14,11 +14,11 @@ springdoc:
   show-actuator: true
   api-docs:
     path: /dces-report-service
-    enabled: true
+    enabled: false
 
   swagger-ui:
     path: /open-api/docs.html
-    enabled: true
+    enabled: false
     operationsSorter: method
 
 services:
@@ -71,7 +71,7 @@ sentry:
   release: 1.0.0
   servername: aws-eks-container
   send-default-pii: true
-  attach-stacktrace: false
+  attach-stacktrace: true
   sample-rate: 0.05
   logging:
     minimum-event-level: warn
