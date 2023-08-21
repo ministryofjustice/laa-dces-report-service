@@ -45,9 +45,8 @@ public class FdcFilesService implements DcesReportFileService {
             String message = String.format("invalid time range %s is before %s", end, start);
             throw new MaatApiClientException(message);
         }
-
-        List<String> resultList = new ArrayList<>();
-        resultList = fdcFilesClient.getContributions(start, end)
+        
+        List<String> resultList = fdcFilesClient.getContributions(start, end)
             .stream()
             .filter(Objects::nonNull)
             .toList()
