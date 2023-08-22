@@ -1,15 +1,20 @@
 package uk.gov.justice.laa.crime.dces.report.utils;
 
 import lombok.experimental.UtilityClass;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 @UtilityClass
+@ConfigurationPropertiesScan
 public class DateUtils {
+    public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private final DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
