@@ -52,26 +52,26 @@ public class DcesReportService {
             throws JAXBException, IOException,
                     DcesReportSourceFilesDataNotFound, NotificationClientException {
 
-        log.info("Contributions :: Start generating Contributions Report between {} and {}",
+        log.info("Start generating Contributions Report between {} and {}",
                 start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
         List<String> contributionFiles = contributionFilesService.getFiles(start, end);
         File file = contributionFilesService.processFiles(contributionFiles, start, end);
         sendEmailReport(file, contributionFilesService.getType(), start, end);
 
-        log.info("Contributions :: Report {} - {} generated successfully",
+        log.info("Report {} - {} generated successfully",
                 start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
     }
 
     public void sendFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
-        log.info("FDC :: Start generating FDC Report report between {} and {}",
+        log.info("Start generating FDC Report report between {} and {}",
                 start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
         List<String> contributionFiles = fdcFilesService.getFiles(start, end);
         File fdcFile = fdcFilesService.processFiles(contributionFiles, start, end);
         sendEmailReport(fdcFile, fdcFilesService.getType(), start, end);
 
-        log.info("FDC :: Report {} - {} generated successfully",
+        log.info("Report {} - {} generated successfully",
                 start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
     }
 

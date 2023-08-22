@@ -33,12 +33,12 @@ public class DcesReportScheduler {
         LocalDate fromDate = DateUtils.getDefaultStartDateForReport();
         LocalDate toDate = DateUtils.getDefaultEndDateForReport();
 
-        log.info("Contributions :: Start scheduled Contributions Report between [{}] and [{}]",
+        log.info("Start scheduled Contributions Report between [{}] and [{}]",
                 fromDate.format(DateUtils.dateFormatter), toDate.format(DateUtils.dateFormatter));
 
         reportService.sendContributionsReport(fromDate, toDate);
 
-        log.info("Contributions :: Successfully finished scheduled Contributions Report between {} and {}",
+        log.info("Successfully finished scheduled Contributions Report between {} and {}",
                 fromDate.format(DateUtils.dateFormatter), toDate.format(DateUtils.dateFormatter));
     }
 
@@ -48,12 +48,12 @@ public class DcesReportScheduler {
         LocalDate fromDate = DateUtils.getDefaultStartDateForReport();
         LocalDate toDate = DateUtils.getDefaultEndDateForReport();
 
-        log.info("FDC :: Start scheduled FDC Report between [{}] and [{}]",
+        log.info("Start scheduled FDC Report between [{}] and [{}]",
                 fromDate.format(DateUtils.dateFormatter), toDate.format(DateUtils.dateFormatter));
 
         reportService.sendFdcReport(fromDate, toDate);
 
-        log.info("FDC :: Successfully finished scheduled FDC Report between {} and {}",
+        log.info("Successfully finished scheduled FDC Report between {} and {}",
                 fromDate.format(DateUtils.dateFormatter), toDate.format(DateUtils.dateFormatter));
     }
 }
