@@ -10,10 +10,12 @@ import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 import uk.gov.justice.laa.crime.dces.report.mapper.FdcFileMapper;
+import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -36,16 +38,22 @@ public class FdcFilesService implements DcesReportFileService {
     @Timed("laa_dces_report_service_fdc_get_file")
     @Retry(name = SERVICE_NAME)
     public List<String> getFiles(LocalDate start, LocalDate end) {
+        log.info("Request Contribution XML files for report {} - {} ",
+                start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+
         if (end.isBefore(start)) {
             String message = String.format("invalid time range %s is before %s", end, start);
             throw new MaatApiClientException(message);
         }
-        log.info("Start - call MAAT API to collect FDC files, between {} and {}", start, end);
-        return fdcFilesClient.getContributions(start, end)
+        
+        List<String> resultList = fdcFilesClient.getContributions(start, end)
             .stream()
             .filter(Objects::nonNull)
             .toList()
         ;
+        log.info("Received {} records with XML files for the period between {} and {}",
+                resultList.size(), start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+        return resultList;
     }
 
     @Timed("laa_dces_report_service_fdc_process_file")
@@ -57,7 +65,10 @@ public class FdcFilesService implements DcesReportFileService {
             );
         }
 
-        return fdcFileMapper.processRequest(files.toArray(new String[0]), getFileName(start, finish));
+        File file = fdcFileMapper.processRequest(files.toArray(new String[0]), getFileName(start, finish));
+        log.info("CSV file generated for FDC Report between {} and {}",
+                start.format(DateUtils.dateFormatter), finish.format(DateUtils.dateFormatter));
+        return file;
     }
 
     public String getFileName(LocalDate start, LocalDate finish) {
