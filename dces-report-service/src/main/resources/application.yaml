@@ -72,7 +72,7 @@ sentry:
   servername: aws-eks-container
   send-default-pii: true
   attach-stacktrace: true
-  sample-rate: 0.05
+  sample-rate: 1.00
   logging:
     minimum-event-level: warn
     minimum-breadcrumb-level: info
