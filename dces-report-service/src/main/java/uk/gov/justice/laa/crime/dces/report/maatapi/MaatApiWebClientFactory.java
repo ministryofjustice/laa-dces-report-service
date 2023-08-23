@@ -44,8 +44,8 @@ public class MaatApiWebClientFactory {
 
         WebClient.Builder clientBuilder = WebClient.builder()
             .baseUrl(servicesConfiguration.getMaatApi().getBaseUrl())
-            .filter(handleClientRequestBeforeSend())
-            .filter(handleClientResponse())
+            .filter(addLaaTransactionIdToRequest())
+            .filter(logClientResponse())
             .filter(handleErrorResponse())
             .clientConnector(new ReactorClientHttpConnector(
                 HttpClient.create(provider)
@@ -122,7 +122,7 @@ public class MaatApiWebClientFactory {
         );
     }
 
-    ExchangeFilterFunction handleClientRequestBeforeSend() {
+    ExchangeFilterFunction addLaaTransactionIdToRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
                 String laaTransactionId = UUID.randomUUID().toString();
                 log.info("LAA_TRANSACTION_ID=[{}] Calling API [{}]", laaTransactionId, clientRequest.url());
@@ -136,7 +136,7 @@ public class MaatApiWebClientFactory {
         );
     }
 
-    ExchangeFilterFunction handleClientResponse() {
+    ExchangeFilterFunction logClientResponse() {
         return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
                 log.info("[{}] API response", clientResponse.statusCode());
                 return Mono.just(clientResponse);
