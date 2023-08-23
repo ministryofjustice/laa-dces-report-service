@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.web.reactive.function.client.ServletOAuth2AuthorizedClientExchangeFilterFunction;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.*;
+import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
 import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration;
@@ -43,8 +44,9 @@ public class MaatApiWebClientFactory {
 
         WebClient.Builder clientBuilder = WebClient.builder()
             .baseUrl(servicesConfiguration.getMaatApi().getBaseUrl())
-            .defaultHeader(LAA_TRANSACTION_ID, UUID.randomUUID().toString())
-            .filter(errorResponse())
+            .filter(addLaaTransactionIdToRequest())
+            .filter(logClientResponse())
+            .filter(handleErrorResponse())
             .clientConnector(new ReactorClientHttpConnector(
                 HttpClient.create(provider)
                     .resolver(DefaultAddressResolverGroup.INSTANCE)
@@ -96,7 +98,7 @@ public class MaatApiWebClientFactory {
         return authorizedClientManager;
     }
 
-    private ExchangeFilterFunction errorResponse() {
+    private ExchangeFilterFunction handleErrorResponse() {
         return ExchangeFilterFunctions.statusError(
                 HttpStatusCode::isError, clientResponse -> {
                     HttpStatus httpStatus =  HttpStatus.resolve(clientResponse.statusCode().value());
@@ -119,6 +121,29 @@ public class MaatApiWebClientFactory {
                 }
         );
     }
+
+    ExchangeFilterFunction addLaaTransactionIdToRequest() {
+        return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
+                String laaTransactionId = UUID.randomUUID().toString();
+                log.info("LAA_TRANSACTION_ID=[{}] Calling API [{}]", laaTransactionId, clientRequest.url());
+                return Mono.just(
+                    ClientRequest
+                        .from(clientRequest)
+                        .header(LAA_TRANSACTION_ID, laaTransactionId)
+                        .build()
+                );
+            }
+        );
+    }
+
+    ExchangeFilterFunction logClientResponse() {
+        return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
+                log.info("[{}] API response", clientResponse.statusCode());
+                return Mono.just(clientResponse);
+            }
+        );
+    }
+
 
     private static int convertMaxBufferSize(int megaBytes) {
         return megaBytes * 1024 * 1024;

@@ -14,11 +14,11 @@ springdoc:
   show-actuator: true
   api-docs:
     path: /dces-report-service
-    enabled: true
+    enabled: false
 
   swagger-ui:
     path: /open-api/docs.html
-    enabled: true
+    enabled: false
     operationsSorter: method
 
 services:
@@ -33,7 +33,7 @@ emailClient:
     key: ${NOTIFY_KEY}
     template-id: ${NOTIFY_TEMPLATEID}
     recipient: ${NOTIFY_RECIPIENT}
-    environment: ${SENTRY_ENV}
+    environment: ${HOST_ENV}
 
 spring:
   mvc:
@@ -66,13 +66,15 @@ spring:
 sentry:
   debug: off
   dsn: https://cda1d7406f2ac58d5484fbbcea12d22c@o345774.ingest.sentry.io/4505674155753472
+  # With a sample rate of 1, all traffic will be sent to Sentry. Note, this is only possible because this project will have very low traffic (2 calls  month)
   traces-sample-rate: 1.0
-  environment: ${SENTRY_ENV}
+  environment: ${HOST_ENV}
   release: 1.0.0
   servername: aws-eks-container
   send-default-pii: true
-  attach-stacktrace: false
-  sample-rate: 0.05
+  attach-stacktrace: true
+  # With a sample rate of 1, all traffic will be sent to Sentry. Note, this is only possible because this project will have very low traffic (2 calls  month)
+  sample-rate: 1.00
   logging:
     minimum-event-level: warn
     minimum-breadcrumb-level: info

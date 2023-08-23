@@ -25,10 +25,6 @@ import java.time.format.DateTimeFormatter;
 @EnableScheduling
 @ConditionalOnProperty(name="spring.scheduling.enabled", matchIfMissing=true)
 public class DcesReportScheduler {
-    @Value("${spring.mvc.format.date}")
-    private static final String DATE_FORMAT = "dd.MM.yyyy";
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
-
     private final DcesReportService reportService;
 
     @Timed("laa_dces_report_service_scheduled_contributions")
@@ -37,14 +33,13 @@ public class DcesReportScheduler {
         LocalDate fromDate = DateUtils.getDefaultStartDateForReport();
         LocalDate toDate = DateUtils.getDefaultEndDateForReport();
 
-        log.info("CRON :: contributions: launching between [{}] and [{}]",
-                fromDate.format(dateFormatter),
-                toDate.format(dateFormatter));
+        log.info("Start scheduled Contributions Report between [{}] and [{}]",
+                fromDate.format(DateUtils.dateFormatter), toDate.format(DateUtils.dateFormatter));
 
         reportService.sendContributionsReport(fromDate, toDate);
 
-        log.info("Processing finished successfully for contribution files between {} and {}",
-                fromDate.format(dateFormatter), toDate.format(dateFormatter));
+        log.info("Successfully finished scheduled Contributions Report between {} and {}",
+                fromDate.format(DateUtils.dateFormatter), toDate.format(DateUtils.dateFormatter));
     }
 
     @Timed("laa_dces_report_service_scheduled_fdc")
@@ -53,13 +48,12 @@ public class DcesReportScheduler {
         LocalDate fromDate = DateUtils.getDefaultStartDateForReport();
         LocalDate toDate = DateUtils.getDefaultEndDateForReport();
 
-        log.info("CRON :: FDC: launching between [{}] and [{}]",
-                fromDate.format(dateFormatter),
-                toDate.format(dateFormatter));
+        log.info("Start scheduled FDC Report between [{}] and [{}]",
+                fromDate.format(DateUtils.dateFormatter), toDate.format(DateUtils.dateFormatter));
 
         reportService.sendFdcReport(fromDate, toDate);
 
-        log.info("Processing finished successfully for FDC files between {} and {}",
-                fromDate.format(dateFormatter), toDate.format(dateFormatter));
+        log.info("Successfully finished scheduled FDC Report between {} and {}",
+                fromDate.format(DateUtils.dateFormatter), toDate.format(DateUtils.dateFormatter));
     }
 }

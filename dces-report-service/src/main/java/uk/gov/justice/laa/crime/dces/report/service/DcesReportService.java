@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
+import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
 import uk.gov.justice.laa.crime.dces.report.utils.email.config.NotifyConfiguration;
@@ -49,27 +50,36 @@ public class DcesReportService {
 
     public void sendContributionsReport(LocalDate start, LocalDate end)
             throws JAXBException, IOException,
-            DcesReportSourceFilesDataNotFound, NotificationClientException {
-        log.info("Start processing Contributions Report Service");
+                    DcesReportSourceFilesDataNotFound, NotificationClientException {
+
+        log.info("Start generating Contributions Report between {} and {}",
+                start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+
         List<String> contributionFiles = contributionFilesService.getFiles(start, end);
-
-        log.info("Files received and starting processing XML files");
         File file = contributionFilesService.processFiles(contributionFiles, start, end);
-
         sendEmailReport(file, contributionFilesService.getType(), start, end);
+
+        log.info("Report {} - {} generated successfully",
+                start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
     }
 
     public void sendFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
-        log.info("Start processing FDC Report");
+        log.info("Start generating FDC Report report between {} and {}",
+                start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+
         List<String> contributionFiles = fdcFilesService.getFiles(start, end);
         File fdcFile = fdcFilesService.processFiles(contributionFiles, start, end);
-
         sendEmailReport(fdcFile, fdcFilesService.getType(), start, end);
+
+        log.info("Report {} - {} generated successfully",
+                start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
     }
 
     @Timed("sendEmail")
     private void sendEmailReport(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
-        log.info("prepare email for report type {}", reportType);
+        log.info("[{}] :: Preparing to email for {} report between {} and {} ",
+                reportType, reportType, start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+
         EmailObject emailObject = notifyConfiguration.createEmail(attachment, reportType, start, end, templateId, recipients);
 
         Timer timer = Metrics.globalRegistry.timer("laa_dces_report_service_send_email");
