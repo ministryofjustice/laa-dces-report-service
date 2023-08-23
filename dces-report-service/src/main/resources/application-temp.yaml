@@ -1,0 +1,31 @@
+services:
+  maat-api:
+    baseUrl: http://localhost:1111
+    registrationId: MATT_API_REG_ID
+    oAuthEnabled: false
+
+spring:
+  mvc:
+    format:
+      date: dd.MM.yyyy
+  web:
+    locale: en_GB
+    locale-resolver: fixed
+  # Cron template: second   minute  hour  day-of-month  month  day-of-week
+  # * is used to indicate include all; ? is used to ignore
+  # secs and min range from 0-59, hour 0-23, month 1-12, day-of-month 1-31 (be aware of month day restrictions, day-of-week 1-7)
+  scheduling:
+    enabled: true
+    contributions:
+      cron: "0-30/16 */5 * * * ?"
+    fdc:
+      cron: "31-59/15 */5 * * * ?"
+
+emailClient:
+  notify:
+    key: notify_test_key
+    template-id: notify-template-id
+    recipient: "tariq.hossain@digital.justice.gov.uk"
+
+sentry:
+  environment: development
