@@ -44,9 +44,8 @@ public class MaatApiWebClientFactory {
 
         WebClient.Builder clientBuilder = WebClient.builder()
             .baseUrl(servicesConfiguration.getMaatApi().getBaseUrl())
-            .defaultHeader(LAA_TRANSACTION_ID, UUID.randomUUID().toString())
-            .filter(logWebClientRequest())
-            .filter(logWebClientResponse())
+            .filter(addLaaTransactionIdToRequest())
+            .filter(logClientResponse())
             .filter(handleErrorResponse())
             .clientConnector(new ReactorClientHttpConnector(
                 HttpClient.create(provider)
@@ -123,23 +122,26 @@ public class MaatApiWebClientFactory {
         );
     }
 
-    ExchangeFilterFunction logWebClientRequest() {
+    ExchangeFilterFunction addLaaTransactionIdToRequest() {
         return ExchangeFilterFunction.ofRequestProcessor(clientRequest -> {
-            log.info("[{}] Making API call [{}]",
-                    clientRequest.headers().get(LAA_TRANSACTION_ID),
-                    clientRequest.url()
-            );
-            return Mono.just(clientRequest);
-        });
+                String laaTransactionId = UUID.randomUUID().toString();
+                log.info("LAA_TRANSACTION_ID=[{}] Calling API [{}]", laaTransactionId, clientRequest.url());
+                return Mono.just(
+                    ClientRequest
+                        .from(clientRequest)
+                        .header(LAA_TRANSACTION_ID, laaTransactionId)
+                        .build()
+                );
+            }
+        );
     }
 
-    ExchangeFilterFunction logWebClientResponse() {
+    ExchangeFilterFunction logClientResponse() {
         return ExchangeFilterFunction.ofResponseProcessor(clientResponse -> {
-            log.info("[{}] response",
-                    clientResponse.statusCode()
-            );
-            return Mono.just(clientResponse);
-        });
+                log.info("[{}] API response", clientResponse.statusCode());
+                return Mono.just(clientResponse);
+            }
+        );
     }
 
 
