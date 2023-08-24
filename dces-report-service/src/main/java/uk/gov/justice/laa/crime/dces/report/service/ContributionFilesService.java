@@ -47,7 +47,7 @@ public class ContributionFilesService implements DcesReportFileService {
         }
 
         log.info("Received {} records with XML files for the period between {} and {}",
-                resultList.size(), start.format(DateUtils.dateFormatter), finish.format(DateUtils.dateFormatter));
+                resultList.size(), start.format(DateUtils.dateFormatter), currentDate.plusDays(1).format(DateUtils.dateFormatter));
         return resultList;
     }
 
