@@ -21,8 +21,8 @@ sequenceDiagram
     participant FdcFileMapper
     participant CSVFileService
     end
-    
-    
+
+
 
     box rgb(50,50,50) Email
         participant NotifyEmailClient
@@ -36,7 +36,7 @@ Note over DcesReportScheduler ,DcesReportService: 1. Java/Spring Cron Job. <br> 
         end
         Note over DcesReportService ,MaatApiClient: 2. Obtain xml files.
         DcesReportService->>FDCFilesService: sendFdcReport(start,end)
-        
+
         FDCFilesService->>FdcFilesClient: getContributions(start, end)
         FdcFilesClient->>MaatApiClient: final-defence-cost?fromDate={startDate}&toDate={endDate}
         MaatApiClient->>FdcFilesClient: Response with List<String> of XML files.
@@ -47,12 +47,12 @@ Note over DcesReportService, CSVFileService : 3. Parse XML and generate CSV
 
 
         DcesReportService->>+FDCFilesService: processFiles(List<String>, start, end)
-        
+
         alt
             FDCFilesService--xDcesReportService :  List<String> is empty. Throw error and exit.
         end
         FDCFilesService->>FdcFileMapper: processRequest(List<String>, getFileName(start, finish))
-        
+
         loop For each XML String in List<String>
             FdcFileMapper->>FdcFileMapper: Run JaxB to map XML <br> to Logical Objects
         end
@@ -70,6 +70,6 @@ Note over DcesReportService, CSVFileService : 3. Parse XML and generate CSV
     NotifyEmailClient->>Notify: sendEmail
     Notify->>NotifyEmailClient: Email Success
     NotifyEmailClient-xDcesReportService: Return success
-    
+
 
 ```

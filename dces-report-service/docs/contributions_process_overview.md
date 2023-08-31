@@ -21,8 +21,8 @@ sequenceDiagram
     participant ContributionsFileMapper
     participant CSVFileService
     end
-    
-    
+
+
 
     box rgb(50,50,50) Email
         participant NotifyEmailClient
@@ -30,11 +30,11 @@ sequenceDiagram
     end
 
 Note over DcesReportScheduler ,DcesReportService: 1. Java/Spring Cron Job.
-        DcesReportScheduler->>DcesReportService: Triggers every 30-day  
-        alt 
+        DcesReportScheduler->>DcesReportService: Triggers every 30-day
+        alt
             DcesReportController->>DcesReportService:  adhoc endpoint called directly when needed
         end
-        
+
         Note over DcesReportService ,MaatApiClient: 2. Obtain xml files.
         DcesReportService->>ContributionsFilesService: Invoke Contributions service
 
@@ -53,12 +53,12 @@ Note over DcesReportService, CSVFileService : 3. Parse XML and generate CSV
 
 
         DcesReportService->>+ContributionsFilesService: invoke file service
-        
+
         alt
             ContributionsFilesService--xDcesReportService :  If no data has been found. Throw error and exit.
         end
         ContributionsFilesService->>ContributionsFileMapper: Pass list of XML, for processing
-        
+
         loop For each XML String in List<String>
             Note over ContributionsFileMapper: Business logic here for only date <br>fields within date range to be used.
             ContributionsFileMapper->>ContributionsFileMapper: Run JaxB to map XML <br> to Logical Objects
@@ -76,6 +76,6 @@ Note over DcesReportService, CSVFileService : 3. Parse XML and generate CSV
     NotifyEmailClient->>Notify: Send Email.
     Notify->>NotifyEmailClient: Email Success
     NotifyEmailClient-xDcesReportService: Return success
-    
+
 
 ```
