@@ -67,8 +67,8 @@ public class DcesReportService {
         log.info("Start generating FDC Report report between {} and {}",
                 start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
-        List<String> contributionFiles = fdcFilesService.getFiles(start, end);
-        File fdcFile = fdcFilesService.processFiles(contributionFiles, start, end);
+        List<String> fdcFiles = fdcFilesService.getFiles(start, end);
+        File fdcFile = fdcFilesService.processFiles(fdcFiles, start, end);
         sendEmailReport(fdcFile, fdcFilesService.getType(), start, end);
 
         log.info("Report {} - {} generated successfully",
