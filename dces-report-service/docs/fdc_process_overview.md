@@ -30,7 +30,7 @@ sequenceDiagram
     end
 
 Note over DcesReportScheduler ,DcesReportService: 1. Java/Spring Cron Job.
-        DcesReportScheduler->>DcesReportService: Trigger every 30-day  
+        DcesReportScheduler->>DcesReportService: Triggers every 30-day  
         alt 
             DcesReportController->>DcesReportService:  adhoc endpoint called directly when needed
         end
@@ -39,9 +39,9 @@ Note over DcesReportScheduler ,DcesReportService: 1. Java/Spring Cron Job.
         
         FDCFilesService->>FdcFilesClient: Call process to setup MAAT API call
         FdcFilesClient->>MaatApiClient: Send request to MAAT API with start/end date.
-        MaatApiClient->>FdcFilesClient: Response with List<String> of XML files.
-        FdcFilesClient->>FDCFilesService: Return List<String>
-        FDCFilesService->>DcesReportService: Return List<String>
+        MaatApiClient->>FdcFilesClient: Response with list of XML files.
+        FdcFilesClient->>FDCFilesService: Return list of XML
+        FDCFilesService->>DcesReportService: Return list of XML
 
 Note over DcesReportService, CSVFileService : 3. Parse XML and generate CSV
 
@@ -58,8 +58,8 @@ Note over DcesReportService, CSVFileService : 3. Parse XML and generate CSV
         end
 
         FdcFileMapper->>CSVFileService: writeContributionToCsv
-        Note over CSVFileService: create temporary file
-        Note over CSVFileService: write logical objects to csv
+        CSVFileService->>CSVFileService: create temporary file
+        CSVFileService->>CSVFileService: write logical objects to csv
         CSVFileService->>FdcFileMapper: return csv File
         FdcFileMapper->>FDCFilesService: return csv File
         FDCFilesService ->> DcesReportService: return csv File
