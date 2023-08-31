@@ -12,20 +12,20 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.controller.DcesReportController;
+import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.service.notify.NotificationClientException;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -38,13 +38,8 @@ import static org.mockito.Mockito.times;
 @ContextConfiguration(classes = {DcesReportServiceApplication.class})
 public class DcesReportingServiceTest {
 
-    @LocalServerPort
-    private int port;
-
-    private static final String REQUEST_PATH = "/api/internal/v1/dces/report/contributions/%s/%s";
-
     @Autowired
-    private TestRestTemplate restTemplate;
+    private ContributionFilesService contributionFilesService;
 
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -61,7 +56,6 @@ public class DcesReportingServiceTest {
     @Autowired
     private DcesReportController controller;
 
-
     private LocalDate start;
 
     private LocalDate end;
@@ -72,9 +66,22 @@ public class DcesReportingServiceTest {
         end = LocalDate.of(2023, 7, 4);
     }
 
+    // We ensure that endpoints have expected datasets otherwise the other subsequent test and assertions will fail.
+    @Test
+    void assertEndpointDataIsConsistent() {
+        // setup
+
+        // execute
+        List<String> contributions = contributionFilesService.getFiles(start, end);
+
+        // assert
+        softly.assertThat(contributions.size()).isEqualTo(4);
+    }
+
     @Test
     void confirmRequestWithSuccess() throws NotificationClientException, JAXBException, IOException {
         // setup
+
         // execute
         controller.getContributionsReport(start, end);
 
@@ -83,5 +90,4 @@ public class DcesReportingServiceTest {
         Mockito.verify(spyContributionsClient, times(4)).getContributions(any(), any());
         Mockito.verify(spyEmailClient, times(1)).send(any());
     }
-
 }
