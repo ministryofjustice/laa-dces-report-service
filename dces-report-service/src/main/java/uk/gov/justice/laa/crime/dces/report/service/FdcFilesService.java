@@ -15,10 +15,8 @@ import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -38,20 +36,19 @@ public class FdcFilesService implements DcesReportFileService {
     @Timed("laa_dces_report_service_fdc_get_file")
     @Retry(name = SERVICE_NAME)
     public List<String> getFiles(LocalDate start, LocalDate end) {
-        log.info("Request Contribution XML files for report {} - {} ",
+        log.info("Request FDC XML files for time interval {} - {} ",
                 start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
         if (end.isBefore(start)) {
             String message = String.format("invalid time range %s is before %s", end, start);
             throw new MaatApiClientException(message);
         }
-        
+
         List<String> resultList = fdcFilesClient.getContributions(start, end)
-            .stream()
-            .filter(Objects::nonNull)
-            .toList()
-        ;
-        log.info("Received {} records with XML files for the period between {} and {}",
+                .stream()
+                .filter(Objects::nonNull)
+                .toList();
+        log.info("Received {} record(s) with XML files for time interval {} - {}",
                 resultList.size(), start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
         return resultList;
     }

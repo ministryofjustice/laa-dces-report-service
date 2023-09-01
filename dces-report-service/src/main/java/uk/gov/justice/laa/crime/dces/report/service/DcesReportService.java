@@ -64,14 +64,14 @@ public class DcesReportService {
     }
 
     public void sendFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
-        log.info("Start generating FDC Report report between {} and {}",
+        log.info("FDC Report between {} and {}, generation requested",
                 start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
         List<String> contributionFiles = fdcFilesService.getFiles(start, end);
         File fdcFile = fdcFilesService.processFiles(contributionFiles, start, end);
         sendEmailReport(fdcFile, fdcFilesService.getType(), start, end);
 
-        log.info("Report {} - {} generated successfully",
+        log.info("FDC Report between {} and {} generated successfully",
                 start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
     }
 
