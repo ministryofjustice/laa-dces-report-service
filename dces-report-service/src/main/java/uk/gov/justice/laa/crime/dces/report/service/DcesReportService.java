@@ -50,16 +50,16 @@ public class DcesReportService {
 
     public void sendContributionsReport(LocalDate start, LocalDate end)
             throws JAXBException, IOException,
-                    DcesReportSourceFilesDataNotFound, NotificationClientException {
+            DcesReportSourceFilesDataNotFound, NotificationClientException {
 
-        log.info("Start generating Contributions Report between {} and {}",
+        log.info("Contributions Report between {} and {}, generation requested",
                 start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
         List<String> contributionFiles = contributionFilesService.getFiles(start, end);
         File file = contributionFilesService.processFiles(contributionFiles, start, end);
         sendEmailReport(file, contributionFilesService.getType(), start, end);
 
-        log.info("Report {} - {} generated successfully",
+        log.info("Contributions Report between {} and {}, generated successfully",
                 start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
     }
 
