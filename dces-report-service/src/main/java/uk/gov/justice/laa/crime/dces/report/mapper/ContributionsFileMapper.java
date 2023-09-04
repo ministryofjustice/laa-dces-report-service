@@ -50,11 +50,6 @@ public class ContributionsFileMapper {
     private void processXMLFile(String xmlData, LocalDate startDate, LocalDate endDate, List<ContributionCSVDataLine> csvLineList) throws JAXBException {
         ContributionFile contributionFile = mapContributionsXmlStringToObject(xmlData);
 
-        if (Objects.isNull(contributionFile)) {
-            log.warn("XML Contribution File contains unexpect value or null");
-            return;
-        }
-
         String dateGenerated = DateUtils.convertXmlGregorianToString(contributionFile.getHeader().getDateGenerated());
 
         if (Objects.isNull(contributionFile.getCONTRIBUTIONSLIST())
