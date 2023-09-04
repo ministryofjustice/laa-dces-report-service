@@ -50,35 +50,30 @@ public class DcesReportService {
 
     public void sendContributionsReport(LocalDate start, LocalDate end)
             throws JAXBException, IOException,
-                    DcesReportSourceFilesDataNotFound, NotificationClientException {
-
-        log.info("Start generating Contributions Report between {} and {}",
-                start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
-
-        List<String> contributionFiles = contributionFilesService.getFiles(start, end);
-        File file = contributionFilesService.processFiles(contributionFiles, start, end);
-        sendEmailReport(file, contributionFilesService.getType(), start, end);
-
-        log.info("Report {} - {} generated successfully",
-                start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+            DcesReportSourceFilesDataNotFound, NotificationClientException {
+        processReportRequest(contributionFilesService, start, end);
     }
 
     public void sendFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
-        log.info("Start generating FDC Report report between {} and {}",
-                start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+        processReportRequest(fdcFilesService, start, end);
+    }
 
-        List<String> fdcFiles = fdcFilesService.getFiles(start, end);
-        File fdcFile = fdcFilesService.processFiles(fdcFiles, start, end);
-        sendEmailReport(fdcFile, fdcFilesService.getType(), start, end);
+    private void processReportRequest(DcesReportFileService fileService, LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
+        log.info("{} Report between {} and {}, generation requested",
+                fileService.getType(), start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
-        log.info("Report {} - {} generated successfully",
-                start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+        List<String> files = fileService.getFiles(start, end);
+        File reportFile = fileService.processFiles(files, start, end);
+        sendEmailReport(reportFile, fileService.getType(), start, end);
+
+        log.info("{} Report between {} and {} generated successfully",
+                fileService.getType(), start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
     }
 
     @Timed("sendEmail")
     private void sendEmailReport(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
-        log.info("[{}] :: Preparing to email for {} report between {} and {} ",
-                reportType, reportType, start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+        log.info("[{} report] :: Creating email object for time period {} - {} ",
+                reportType, start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
         EmailObject emailObject = notifyConfiguration.createEmail(attachment, reportType, start, end, templateId, recipients);
 
