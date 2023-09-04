@@ -35,7 +35,7 @@ public class ContributionFilesService implements DcesReportFileService {
     @Timed("laa_dces_report_service_contributions_get_file")
     @Retry(name = SERVICE_NAME)
     public List<String> getFiles(LocalDate start, LocalDate finish) {
-        log.info("Request Contribution XML files for report {} - {} ",
+        log.info("Request Contribution XML files for time period {} - {} ",
                 start.format(DateUtils.dateFormatter), finish.format(DateUtils.dateFormatter));
 
         LocalDate currentDate = LocalDate.parse(start.toString());
@@ -46,15 +46,15 @@ public class ContributionFilesService implements DcesReportFileService {
             currentDate = currentDate.plusDays(1);
         }
 
-        log.info("Received {} records with XML files for the period between {} and {}",
-                resultList.size(), start.format(DateUtils.dateFormatter), currentDate.plusDays(1).format(DateUtils.dateFormatter));
+        log.info("Received {} record(s) with XML files for time period {} - {}",
+                resultList.size(), start.format(DateUtils.dateFormatter), finish.format(DateUtils.dateFormatter));
         return resultList;
     }
 
     @Timed("laa_dces_report_service_contributions_process_file")
     public File processFiles(List<String> files, LocalDate start, LocalDate finish)
             throws JAXBException, IOException, DcesReportSourceFilesDataNotFound {
-        log.info("Start generating CSV report from received XML files");
+        log.info("Start generating CSV Contributions report from received XML files");
 
         if (files.isEmpty()) {
             throw new DcesReportSourceFilesDataNotFound(
@@ -65,7 +65,7 @@ public class ContributionFilesService implements DcesReportFileService {
         String fileName = getFileName(start, finish);
         File file = contributionFilesMapper.processRequest(files.toArray(new String[0]), start, finish, fileName);
 
-        log.info("CSV file generated for Contributions Report between {} and {}",
+        log.info("End generating CSV Contributions Report for time period {} - {}",
                 start.format(DateUtils.dateFormatter), finish.format(DateUtils.dateFormatter));
         return file;
     }
