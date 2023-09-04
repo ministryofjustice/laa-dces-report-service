@@ -3,6 +3,7 @@ package uk.gov.justice.laa.crime.dces.report.mapper;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Unmarshaller;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class ContributionsFileMapper {
 
     private Unmarshaller unmarshaller;
@@ -47,12 +49,20 @@ public class ContributionsFileMapper {
 
     private void processXMLFile(String xmlData, LocalDate startDate, LocalDate endDate, List<ContributionCSVDataLine> csvLineList) throws JAXBException {
         ContributionFile contributionFile = mapContributionsXmlStringToObject(xmlData);
-        if(Objects.isNull(contributionFile)
-                || Objects.isNull(contributionFile.getCONTRIBUTIONSLIST())
-                || Objects.isNull(contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS())){
+
+        if (Objects.isNull(contributionFile)) {
+            log.warn("XML Contribution File contains unexpect value or null");
             return;
         }
+
         String dateGenerated = DateUtils.convertXmlGregorianToString(contributionFile.getHeader().getDateGenerated());
+
+        if (Objects.isNull(contributionFile.getCONTRIBUTIONSLIST())
+                || (contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().isEmpty())){
+            log.warn("XML Contributions File contains empty or null contributions generated on {}", dateGenerated);
+            return;
+        }
+
         for (CONTRIBUTIONS contribution : contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()) {
             csvLineList.add(buildCSVDataLine(contribution, startDate, endDate, dateGenerated));
         }

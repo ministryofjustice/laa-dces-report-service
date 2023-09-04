@@ -261,7 +261,6 @@ class ContributionsFileMapperTest {
                 getXmlDataContributionListNull()
         );
         softly.assertThat(fileToTest.getCONTRIBUTIONSLIST()).isNull();
-        softly.assertThat(fileToTest.getCONTRIBUTIONSLIST()).isNull();
 
         File f = contributionsFileMapper.processRequest(
                 new String[]{ getXmlDataContributionListNull() },
@@ -273,6 +272,7 @@ class ContributionsFileMapperTest {
         String csvOutput = FileUtils.readText(f);
         // verify only header is present
         softly.assertThat(csvOutput).isEqualTo("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date");
+        closeFile(f);
     }
 
     @Test
@@ -295,6 +295,7 @@ class ContributionsFileMapperTest {
         String csvOutput = FileUtils.readText(f);
         // verify only header is present
         softly.assertThat(csvOutput).isEqualTo("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date");
+        closeFile(f);
     }
 
     private void closeFile(File f){
