@@ -35,7 +35,7 @@ public class ContributionFilesService implements DcesReportFileService {
     @Timed("laa_dces_report_service_contributions_get_file")
     @Retry(name = SERVICE_NAME)
     public List<String> getFiles(LocalDate start, LocalDate finish) {
-        log.info("Request Contribution XML files for time interval {} - {} ",
+        log.info("Request Contribution XML files for time period {} - {} ",
                 start.format(DateUtils.dateFormatter), finish.format(DateUtils.dateFormatter));
 
         LocalDate currentDate = LocalDate.parse(start.toString());
@@ -46,7 +46,7 @@ public class ContributionFilesService implements DcesReportFileService {
             currentDate = currentDate.plusDays(1);
         }
 
-        log.info("Received {} record(s) with XML files for time interval {} - {}",
+        log.info("Received {} record(s) with XML files for time period {} - {}",
                 resultList.size(), start.format(DateUtils.dateFormatter), finish.format(DateUtils.dateFormatter));
         return resultList;
     }
@@ -65,7 +65,7 @@ public class ContributionFilesService implements DcesReportFileService {
         String fileName = getFileName(start, finish);
         File file = contributionFilesMapper.processRequest(files.toArray(new String[0]), start, finish, fileName);
 
-        log.info("End generating CSV Contributions Report for time interval {} - {}",
+        log.info("End generating CSV Contributions Report for time period {} - {}",
                 start.format(DateUtils.dateFormatter), finish.format(DateUtils.dateFormatter));
         return file;
     }

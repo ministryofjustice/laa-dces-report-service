@@ -36,7 +36,7 @@ public class FdcFilesService implements DcesReportFileService {
     @Timed("laa_dces_report_service_fdc_get_file")
     @Retry(name = SERVICE_NAME)
     public List<String> getFiles(LocalDate start, LocalDate end) {
-        log.info("Request FDC XML files for time interval {} - {} ",
+        log.info("Request FDC XML files for time period {} - {} ",
                 start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
         if (end.isBefore(start)) {
@@ -48,7 +48,7 @@ public class FdcFilesService implements DcesReportFileService {
                 .stream()
                 .filter(Objects::nonNull)
                 .toList();
-        log.info("Received {} record(s) with XML files for time interval {} - {}",
+        log.info("Received {} record(s) with XML files for time period {} - {}",
                 resultList.size(), start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
         return resultList;
     }

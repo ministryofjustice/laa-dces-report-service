@@ -72,7 +72,7 @@ public class DcesReportService {
 
     @Timed("sendEmail")
     private void sendEmailReport(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
-        log.info("[{} report] :: Creating email object for time interval {} - {} ",
+        log.info("[{} report] :: Creating email object for time period {} - {} ",
                 reportType, start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
         EmailObject emailObject = notifyConfiguration.createEmail(attachment, reportType, start, end, templateId, recipients);
