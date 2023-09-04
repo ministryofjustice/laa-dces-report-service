@@ -12,7 +12,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -44,7 +47,7 @@ public class DcesReportController {
             )
     )
     public void getContributionsReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException, NotificationClientException {
-        log.info("Start processing Contributions Report");
+        log.info("Contributions Report entry point");
         Sentry.captureMessage("Processing contri", SentryLevel.INFO);
         reportService.sendContributionsReport(start, finish);
     }
@@ -65,7 +68,7 @@ public class DcesReportController {
             )
     )
     public void getFdcReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException, NotificationClientException {
-        log.info("Start processing FDC Report");
+        log.info("FDC Report entry point");
         reportService.sendFdcReport(start, finish);
     }
 }
