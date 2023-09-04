@@ -254,10 +254,79 @@ class ContributionsFileMapperTest {
         }
     }
 
+    @Test
+    void givenContributionListIsNull_whenCallingProcessRequest_ShouldReturnFileOnlyWithHeader()
+            throws JAXBException, IOException {
+        ContributionFile fileToTest = contributionsFileMapper.mapContributionsXmlStringToObject(
+                getXmlDataContributionListNull()
+        );
+        softly.assertThat(fileToTest.getCONTRIBUTIONSLIST()).isNull();
+        softly.assertThat(fileToTest.getCONTRIBUTIONSLIST()).isNull();
+
+        File f = contributionsFileMapper.processRequest(
+                new String[]{ getXmlDataContributionListNull() },
+                LocalDate.now(),
+                LocalDate.now(),
+                filename
+        );
+
+        String csvOutput = FileUtils.readText(f);
+        // verify only header is present
+        softly.assertThat(csvOutput).isEqualTo("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date");
+    }
+
+    @Test
+    void givenContributionsIsNull_whenCallingProcessRequest_ShouldReturnFileOnlyWithHeader()
+            throws JAXBException, IOException {
+        ContributionFile fileToTest = contributionsFileMapper.mapContributionsXmlStringToObject(
+                getXmlDataContributionsNull()
+        );
+        softly.assertThat(fileToTest.getCONTRIBUTIONSLIST()).isNotNull();
+        softly.assertThat(fileToTest.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()).isNotNull();
+        softly.assertThat(fileToTest.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()).isEmpty();
+
+        File f = contributionsFileMapper.processRequest(
+                new String[]{ getXmlDataContributionListNull() },
+                LocalDate.now(),
+                LocalDate.now(),
+                filename
+        );
+
+        String csvOutput = FileUtils.readText(f);
+        // verify only header is present
+        softly.assertThat(csvOutput).isEqualTo("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date");
+    }
+
     private void closeFile(File f){
         if(Objects.nonNull(f)){
             f.delete();
         }
+    }
+
+    private String getXmlDataContributionListNull() {
+        return "<?xml version=\"1.0\"?>\n" +
+                "<contribution_file>\n" +
+                "    <header id=\"222772044\">\n" +
+                "        <filename>CONTRIBUTIONS_202102122031.xml</filename>\n" +
+                "        <dateGenerated>2021-02-12</dateGenerated>\n" +
+                "        <recordCount>1</recordCount>\n" +
+                "        <formatVersion>format version 1.7 - xsd=contribution_file.xsd version 1.16</formatVersion>\n" +
+                "    </header>\n" +
+                "</contribution_file>";
+    }
+
+    private String getXmlDataContributionsNull() {
+        return "<?xml version=\"1.0\"?>\n" +
+                "<contribution_file>\n" +
+                "    <header id=\"222772044\">\n" +
+                "        <filename>CONTRIBUTIONS_202102122031.xml</filename>\n" +
+                "        <dateGenerated>2021-02-12</dateGenerated>\n" +
+                "        <recordCount>1</recordCount>\n" +
+                "        <formatVersion>format version 1.7 - xsd=contribution_file.xsd version 1.16</formatVersion>\n" +
+                "    </header>\n" +
+                "    <CONTRIBUTIONS_LIST>\n" +
+                "    </CONTRIBUTIONS_LIST>\n" +
+                "</contribution_file>";
     }
 
 }
