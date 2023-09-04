@@ -396,6 +396,57 @@ class ContributionsFileMapperTest {
         softly.assertThat(csvOutput).contains(expectedCsvLine);
     }
 
+    @Test
+    void givenCorrespondenceDateNull_whenCallingProcessRequest_ShouldReturnCsvLineWithGeneratedDateOnly()
+            throws JAXBException, IOException {
+        String sourceXmlData = getXmlDataCorrespondenceDate(false, true);
+
+        ContributionFile fileToTest = contributionsFileMapper.mapContributionsXmlStringToObject(
+                sourceXmlData
+        );
+
+        ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS contribution = fileToTest.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().get(0);
+
+        softly.assertThat(contribution.getCorrespondence()).isNotNull();
+        softly.assertThat(contribution.getCorrespondence().getLetter()).isEmpty();
+
+        csvFile = contributionsFileMapper.processRequest(
+                new String[]{ sourceXmlData },
+                LocalDate.now(),
+                LocalDate.now(),
+                filename
+        );
+
+        String expectedCsvLine = String.format("5635978,update,,,,,,,%s", LocalDate.now().format(dateFormatterCsv));
+
+        String csvOutput = FileUtils.readText(csvFile);
+        // verify only header is present
+        softly.assertThat(csvOutput).startsWith(EXPECTED_HEADER);
+        softly.assertThat(csvOutput).contains(expectedCsvLine);
+    }
+
+    @Test
+    void givenCorrespondenceDate_whenCallingProcessRequest_ShouldReturnCsvLineWithCorrespondenceDate()
+            throws JAXBException, IOException {
+        String sourceXmlData = getXmlDataCorrespondenceDate(false, false);
+
+        csvFile = contributionsFileMapper.processRequest(
+                new String[]{ sourceXmlData },
+                LocalDate.now(),
+                LocalDate.now(),
+                filename
+        );
+
+        String expectedCsvLine = String.format("5635978,update,,,%s,,,,%s",
+                LocalDate.now().format(dateFormatterCsv),
+                LocalDate.now().format(dateFormatterCsv));
+
+        String csvOutput = FileUtils.readText(csvFile);
+        // verify only header is present
+        softly.assertThat(csvOutput).startsWith(EXPECTED_HEADER);
+        softly.assertThat(csvOutput).contains(expectedCsvLine);
+    }
+
     /**
      * Test data providers
      **/

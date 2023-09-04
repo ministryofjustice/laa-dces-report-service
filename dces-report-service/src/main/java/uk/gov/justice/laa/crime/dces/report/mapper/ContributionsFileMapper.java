@@ -128,7 +128,7 @@ public class ContributionsFileMapper {
 
     private String getCorrespondenceSentDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
         if(Objects.nonNull(contribution.getCorrespondence())
-                && Objects.nonNull(contribution.getCorrespondence().getLetter())) {
+                && !contribution.getCorrespondence().getLetter().isEmpty()) {
             List<Letter> filteredList = contribution.getCorrespondence().getLetter()
                     .stream()
                     .filter(Objects::nonNull)
