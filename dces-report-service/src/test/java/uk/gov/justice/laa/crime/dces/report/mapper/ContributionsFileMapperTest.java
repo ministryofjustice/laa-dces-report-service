@@ -11,14 +11,19 @@ import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.core.Local;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.model.generated.ContributionFile;
 import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -32,7 +37,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SoftAssertionsExtension.class)
 @ActiveProfiles("test")
 class ContributionsFileMapperTest {
+    private final DateTimeFormatter dateFormatterXml = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter dateFormatterCsv = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    private static final String EXPECTED_HEADER = "MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date";
     @InjectSoftAssertions
     private SoftAssertions softly;
     @Autowired
@@ -298,6 +306,87 @@ class ContributionsFileMapperTest {
         closeFile(f);
     }
 
+    @Test
+    void givenContributionAssessmentNull_whenCallingProcessRequest_ShouldReturnCsvLineWithGeneratedDateOnly()
+            throws JAXBException, IOException {
+        String sourceXmlData = getXmlDataAssessmentDate(true, true);
+
+        ContributionFile fileToTest = contributionsFileMapper.mapContributionsXmlStringToObject(
+                sourceXmlData
+        );
+
+        ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS contribution = fileToTest.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().get(0);
+        softly.assertThat(contribution.getAssessment()).isNull();
+
+        File f = contributionsFileMapper.processRequest(
+                new String[]{ sourceXmlData },
+                LocalDate.now(),
+                LocalDate.now(),
+                filename
+        );
+
+        String expectedCsvLine = String.format("5635978,update,,,,,,,%s", LocalDate.now().format(dateFormatterCsv));
+
+        String csvOutput = FileUtils.readText(f);
+        // verify only header is present
+        softly.assertThat(csvOutput).startsWith(EXPECTED_HEADER);
+        softly.assertThat(csvOutput).contains(expectedCsvLine);
+        closeFile(f);
+    }
+
+    @Test
+    void givenContributionAssessmentDateNull_whenCallingProcessRequest_ShouldReturnCsvLineWithGeneratedDateOnly()
+            throws JAXBException, IOException {
+        String sourceXmlData = getXmlDataAssessmentDate(false, true);
+
+        ContributionFile fileToTest = contributionsFileMapper.mapContributionsXmlStringToObject(
+                sourceXmlData
+        );
+
+        ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS contribution = fileToTest.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().get(0);
+
+        softly.assertThat(contribution.getAssessment()).isNotNull();
+        softly.assertThat(contribution.getAssessment().getEffectiveDate()).isNull();
+
+        File f = contributionsFileMapper.processRequest(
+                new String[]{ sourceXmlData },
+                LocalDate.now(),
+                LocalDate.now(),
+                filename
+        );
+
+        String expectedCsvLine = String.format("5635978,update,,,,,,,%s", LocalDate.now().format(dateFormatterCsv));
+
+        String csvOutput = FileUtils.readText(f);
+        // verify only header is present
+        softly.assertThat(csvOutput).startsWith(EXPECTED_HEADER);
+        softly.assertThat(csvOutput).contains(expectedCsvLine);
+        closeFile(f);
+    }
+
+    @Test
+    void givenContributionAssessmentDate_whenCallingProcessRequest_ShouldReturnCsvLineWithAssessmentDate()
+            throws JAXBException, IOException {
+        String sourceXmlData = getXmlDataAssessmentDate(false, false);
+
+        File f = contributionsFileMapper.processRequest(
+                new String[]{ sourceXmlData },
+                LocalDate.now(),
+                LocalDate.now(),
+                filename
+        );
+
+        String expectedCsvLine = String.format("5635978,update,%s,,,,,,%s",
+                LocalDate.now().format(dateFormatterCsv),
+                LocalDate.now().format(dateFormatterCsv));
+
+        String csvOutput = FileUtils.readText(f);
+        // verify only header is present
+        softly.assertThat(csvOutput).startsWith(EXPECTED_HEADER);
+        softly.assertThat(csvOutput).contains(expectedCsvLine);
+        closeFile(f);
+    }
+
     private void closeFile(File f){
         if(Objects.nonNull(f)){
             f.delete();
@@ -328,6 +417,95 @@ class ContributionsFileMapperTest {
                 "    <CONTRIBUTIONS_LIST>\n" +
                 "    </CONTRIBUTIONS_LIST>\n" +
                 "</contribution_file>";
+    }
+
+    private String getXmlDataAssessmentDate(boolean isNullAssessment, boolean isNullDate) {
+        String assessmentTagSuffix = (isNullAssessment) ? "Null" : "";
+        String assessmentDateSuffix = (isNullDate) ? "Null" : "";
+
+        return String.format("<?xml version=\"1.0\"?>\n" +
+                "<contribution_file>\n" +
+                "    <header id=\"222772044\">\n" +
+                "        <filename>CONTRIBUTIONS_202102122031.xml</filename>\n" +
+                "        <dateGenerated>%s</dateGenerated>\n" +
+                "        <recordCount>1</recordCount>\n" +
+                "        <formatVersion>format version 1.7 - xsd=contribution_file.xsd version 1.16</formatVersion>\n" +
+                "    </header>\n" +
+                "    <CONTRIBUTIONS_LIST>\n" +
+                "        <CONTRIBUTIONS id=\"222769650\" flag=\"update\">\n" +
+                "            <maat_id>5635978</maat_id>\n" +
+                "            <assessment%s>\n" +
+                "                <effectiveDate%s>%s</effectiveDate%s>\n" +
+                "            </assessment%s>\n" +
+                "        </CONTRIBUTIONS>\n" +
+                "    </CONTRIBUTIONS_LIST>\n" +
+                "</contribution_file>\n",
+                LocalDate.now().format(dateFormatterXml),
+                assessmentTagSuffix,
+                assessmentDateSuffix,
+                LocalDate.now().format(dateFormatterXml),
+                assessmentDateSuffix,
+                assessmentTagSuffix);
+    }
+
+    private String getXmlDataValidNull() {
+        return "<?xml version=\"1.0\"?>\n" +
+                "<contribution_file>\n" +
+                "    <header id=\"222772044\">\n" +
+                "        <filename>CONTRIBUTIONS_202102122031.xml</filename>\n" +
+                "        <dateGenerated>2021-02-12</dateGenerated>\n" +
+                "        <recordCount>1</recordCount>\n" +
+                "        <formatVersion>format version 1.7 - xsd=contribution_file.xsd version 1.16</formatVersion>\n" +
+                "    </header>\n" +
+                "    <CONTRIBUTIONS_LIST>\n" +
+                "        <CONTRIBUTIONS id=\"222769650\" flag=\"update\">\n" +
+                "            <maat_id>5635978</maat_id>\n" +
+                "            <applicant id=\"222767510\">\n" +
+                "                <firstName>F Name</firstName>\n" +
+                "                <lastName>L Name</lastName>\n" +
+                "                <dob>1990-04-07</dob>\n" +
+                "                <preferredPaymentDay>1</preferredPaymentDay>\n" +
+                "            </applicant>\n" +
+                "            <application>\n" +
+                "                <ccHardship>\n" +
+                "                    <reviewDate>2021-01-25</reviewDate>\n" +
+                "                </ccHardship>\n" +
+                "                <repStatusDate>2021-01-25</repStatusDate>\n" +
+                "                <repOrderWithdrawalDate>2021-01-29</repOrderWithdrawalDate>\n" +
+                "                <committalDate>2020-09-15</committalDate>\n" +
+                "            </application>\n" +
+                "            <assessment>\n" +
+                "                <effectiveDate>2021-01-30</effectiveDate>\n" +
+                "                <assessmentDate>2021-02-12</assessmentDate>\n" +
+                "            </assessment>\n" +
+                "            <ccOutcomes>\n" +
+                "                <ccOutcome>\n" +
+                "                    <date>2021-01-25</date>\n" +
+                "                </ccOutcome>\n" +
+                "            </ccOutcomes>\n" +
+                "            <passported>\n" +
+                "                <dateCompleted>2021-01-30</dateCompleted>\n" +
+                "            </passported>\n" +
+                "            <correspondence>\n" +
+                "                <letter>\n" +
+                "                    <Ref>W1</Ref>\n" +
+                "                    <id>222771991</id>\n" +
+                "                    <type>CONTRIBUTION_NOTICE</type>\n" +
+                "                    <created>2021-02-12</created>\n" +
+                "                    <printed/>\n" +
+                "                </letter>\n" +
+                "                <letter>\n" +
+                "                    <Ref>W1</Ref>\n" +
+                "                    <id>222771938</id>\n" +
+                "                    <type>CONTRIBUTION_NOTICE</type>\n" +
+                "                    <created>2021-02-12</created>\n" +
+                "                    <printed/>\n" +
+                "                </letter>\n" +
+                "            </correspondence>\n" +
+                "            <breathingSpaceInfo/>\n" +
+                "        </CONTRIBUTIONS>\n" +
+                "    </CONTRIBUTIONS_LIST>\n" +
+                "</contribution_file>\n";
     }
 
 }
