@@ -12,7 +12,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication;
@@ -38,7 +37,6 @@ import static org.mockito.Mockito.times;
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @ExtendWith(SoftAssertionsExtension.class)
-@ActiveProfiles("e2e")// MUST UPDATE AND DELETE BEFORE DEPLOY
 @ContextConfiguration(classes = {DcesReportServiceApplication.class})
 public class DcesReportingServiceTest {
 
