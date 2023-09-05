@@ -17,10 +17,14 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
+import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.controller.DcesReportController;
+import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
+import uk.gov.justice.laa.crime.dces.report.service.FdcFilesService;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
+import uk.gov.justice.laa.crime.dces.report.utils.email.config.NotifyConfiguration;
 import uk.gov.service.notify.NotificationClientException;
 
 import java.io.IOException;
@@ -31,15 +35,18 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 @RunWith(SpringRunner.class)
 @ExtendWith(SoftAssertionsExtension.class)
-@ActiveProfiles("temp")// MUST UPDATE AND DELETE BEFORE DEPLOY
+@ActiveProfiles("e2e")// MUST UPDATE AND DELETE BEFORE DEPLOY
 @ContextConfiguration(classes = {DcesReportServiceApplication.class})
 public class DcesReportingServiceTest {
 
     @Autowired
     private ContributionFilesService contributionFilesService;
+
+    @Autowired
+    private FdcFilesService fdcFilesService;
 
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -51,10 +58,16 @@ public class DcesReportingServiceTest {
     private ContributionFilesClient spyContributionsClient;
 
     @SpyBean
+    private FdcFilesClient spyFdcFilesClient;
+
+    @SpyBean
     private NotifyEmailClient spyEmailClient;
 
     @Autowired
     private DcesReportController controller;
+
+    @Autowired
+    private NotifyConfiguration notifyConfiguration;
 
     private LocalDate start;
 
@@ -62,32 +75,68 @@ public class DcesReportingServiceTest {
 
     @BeforeEach
     void setup() {
-        start = LocalDate.of(2023, 7, 1);
-        end = LocalDate.of(2023, 7, 4);
+        start = LocalDate.of(2018, 8, 1);
+        end = LocalDate.of(2018, 8, 30);
     }
 
-    // We ensure that endpoints have expected datasets otherwise the other subsequent test and assertions will fail.
     @Test
-    void assertEndpointDataIsConsistent() {
+    void assertContributionsEndpointDataIsConsistent() {
         // setup
+        if (!notifyConfiguration.getEnvironment().equals("development")) {
+            return;
+        }
 
         // execute
         List<String> contributions = contributionFilesService.getFiles(start, end);
 
         // assert
-        softly.assertThat(contributions.size()).isEqualTo(4);
+        softly.assertThat(contributions.size()).isEqualTo(2);
     }
 
     @Test
-    void confirmRequestWithSuccess() throws NotificationClientException, JAXBException, IOException {
+    void assertFdcEndpointDataIsConsistent() {
         // setup
+        if (!notifyConfiguration.getEnvironment().equals("development")) {
+            return;
+        }
+
+        // execute
+        List<String> contributions = fdcFilesService.getFiles(start, end);
+
+        // assert
+        softly.assertThat(contributions.size()).isEqualTo(0);
+    }
+
+    @Test
+    void confirmContributionsReportRunsSuccessfully() throws NotificationClientException, JAXBException, IOException {
+        // setup
+        if (!notifyConfiguration.getEnvironment().equals("development")) {
+            return;
+        }
 
         // execute
         controller.getContributionsReport(start, end);
 
         // assert
         Mockito.verify(spyReporting, times(1)).sendContributionsReport(start, end);
-        Mockito.verify(spyContributionsClient, times(4)).getContributions(any(), any());
+        Mockito.verify(spyContributionsClient, times(30)).getContributions(any(), any());
         Mockito.verify(spyEmailClient, times(1)).send(any());
+    }
+
+    @Test
+    void fdcReportRunsSuccessfully() throws NotificationClientException, JAXBException, IOException {
+        // setup
+        if (!notifyConfiguration.getEnvironment().equals("development")) {
+            return;
+        }
+
+        // execute
+        softly.assertThatThrownBy(() -> controller.getFdcReport(start, end))
+                .isInstanceOf(DcesReportSourceFilesDataNotFound.class);
+
+        // assert
+        Mockito.verify(spyReporting, times(1)).sendFdcReport(start, end);
+        Mockito.verify(spyFdcFilesClient, times(1)).getContributions(any(), any());
+        Mockito.verify(spyEmailClient, times(0)).send(any());
     }
 }
