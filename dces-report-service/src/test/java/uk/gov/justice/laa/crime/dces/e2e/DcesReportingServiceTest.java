@@ -11,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
@@ -34,6 +35,7 @@ import static org.mockito.Mockito.times;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
+@ActiveProfiles("e2e")
 @ContextConfiguration(classes = DcesReportServiceApplication.class)
 final class DcesReportingServiceTest {
 
@@ -103,6 +105,23 @@ final class DcesReportingServiceTest {
     }
 
     @Test
+    void confirmContributionsReportRequestFails() throws NotificationClientException, JAXBException, IOException {
+        // setup
+        if (!notifyConfiguration.getEnvironment().equals("development")) {
+            return;
+        }
+
+        // execute
+        softly.assertThatThrownBy(() -> controller.getContributionsReport(start.minusDays(2), start.minusDays(2)))
+                .isInstanceOf(DcesReportSourceFilesDataNotFound.class);
+
+        // assert
+        Mockito.verify(spyReporting, times(1)).sendContributionsReport(start.minusDays(2), start.minusDays(2));
+        Mockito.verify(spyContributionsClient, times(1)).getContributions(any(), any());
+        Mockito.verify(spyEmailClient, times(0)).send(any());
+    }
+
+    @Test
     void confirmContributionsReportRunsSuccessfully() throws NotificationClientException, JAXBException, IOException {
         // setup
         if (!notifyConfiguration.getEnvironment().equals("development")) {
@@ -119,7 +138,7 @@ final class DcesReportingServiceTest {
     }
 
     @Test
-    void fdcReportRunsSuccessfully() throws NotificationClientException, JAXBException, IOException {
+    void fdcReportRequestFails() throws NotificationClientException, JAXBException, IOException {
         // setup
         if (!notifyConfiguration.getEnvironment().equals("development")) {
             return;
@@ -133,5 +152,23 @@ final class DcesReportingServiceTest {
         Mockito.verify(spyReporting, times(1)).sendFdcReport(start, end);
         Mockito.verify(spyFdcFilesClient, times(1)).getContributions(any(), any());
         Mockito.verify(spyEmailClient, times(0)).send(any());
+    }
+
+    @Test
+    void fdcReportRunsSuccessfully() throws NotificationClientException, JAXBException, IOException {
+        // setup
+        if (!notifyConfiguration.getEnvironment().equals("development")) {
+            return;
+        }
+
+        // execute
+        LocalDate date = LocalDate.of(2023, 7, 3);
+        controller.getFdcReport(date, date);
+
+
+        // assert
+        Mockito.verify(spyReporting, times(1)).sendFdcReport(date, date);
+        Mockito.verify(spyFdcFilesClient, times(1)).getContributions(any(), any());
+        Mockito.verify(spyEmailClient, times(1)).send(any());
     }
 }

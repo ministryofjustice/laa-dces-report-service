@@ -84,7 +84,7 @@ jobs:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - run:
           name: Install Dependencies and Build
-          command: ./gradlew clean build --stacktrace
+          command: ./gradlew clean build
       - run:
           name: Run Sonar
           command: ./gradlew sonar
