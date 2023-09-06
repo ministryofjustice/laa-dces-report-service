@@ -42,21 +42,20 @@ public class ContributionsFileMapper {
         for (String xmlString : xmlData) {
             processXMLFile(xmlString, startDate, endDate, csvLineList);
         }
-        return csvFileService.writeContributionToCsv(csvLineList, filename);
+        return csvFileService.writeContributionToCsv(csvLineList, startDate, endDate, filename);
     }
 
     private void processXMLFile(String xmlData, LocalDate startDate, LocalDate endDate, List<ContributionCSVDataLine> csvLineList) throws JAXBException {
         ContributionFile contributionFile = mapContributionsXmlStringToObject(xmlData);
-        if(Objects.isNull(contributionFile)
+        if (Objects.isNull(contributionFile)
                 || Objects.isNull(contributionFile.getCONTRIBUTIONSLIST())
-                || Objects.isNull(contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS())){
+                || Objects.isNull(contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS())) {
             return;
         }
         String dateGenerated = DateUtils.convertXmlGregorianToString(contributionFile.getHeader().getDateGenerated());
         for (CONTRIBUTIONS contribution : contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()) {
             csvLineList.add(buildCSVDataLine(contribution, startDate, endDate, dateGenerated));
         }
-
     }
 
     public ContributionFile mapContributionsXMLFileToObject(File xmlFile) throws JAXBException {
@@ -107,7 +106,7 @@ public class ContributionsFileMapper {
     }
 
     private String getOutcomeDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
-        if(Objects.nonNull(contribution.getCcOutcomes())
+        if (Objects.nonNull(contribution.getCcOutcomes())
                 && Objects.nonNull(contribution.getCcOutcomes().getCcOutcome())) {
             List<CcOutcome> filteredList = contribution.getCcOutcomes().getCcOutcome()
                     .stream()
@@ -122,7 +121,7 @@ public class ContributionsFileMapper {
     }
 
     private String getCorrespondenceSentDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
-        if(Objects.nonNull(contribution.getCorrespondence())
+        if (Objects.nonNull(contribution.getCorrespondence())
                 && Objects.nonNull(contribution.getCorrespondence().getLetter())) {
             List<Letter> filteredList = contribution.getCorrespondence().getLetter()
                     .stream()

@@ -17,6 +17,7 @@ import java.nio.file.Files;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -28,13 +29,29 @@ public class CSVFileService {
     public static final String FDC_FORMAT_COMMA = "%s,";
     public static final String EMPTY_CHARACTER = "";
 
-    public File writeContributionToCsv(List<ContributionCSVDataLine> contributionData, File targetFile) throws IOException {
+    private static final String CONTRIBUTIONS_TITLE = "Monthly Contributions Report";
+
+    private static final String FDC_TITLE = "Monthly Final Defence Cost Report";
+
+    private LocalDate dateFrom;
+    private LocalDate DateTo;
+    private LocalDate runDate;
+
+    protected File writeContributionToCsv(List<ContributionCSVDataLine> contributionData, LocalDate fromDate, LocalDate toDate, File targetFile) throws IOException {
+        String runDate = LocalDate.now().toString();
         // if file does not exist, we need to add the headers.
         if (targetFile.length() == 0) {
             contributionData.add(0, getContributionsHeader());
         }
         // filewriter initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {
+            String title = CONTRIBUTIONS_TITLE
+                    + " REPORTING DATE FROM: " + fromDate
+                    + " | REPORTING DATE TO: " + toDate
+                    + " | REPORTING PRODUCED ON: " + LocalDate.now()
+                    + System.lineSeparator();
+            fw.append(title);
+
             for (ContributionCSVDataLine contributionCsvDataLine : contributionData) {
                 writeContributionLine(fw, contributionCsvDataLine);
             }
@@ -44,18 +61,18 @@ public class CSVFileService {
         return targetFile;
     }
 
-    public File writeContributionToCsv(List<ContributionCSVDataLine> contributionData, String fileName) throws IOException {
+    public File writeContributionToCsv(List<ContributionCSVDataLine> contributionData, LocalDate fromDate, LocalDate toDate, String fileName) throws IOException {
         File targetFile = createCsvFile(fileName);
-        return writeContributionToCsv(contributionData, targetFile);
+        return writeContributionToCsv(contributionData, fromDate, toDate, targetFile);
     }
 
-    public void writeFdcToCsv(FdcFile fdcFile, File targetFile) throws IOException {
+    public void writeFdcToCsv(FdcFile fdcFile, File targetFile, LocalDate fromDate, LocalDate toDate) throws IOException {
         List<Fdc> fdcList = fdcFile.getFdcList().getFdc();
         String dateGenerated = DateUtils.convertXmlGregorianToString(fdcFile.getHeader().getDateGenerated());
         // filewriter initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {
             if (targetFile.length() == 0) {
-                writeFdcHeader(fw);
+                writeFdcHeader(fw, fromDate, toDate);
             }
             for (Fdc fdcLine : fdcList) {
                 writeFdcLine(fw, fdcLine, dateGenerated);
@@ -65,10 +82,10 @@ public class CSVFileService {
         }
     }
 
-    public File writeFdcFileListToCsv(List<FdcFile> fdcFiles, String fileName) throws IOException {
+    public File writeFdcFileListToCsv(List<FdcFile> fdcFiles, String fileName, LocalDate fromDate, LocalDate toDate) throws IOException {
         File targetFile = createCsvFile(fileName);
         for (FdcFile file : fdcFiles) {
-            writeFdcToCsv(file, targetFile);
+            writeFdcToCsv(file, targetFile, fromDate, toDate);
         }
         return targetFile;
     }
@@ -87,8 +104,12 @@ public class CSVFileService {
                 .build();
     }
 
-    private void writeFdcHeader(FileWriter fw) throws IOException {
-        String headerLine = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date" + System.lineSeparator();
+    private void writeFdcHeader(FileWriter fw, LocalDate fromDate, LocalDate toDate) throws IOException {
+        String headerLine = FDC_TITLE + " REPORTING DATE FROM: " + fromDate
+                + " | REPORTING DATE TO: " + toDate
+                + " | REPORTING PRODUCED ON: " + LocalDate.now()
+                + System.lineSeparator();
+        headerLine += "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date" + System.lineSeparator();
         fw.append(headerLine);
     }
 
@@ -98,7 +119,7 @@ public class CSVFileService {
     }
 
     private void writeFdcLine(FileWriter fw, Fdc fdcLine, String dateGenerated) throws IOException {
-        fw.append(fdcLineBuilder(fdcLine,dateGenerated));
+        fw.append(fdcLineBuilder(fdcLine, dateGenerated));
     }
 
     private String fdcLineBuilder(Fdc fdcLine, String dateGenerated) {
@@ -113,11 +134,11 @@ public class CSVFileService {
     }
 
     private String getFdcValue(Object o) {
-        return String.format(( FDC_FORMAT_COMMA ), (Objects.nonNull(o) ? o : EMPTY_CHARACTER));
+        return String.format((FDC_FORMAT_COMMA), (Objects.nonNull(o) ? o : EMPTY_CHARACTER));
     }
 
-    private String getFdcValue(BigDecimal o){
-        return getFdcValue(Objects.nonNull(o) ? o.setScale(2, RoundingMode.UNNECESSARY).toString(): null);
+    private String getFdcValue(BigDecimal o) {
+        return getFdcValue(Objects.nonNull(o) ? o.setScale(2, RoundingMode.UNNECESSARY).toString() : null);
     }
 
     private String getFdcValue(XMLGregorianCalendar o) {

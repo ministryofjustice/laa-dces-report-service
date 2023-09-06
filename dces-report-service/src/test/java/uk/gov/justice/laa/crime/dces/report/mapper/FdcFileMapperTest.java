@@ -19,7 +19,7 @@ import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Objects;
 
 import static org.junit.Assert.assertThrows;
@@ -43,18 +43,18 @@ class FdcFileMapperTest {
     private static final String filename = "this_is_a_test.xml";
 
     @AfterEach
-    void resetCsvFileService(){
+    void resetCsvFileService() {
         fdcFileMapper.csvFileService = new CSVFileService();
     }
 
     @Test
-    void testXMLFileMappingValid(){
+    void testXMLFileMappingValid() {
         File f = new File(getClass().getClassLoader().getResource("fdc/single_fdc.xml").getFile());
         FdcFile fdcFile = null;
         try {
             fdcFile = fdcFileMapper.mapFdcXMLFileToObject(f);
         } catch (JAXBException e) {
-            fail("Exception occurred in mapping test:"+e.getMessage());
+            fail("Exception occurred in mapping test:" + e.getMessage());
         }
         softly.assertThat(fdcFile).isNotNull();
         softly.assertThat(fdcFile.getFdcList().getFdc().size()).isEqualTo(1);
@@ -72,12 +72,12 @@ class FdcFileMapperTest {
     }
 
     @Test
-    void testXMLStringMappingValid(){
+    void testXMLStringMappingValid() {
         FdcFile fdcFile = null;
         try {
             fdcFile = fdcFileMapper.mapFdcXmlStringToObject(getXMLString(true));
         } catch (JAXBException | IOException e) {
-            fail("Unexpected Exception occurred in mapping test:"+e.getMessage());
+            fail("Unexpected Exception occurred in mapping test:" + e.getMessage());
         }
         softly.assertThat(fdcFile).isNotNull();
         softly.assertThat(fdcFile.getFdcList().getFdc().size()).isEqualTo(1);
@@ -95,70 +95,77 @@ class FdcFileMapperTest {
     }
 
     @Test
-    void testMultipleFileFdcEntries(){
+    void testMultipleFileFdcEntries() {
         File f = new File(getClass().getClassLoader().getResource("fdc/multiple_fdc.xml").getFile());
         FdcFile fdcFile = null;
         try {
             fdcFile = fdcFileMapper.mapFdcXMLFileToObject(f);
         } catch (JAXBException e) {
-            fail("Exception occurred in mapping test:"+e.getMessage());
+            fail("Exception occurred in mapping test:" + e.getMessage());
         }
         softly.assertThat(fdcFile.getFdcList().getFdc().size()).isEqualTo(6);
         softly.assertAll();
     }
 
     @Test
-    void testMultipleStringFdcEntries(){
+    void testMultipleStringFdcEntries() {
         FdcFile fdcFile = null;
         try {
             fdcFile = fdcFileMapper.mapFdcXmlStringToObject(getXMLString(false));
         } catch (JAXBException | IOException e) {
-            fail("Unexpected exception occurred in mapping test:"+e.getMessage());
+            fail("Unexpected exception occurred in mapping test:" + e.getMessage());
         }
         softly.assertThat(fdcFile.getFdcList().getFdc().size()).isEqualTo(6);
         softly.assertAll();
     }
 
     @Test
-    void testInvalidXML(){
+    void testInvalidXML() {
         File f = new File(getClass().getClassLoader().getResource("fdc/invalid_fdc.xml").getFile());
-        assertThrows(UnmarshalException.class, () -> {fdcFileMapper.mapFdcXMLFileToObject(f);});
+        assertThrows(UnmarshalException.class, () -> {
+            fdcFileMapper.mapFdcXMLFileToObject(f);
+        });
     }
 
     String getXMLString(boolean wantsSingle) throws IOException {
-        File f = new File(getClass().getClassLoader().getResource(wantsSingle?"fdc/single_fdc.xml":"fdc/multiple_fdc.xml").getFile());
+        File f = new File(getClass().getClassLoader().getResource(wantsSingle ? "fdc/single_fdc.xml" : "fdc/multiple_fdc.xml").getFile());
         return FileUtils.readText(f);
     }
 
     @Test
-    void testProcessRequest(){
-        File f=null;
+    void testProcessRequest() {
+        File f = null;
         try {
             CSVFileService csvServiceMock = mock(CSVFileService.class);
-            when(csvServiceMock.writeFdcFileListToCsv(any(),anyString())).thenReturn(new File(filename));
-            fdcFileMapper.csvFileService=csvServiceMock;
-            f = fdcFileMapper.processRequest(new String[]{getXMLString(false)}, filename);
+            when(csvServiceMock.writeFdcFileListToCsv(any(), anyString(), any(), any())).thenReturn(new File(filename));
+            fdcFileMapper.csvFileService = csvServiceMock;
+            LocalDate date = LocalDate.now();
+            f = fdcFileMapper.processRequest(new String[]{getXMLString(false)}, filename, date, date);
             softly.assertThat(f).isNotNull();
         } catch (JAXBException | IOException e) {
-            fail("Exception occurred in mapping test:"+e.getMessage());
+            fail("Exception occurred in mapping test:" + e.getMessage());
         } finally {
             softly.assertAll();
             closeFile(f);
         }
     }
+
     @Test
-    void testProcessRequestFileGeneration(){
+    void testProcessRequestFileGeneration() {
         File input = new File(getClass().getClassLoader().getResource("fdc/multiple_fdc.xml").getFile());
         File f = null;
         try {
-            f = fdcFileMapper.processRequest(new String[]{FileUtils.readText(input)}, filename);
+            LocalDate date = LocalDate.now();
+            f = fdcFileMapper.processRequest(new String[]{FileUtils.readText(input)}, filename, date, date);
 
             softly.assertThat(f).isNotNull();
             String csvOutput = FileUtils.readText(f);
             // check header present
             softly.assertThat(csvOutput).contains("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date");
             // verify content has been mapped
-            softly.assertThat(csvOutput).isEqualTo("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date\n" +
+            String title = String.format("Monthly Final Defence Cost Report REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s\n", date, date, date);
+            softly.assertThat(csvOutput).isEqualTo(title +
+                    "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date\n" +
                     "2525925,30/09/2016,22/12/2016,1774.40,1180.64,593.76,25/07/2018\n" +
                     "2492027,04/02/2011,04/07/2018,1479.23,569.92,909.31,25/07/2018\n" +
                     "5275089,19/08/2016,02/09/2016,2849.95,1497.60,1352.35,25/07/2018\n" +
@@ -166,15 +173,15 @@ class FdcFileMapperTest {
                     "5438043,25/08/2016,19/12/2016,1969.47,1085.50,883.97,25/07/2018\n" +
                     "4971278,14/10/2016,11/01/2017,3226.01,1327.99,1898.02,25/07/2018");
         } catch (JAXBException | IOException e) {
-            fail("Exception occurred in mapping test:"+e.getMessage());
+            fail("Exception occurred in mapping test:" + e.getMessage());
         } finally {
             softly.assertAll();
             closeFile(f);
         }
     }
 
-    private void closeFile(File f){
-        if(Objects.nonNull(f)){
+    private void closeFile(File f) {
+        if (Objects.nonNull(f)) {
             f.delete();
         }
     }
