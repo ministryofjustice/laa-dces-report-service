@@ -7,13 +7,11 @@ import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringRunner;
 import uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
@@ -35,10 +33,9 @@ import static org.mockito.Mockito.times;
 
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
 @ExtendWith(SoftAssertionsExtension.class)
-@ContextConfiguration(classes = {DcesReportServiceApplication.class})
-public class DcesReportingServiceTest {
+@ContextConfiguration(classes = DcesReportServiceApplication.class)
+final class DcesReportingServiceTest {
 
     @Autowired
     private ContributionFilesService contributionFilesService;
