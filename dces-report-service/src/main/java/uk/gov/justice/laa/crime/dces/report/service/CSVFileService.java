@@ -38,12 +38,8 @@ public class CSVFileService {
     private static final String FDC_HEADER = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date" + System.lineSeparator();
     private static final String FILE_PERMISSIONS = "rwx------";
 
-    private LocalDate dateFrom;
-    private LocalDate DateTo;
-    private LocalDate runDate;
 
     protected File writeContributionToCsv(List<ContributionCSVDataLine> contributionData, LocalDate fromDate, LocalDate toDate, File targetFile) throws IOException {
-        String runDate = LocalDate.now().toString();
         // if file does not exist, we need to add the headers.
         if (targetFile.length() == 0) {
             contributionData.add(0, getContributionsHeader());
@@ -147,5 +143,4 @@ public class CSVFileService {
         FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(FILE_PERMISSIONS));
         return Files.createTempFile(fileName, ".csv", attr).toFile();
     }
-
 }
