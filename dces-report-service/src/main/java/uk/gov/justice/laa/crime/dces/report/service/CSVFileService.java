@@ -33,6 +33,11 @@ public class CSVFileService {
 
     private static final String FDC_TITLE = "Monthly Final Defence Cost Report";
 
+    private static final String TEMPLATE_TITLE = "%s REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s" + System.lineSeparator();
+
+    private static final String FDC_HEADER = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date" + System.lineSeparator();
+    private static final String FILE_PERMISSIONS = "rwx------";
+
     private LocalDate dateFrom;
     private LocalDate DateTo;
     private LocalDate runDate;
@@ -43,13 +48,9 @@ public class CSVFileService {
         if (targetFile.length() == 0) {
             contributionData.add(0, getContributionsHeader());
         }
-        // filewriter initialise
+        // file-writer initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {
-            String title = CONTRIBUTIONS_TITLE
-                    + " REPORTING DATE FROM: " + fromDate
-                    + " | REPORTING DATE TO: " + toDate
-                    + " | REPORTING PRODUCED ON: " + LocalDate.now()
-                    + System.lineSeparator();
+            String title = String.format(TEMPLATE_TITLE, CONTRIBUTIONS_TITLE, fromDate, toDate, LocalDate.now());
             fw.append(title);
 
             for (ContributionCSVDataLine contributionCsvDataLine : contributionData) {
@@ -69,7 +70,7 @@ public class CSVFileService {
     public void writeFdcToCsv(FdcFile fdcFile, File targetFile, LocalDate fromDate, LocalDate toDate) throws IOException {
         List<Fdc> fdcList = fdcFile.getFdcList().getFdc();
         String dateGenerated = DateUtils.convertXmlGregorianToString(fdcFile.getHeader().getDateGenerated());
-        // filewriter initialise
+        // file-writer initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {
             if (targetFile.length() == 0) {
                 writeFdcHeader(fw, fromDate, toDate);
@@ -105,11 +106,8 @@ public class CSVFileService {
     }
 
     private void writeFdcHeader(FileWriter fw, LocalDate fromDate, LocalDate toDate) throws IOException {
-        String headerLine = FDC_TITLE + " REPORTING DATE FROM: " + fromDate
-                + " | REPORTING DATE TO: " + toDate
-                + " | REPORTING PRODUCED ON: " + LocalDate.now()
-                + System.lineSeparator();
-        headerLine += "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date" + System.lineSeparator();
+        String headerLine = String.format(TEMPLATE_TITLE, FDC_TITLE, fromDate, toDate, LocalDate.now());
+        headerLine += FDC_HEADER;
         fw.append(headerLine);
     }
 
@@ -146,7 +144,7 @@ public class CSVFileService {
     }
 
     private File createCsvFile(String fileName) throws IOException {
-        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString("rwx------"));
+        FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(FILE_PERMISSIONS));
         return Files.createTempFile(fileName, ".csv", attr).toFile();
     }
 
