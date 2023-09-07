@@ -172,19 +172,25 @@ jobs:
           <<: *snyk_options
 
   build_and_push_image:
-    executor: aws-ecr/default
+    docker:
+      - image: cimg/openjdk:17.0.4
+    working_directory: ~/laa-dces-report-service/dces-report-service
     steps:
-      - aws-ecr/build-and-push-image:
-          repo: laa-crime-apps-team/laa-dces-report-service-dev-ecr
+      - checkout:
+          path: ~/laa-dces-report-service
+      - attach_workspace:
+          at: .
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - aws-cli/setup:
+          role_arn: $ECR_ROLE_TO_ASSUME
+          region: $ECR_REGION
+      - run: aws ecr get-login-password --region $ECR_REGION | docker login --username AWS --password-stdin ${AWS_ECR_REGISTRY_ID}.dkr.ecr.${ECR_REGION}.amazonaws.com
+      - aws-ecr/build-image:
+          push-image: true
           tag: "${CIRCLE_SHA1}"
-          attach-workspace: true
-          workspace-root: dces-report-service
-          path: dces-report-service
-          extra-build-args: |
-            --build-arg COMMIT_ID=${CIRCLE_SHA1} \
-            --build-arg BUILD_TAG=${CIRCLE_SHA1} \
-            --build-arg APP_BRANCH=${CIRCLE_BRANCH} \
-            --build-arg BUILD_DATE=$(date +%Y-%m-%dT%H:%M:%S%z) \
+          region: $ECR_REGION
+          repo: $ECR_REPOSITORY
 
   deploy-dev:
     executor: cloud-platform-executor
