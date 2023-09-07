@@ -40,15 +40,16 @@ public class CSVFileService {
 
 
     protected File writeContributionToCsv(List<ContributionCSVDataLine> contributionData, LocalDate fromDate, LocalDate toDate, File targetFile) throws IOException {
-        // if file does not exist, we need to add the headers.
-        if (targetFile.length() == 0) {
-            contributionData.add(0, getContributionsHeader());
-        }
         // file-writer initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {
-            String title = String.format(TEMPLATE_TITLE, CONTRIBUTIONS_TITLE, fromDate, toDate, LocalDate.now());
-            fw.append(title);
+            // if file does not exist, we need to add the headers.
+            if (targetFile.length() == 0) {
+                String title = String.format(TEMPLATE_TITLE, CONTRIBUTIONS_TITLE, fromDate, toDate, LocalDate.now());
+                fw.append(title);
 
+                contributionData.add(0, getContributionsHeader());
+            }
+            
             for (ContributionCSVDataLine contributionCsvDataLine : contributionData) {
                 writeContributionLine(fw, contributionCsvDataLine);
             }
