@@ -12,6 +12,7 @@ import uk.gov.justice.laa.crime.dces.report.service.CSVFileService;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +30,12 @@ public class FdcFileMapper {
         return this;
     }
 
-    public File processRequest(String[] xmlData, String filename) throws JAXBException, IOException {
+    public File processRequest(String[] xmlData, String filename, LocalDate fromDate, LocalDate toDate) throws JAXBException, IOException {
         List<FdcFile> csvLineList = new ArrayList<>();
-        for (String xmlString: xmlData) {
+        for (String xmlString : xmlData) {
             csvLineList.add(mapFdcXmlStringToObject(xmlString));
         }
-        return csvFileService.writeFdcFileListToCsv(csvLineList, filename);
+        return csvFileService.writeFdcFileListToCsv(csvLineList, filename, fromDate, toDate);
     }
 
     public FdcFile mapFdcXmlStringToObject(String xmlString) throws JAXBException {

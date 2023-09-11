@@ -9,21 +9,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList.Fdc;
-import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
-
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.Objects;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.util.*;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
@@ -35,9 +31,9 @@ class CSVFileServiceTest {
     private SoftAssertions softly;
     @Autowired
     private CSVFileService CSVFileService;
-    private static final Long testMaatId=123456789L;
+    private static final Long testMaatId = 123456789L;
 
-    private List<ContributionCSVDataLine> buildTestContributionFile(){
+    private List<ContributionCSVDataLine> buildTestContributionFile() {
         var contribution = new ContributionCSVDataLine();
         contribution.setMaatId("123456789");
         ArrayList<ContributionCSVDataLine> contributionList = new ArrayList<>();
@@ -47,13 +43,14 @@ class CSVFileServiceTest {
 
 
     @Test
-    void testWriteContributionToCsv(){
+    void testWriteContributionToCsv() {
         File file = null;
         try {
-            file = File.createTempFile( "test", ".csv");
+            file = File.createTempFile("test", ".csv");
 
             List<ContributionCSVDataLine> contFile = buildTestContributionFile();
-            CSVFileService.writeContributionToCsv(contFile, file);
+            LocalDate date = LocalDate.now();
+            CSVFileService.writeContributionToCsv(contFile, date.minusDays(30), date, file);
             String output = FileUtils.readText(file);
             softly.assertThat(output).contains(contFile.get(0).getMaatId());
             softly.assertThat(output).contains("MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date");
@@ -61,17 +58,21 @@ class CSVFileServiceTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         } finally {
-            if (Objects.nonNull(file)) { file.delete();}
+            if (Objects.nonNull(file)) {
+                file.delete();
+            }
         }
     }
+
     @Test
-    void testWriteFdcToCsv(){
+    void testWriteFdcToCsv() {
         File file = null;
         try {
-            file = File.createTempFile( "test", ".csv");
+            file = File.createTempFile("test", ".csv");
 
             FdcFile fdcFile = buildTestFdcFile();
-            CSVFileService.writeFdcToCsv(fdcFile, file);
+            LocalDate date = LocalDate.now();
+            CSVFileService.writeFdcToCsv(fdcFile, file, date.minusDays(30), date);
             String output = FileUtils.readText(file);
             softly.assertThat(output).contains(String.valueOf(testMaatId));
             softly.assertThat(output).contains("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST");
@@ -80,14 +81,16 @@ class CSVFileServiceTest {
         } catch (IOException | DatatypeConfigurationException e) {
             throw new RuntimeException(e);
         } finally {
-            if(Objects.nonNull(file)){file.delete();}
+            if (Objects.nonNull(file)) {
+                file.delete();
+            }
         }
     }
 
     private FdcFile buildTestFdcFile() throws DatatypeConfigurationException {
         var fdc = new Fdc();
         fdc.setMaatId(testMaatId);
-        fdc.setCalculationDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar(2020, Calendar.JUNE,30,4,0,0)));
+        fdc.setCalculationDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar(2020, Calendar.JUNE, 30, 4, 0, 0)));
         var fdcList = new FdcList();
         fdcList.getFdc().add(fdc);
 
@@ -95,7 +98,7 @@ class CSVFileServiceTest {
         fdcFile.setFdcList(fdcList);
 
         FdcFile.Header header = new FdcFile.Header();
-        header.setDateGenerated(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar(2020, Calendar.JUNE,30,4,0,0)));
+        header.setDateGenerated(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar(2020, Calendar.JUNE, 30, 4, 0, 0)));
         fdcFile.setHeader(header);
         return fdcFile;
 
