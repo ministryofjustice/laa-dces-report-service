@@ -44,7 +44,7 @@ public class ContributionsFileMapper {
         for (String xmlString : xmlData) {
             processXMLFile(xmlString, startDate, endDate, csvLineList);
         }
-        return csvFileService.writeContributionToCsv(csvLineList, filename);
+        return csvFileService.writeContributionToCsv(csvLineList, startDate, endDate, filename);
     }
 
     private void processXMLFile(String xmlData, LocalDate startDate, LocalDate endDate, List<ContributionCSVDataLine> csvLineList) throws JAXBException {
@@ -61,7 +61,6 @@ public class ContributionsFileMapper {
         for (CONTRIBUTIONS contribution : contributionFile.getCONTRIBUTIONSLIST().getCONTRIBUTIONS()) {
             csvLineList.add(buildCSVDataLine(contribution, startDate, endDate, dateGenerated));
         }
-
     }
 
     public ContributionFile mapContributionsXMLFileToObject(File xmlFile) throws JAXBException {
@@ -112,7 +111,7 @@ public class ContributionsFileMapper {
     }
 
     private String getOutcomeDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
-        if(Objects.nonNull(contribution.getCcOutcomes())
+        if (Objects.nonNull(contribution.getCcOutcomes())
                 && Objects.nonNull(contribution.getCcOutcomes().getCcOutcome())) {
             List<CcOutcome> filteredList = contribution.getCcOutcomes().getCcOutcome()
                     .stream()

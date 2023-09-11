@@ -62,7 +62,7 @@ public class FdcFilesService implements DcesReportFileService {
             );
         }
 
-        File file = fdcFileMapper.processRequest(fdcFiles.toArray(new String[0]), getFileName(start, finish));
+        File file = fdcFileMapper.processRequest(fdcFiles.toArray(new String[0]), getFileName(start, finish), start, finish);
         log.info("CSV file generated for FDC Report between {} and {}",
                 start.format(DateUtils.dateFormatter), finish.format(DateUtils.dateFormatter));
         return file;
