@@ -29,7 +29,7 @@ env:
   - name: NOTIFY_RECIPIENT
     value: {{ .Values.emailClient.notify_recipient }}
   - name: DCES_CRON_ENABLED
-    value: {{ .Values.scheduling.dces_cron_enabed }}
+    value: {{ .Values.scheduling.dces_cron_enabled }}
   - name: DCES_CRON_CONTRIBUTIONS
     value: {{ .Values.scheduling.dces_cron_contributions }}
   - name: DCES_CRON_FDC
