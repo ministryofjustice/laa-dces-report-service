@@ -4,26 +4,22 @@ import io.micrometer.core.annotation.Timed;
 import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
 import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
 import uk.gov.service.notify.NotificationClientException;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Configuration
 @Slf4j
 @RequiredArgsConstructor
 @EnableScheduling
-@ConditionalOnProperty(name="spring.scheduling.enabled", matchIfMissing=true)
+@ConditionalOnProperty(name="spring.scheduling.enabled", havingValue = "true")
 public class DcesReportScheduler {
     private final DcesReportService reportService;
 
