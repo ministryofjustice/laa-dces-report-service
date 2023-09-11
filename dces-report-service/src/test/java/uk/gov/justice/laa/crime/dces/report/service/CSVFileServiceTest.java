@@ -29,6 +29,7 @@ import java.util.*;
 @ActiveProfiles("test")
 class CSVFileServiceTest {
     private static final String CONTRIBUTIONS_HEADER = "MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date";
+    private static final String FDC_HEADER = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date";
 
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -114,7 +115,7 @@ class CSVFileServiceTest {
             csvFileService.writeFdcToCsv(fdcFile, testFile, date.minusDays(30), date);
             String output = FileUtils.readText(testFile);
 
-            softly.assertThat(output).contains(CSVFileService.FDC_HEADER);
+            softly.assertThat(output).contains(FDC_HEADER);
             softly.assertThat(output).contains(String.valueOf(testMaatId));
             softly.assertThat(output).contains("30/06/2020");
         } catch (IOException | DatatypeConfigurationException e) {
@@ -141,7 +142,7 @@ class CSVFileServiceTest {
         String output = FileUtils.readText(testFile);
 
         softly.assertThat(output).startsWith("Mocked Title");
-        softly.assertThat(output).doesNotContain(CSVFileService.FDC_HEADER);
+        softly.assertThat(output).doesNotContain(FDC_HEADER);
         softly.assertThat(output).contains(String.valueOf(testMaatId));
         softly.assertThat(output).contains("30/06/2020");
     }
