@@ -50,6 +50,7 @@ commands:
           name: Authenticate with cluster
           command: |
             echo -n ${K8S_CLUSTER_CERT} | base64 -d > ./ca.crt
+            echo << parameters.environment >>
             kubectl config set-cluster ${K8S_CLUSTER_NAME} --certificate-authority=./ca.crt --server=https://${K8S_CLUSTER_NAME}
             kubectl config set-credentials circleci --token=<< parameters.token >>
             kubectl config set-context ${K8S_CLUSTER_NAME} --cluster=${K8S_CLUSTER_NAME} --user=circleci --namespace=laa-dces-report-service-<< parameters.environment >>
@@ -84,7 +85,7 @@ jobs:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - run:
           name: Install Dependencies and Build
-          command: ./gradlew clean build
+          command: ./gradlew clean build --debug
       - run:
           name: Run Sonar
           command: ./gradlew sonar
