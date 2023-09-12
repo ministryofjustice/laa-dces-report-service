@@ -11,7 +11,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
@@ -35,7 +34,6 @@ import static org.mockito.Mockito.times;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
-@ActiveProfiles("e2e")
 @ContextConfiguration(classes = DcesReportServiceApplication.class)
 final class DcesReportingServiceTest {
 
