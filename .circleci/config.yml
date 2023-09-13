@@ -50,7 +50,6 @@ commands:
           name: Authenticate with cluster
           command: |
             echo -n ${K8S_CLUSTER_CERT} | base64 -d > ./ca.crt
-            echo << parameters.environment >>
             kubectl config set-cluster ${K8S_CLUSTER_NAME} --certificate-authority=./ca.crt --server=https://${K8S_CLUSTER_NAME}
             kubectl config set-credentials circleci --token=<< parameters.token >>
             kubectl config set-context ${K8S_CLUSTER_NAME} --cluster=${K8S_CLUSTER_NAME} --user=circleci --namespace=laa-dces-report-service-<< parameters.environment >>
@@ -113,6 +112,16 @@ jobs:
           at: .
       - snyk/scan:
           <<: *snyk_options
+  vo_test:
+    docker:
+      - image: cimg/openjdk:17.0.4
+    working_directory: ~/laa-dces-report-service/dces-report-service
+    steps:
+      - checkout:
+          path: ~/laa-dces-report-service
+      - run:
+          name: confirm environment variables
+          command: echo << parameters.environment >> - is the set environment parameter
 
   test_and_assemble:
     environment:
@@ -287,12 +296,20 @@ workflows:
 
   build-deploy-branch:
     jobs:
+      - vo_test:
+          filters:
+            branches:
+              ignore:
+                - main
+
       - build:
           filters:
             branches:
               ignore:
                 - main
           context: SonarCloud
+          requires:
+            - vo_test
 
       - scan_app:
           requires:
