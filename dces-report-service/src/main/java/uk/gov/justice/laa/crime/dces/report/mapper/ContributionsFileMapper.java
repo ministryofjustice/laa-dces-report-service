@@ -112,7 +112,7 @@ public class ContributionsFileMapper {
 
     private String getOutcomeDate(CONTRIBUTIONS contribution, LocalDate startDate, LocalDate endDate) {
         if (Objects.nonNull(contribution.getCcOutcomes())
-                && Objects.nonNull(contribution.getCcOutcomes().getCcOutcome())) {
+                && !contribution.getCcOutcomes().getCcOutcome().isEmpty()) {
             List<CcOutcome> filteredList = contribution.getCcOutcomes().getCcOutcome()
                     .stream()
                     .filter(Objects::nonNull)
