@@ -200,8 +200,7 @@ jobs:
       - deploy-to:
           environment: dev
           token: ${CIRCLE_CI_TOKEN_DEV}
-      - run:
-          gradle test --tests uk.gov.justice.laa.crime.dces.e2e.DcesReportingServiceTest
+      - run: gradle test --tests uk.gov.justice.laa.crime.dces.e2e.DcesReportingServiceTest
 
   deploy-uat:
     executor: cloud-platform-executor
