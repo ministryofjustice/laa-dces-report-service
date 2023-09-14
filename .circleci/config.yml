@@ -112,16 +112,6 @@ jobs:
           at: .
       - snyk/scan:
           <<: *snyk_options
-  vo_test:
-    docker:
-      - image: cimg/openjdk:17.0.4
-    working_directory: ~/laa-dces-report-service/dces-report-service
-    steps:
-      - checkout:
-          path: ~/laa-dces-report-service
-      - run:
-          name: confirm environment variables
-          command: echo << parameters.environment >> - is the set environment parameter
 
   test_and_assemble:
     environment:
@@ -210,6 +200,8 @@ jobs:
       - deploy-to:
           environment: dev
           token: ${CIRCLE_CI_TOKEN_DEV}
+      - run:
+          gradle test --tests uk.gov.justice.laa.crime.dces.e2e.DcesReportingServiceTest
 
   deploy-uat:
     executor: cloud-platform-executor
@@ -296,20 +288,12 @@ workflows:
 
   build-deploy-branch:
     jobs:
-      - vo_test:
-          filters:
-            branches:
-              ignore:
-                - main
-
       - build:
           filters:
             branches:
               ignore:
                 - main
           context: SonarCloud
-          requires:
-            - vo_test
 
       - scan_app:
           requires:

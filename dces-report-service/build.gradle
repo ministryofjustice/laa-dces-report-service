@@ -164,6 +164,7 @@ pitest {
 
 test {
     exclude '**/**IntegrationTest.class'
+    exclude 'uk/gov/justice/laa/crime/dces/e2e/**'
 }
 
 sonar {
