@@ -193,6 +193,7 @@ jobs:
           tag: ${CIRCLE_SHA1}
           region: $ECR_REGION
           repo: $ECR_REPOSITORY
+      - run: ./gradlew test -PincludeE2E="true"
 
   deploy-dev:
     executor: cloud-platform-executor
@@ -200,8 +201,6 @@ jobs:
       - deploy-to:
           environment: dev
           token: ${CIRCLE_CI_TOKEN_DEV}
-      - working_directory: ~/laa-dces-report-service/dces-report-service
-      - run: ./gradlew test -PincludeE2E="true"
 
   deploy-uat:
     executor: cloud-platform-executor
