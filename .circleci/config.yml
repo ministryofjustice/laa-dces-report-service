@@ -65,6 +65,7 @@ commands:
 #      - run: cd ~/laa-dces-report-service/dces-report-service && ./gradlew test -PincludeE2E="true"
       - run: pwd
       - run: ls -ltr
+      - run: cd /dces-report-service && ./gradlew test -PincludeE2E="true"
 # ------------------
 # JOBS
 # ------------------
