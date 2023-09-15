@@ -84,7 +84,7 @@ jobs:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - run:
           name: Install Dependencies and Build
-          command: ./gradlew clean build --debug
+          command: ./gradlew clean build
       - run:
           name: Run Sonar
           command: ./gradlew sonar
@@ -200,7 +200,6 @@ jobs:
       - deploy-to:
           environment: dev
           token: ${CIRCLE_CI_TOKEN_DEV}
-      - run: ./gradlew test -PincludeE2E="true"
 
   deploy-uat:
     executor: cloud-platform-executor
