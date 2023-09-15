@@ -650,6 +650,94 @@ class ContributionsFileMapperTest {
         softly.assertThat(csvOutput).contains(expectedCsvLine);
     }
 
+    /**
+     * CC Outcome Dates Tests
+     **/
+
+    @Test
+    void givenCcOutcomesNull_whenCallingProcessRequest_ShouldReturnCsvLineWithGeneratedDateOnly()
+            throws JAXBException, IOException {
+        String sourceXmlData = getXmlDataCcOutcomeDate(true, true);
+
+        ContributionFile fileToTest = contributionsFileMapper.mapContributionsXmlStringToObject(
+                sourceXmlData
+        );
+
+        ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS contribution = fileToTest.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().get(0);
+        softly.assertThat(contribution.getCcOutcomes()).isNull();
+
+        LocalDate testDate = LocalDate.now();
+        csvFile = contributionsFileMapper.processRequest(
+                new String[]{ sourceXmlData },
+                testDate,
+                testDate,
+                filename
+        );
+
+        String expectedCsvLine = String.format("5635978,update,,,,,,,%s", testDate.format(dateFormatterCsv));
+
+        String csvOutput = FileUtils.readText(csvFile);
+        // verify file content
+        String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
+        softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
+        softly.assertThat(csvOutput).contains(expectedCsvLine);
+    }
+
+    @Test
+    void givenCcOutcomeDateNull_whenCallingProcessRequest_ShouldReturnCsvLineWithGeneratedDateOnly()
+            throws JAXBException, IOException {
+        String sourceXmlData = getXmlDataCcOutcomeDate(false, true);
+
+        ContributionFile fileToTest = contributionsFileMapper.mapContributionsXmlStringToObject(
+                sourceXmlData
+        );
+
+        ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS contribution = fileToTest.getCONTRIBUTIONSLIST().getCONTRIBUTIONS().get(0);
+
+        softly.assertThat(contribution.getCcOutcomes()).isNotNull();
+        softly.assertThat(contribution.getCcOutcomes().getCcOutcome()).isEmpty();
+
+        LocalDate testDate = LocalDate.now();
+        csvFile = contributionsFileMapper.processRequest(
+                new String[]{ sourceXmlData },
+                testDate,
+                testDate,
+                filename
+        );
+
+        String expectedCsvLine = String.format("5635978,update,,,,,,,%s", testDate.format(dateFormatterCsv));
+
+        String csvOutput = FileUtils.readText(csvFile);
+        // verify file content
+        String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
+        softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
+        softly.assertThat(csvOutput).contains(expectedCsvLine);
+    }
+
+    @Test
+    void givenCcOutcomeDate_whenCallingProcessRequest_ShouldReturnCsvLineWithCorrespondenceDate()
+            throws JAXBException, IOException {
+        String sourceXmlData = getXmlDataCcOutcomeDate(false, false);
+
+        LocalDate testDate = LocalDate.now();
+        csvFile = contributionsFileMapper.processRequest(
+                new String[]{ sourceXmlData },
+                testDate,
+                testDate,
+                filename
+        );
+
+        String expectedCsvLine = String.format("5635978,update,,%s,,,,,%s",
+                testDate.format(dateFormatterCsv),
+                testDate.format(dateFormatterCsv));
+
+        String csvOutput = FileUtils.readText(csvFile);
+        // verify file content
+        String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
+        softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
+        softly.assertThat(csvOutput).contains(expectedCsvLine);
+    }
+
 
     /**
      * Test data providers
@@ -724,7 +812,7 @@ class ContributionsFileMapperTest {
                                 <CONTRIBUTIONS id="222769650" flag="update">
                                     <maat_id>5635978</maat_id>
                                     <correspondence%s>
-                                        <letter%s>                   <created>%s</created>                </letter%s>
+                                        <letter%s> <created>%s</created> </letter%s>
                                     </correspondence%s>
                                 </CONTRIBUTIONS>
                             </CONTRIBUTIONS_LIST>
@@ -799,6 +887,37 @@ class ContributionsFileMapperTest {
                 LocalDate.now().format(dateFormatterXml),
                 dateTagSuffix,
                 innerTagSuffix);
+    }
+
+    private String getXmlDataCcOutcomeDate(boolean isNullTag, boolean isNullDate) {
+        String tagSuffix = (isNullTag) ? "Null" : "";
+        String dateTagSuffix = (isNullDate) ? "Null" : "";
+
+        return String.format("""
+                        <?xml version="1.0"?>
+                        <contribution_file>
+                            <header id="222772044">
+                                <filename>CONTRIBUTIONS_202102122031.xml</filename>
+                                <dateGenerated>%s</dateGenerated>
+                                <recordCount>1</recordCount>
+                                <formatVersion>format version 1.7 - xsd=contribution_file.xsd version 1.16</formatVersion>
+                            </header>
+                            <CONTRIBUTIONS_LIST>
+                                <CONTRIBUTIONS id="222769650" flag="update">
+                                    <maat_id>5635978</maat_id>
+                                    <ccOutcomes%s>
+                                        <ccOutcome%s> <date>%s</date> </ccOutcome%s>
+                                    </ccOutcomes%s>
+                                </CONTRIBUTIONS>
+                            </CONTRIBUTIONS_LIST>
+                        </contribution_file>
+                        """,
+                LocalDate.now().format(dateFormatterXml),
+                tagSuffix,
+                dateTagSuffix,
+                LocalDate.now().format(dateFormatterXml),
+                dateTagSuffix,
+                tagSuffix);
     }
 
     private String getXmlDataValidNull() {
