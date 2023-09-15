@@ -62,7 +62,9 @@ commands:
           release-name: laa-dces-report-service
           values: ./helm_deploy/laa-dces-report-service/values-<< parameters.environment >>.yaml
           values-to-override: image.tag=${CIRCLE_SHA1}
-
+#      - run: cd ~/laa-dces-report-service/dces-report-service && ./gradlew test -PincludeE2E="true"
+      - run: pwd
+      - run: ls -ltr
 # ------------------
 # JOBS
 # ------------------
@@ -200,7 +202,6 @@ jobs:
       - deploy-to:
           environment: dev
           token: ${CIRCLE_CI_TOKEN_DEV}
-      - run: cd ~/laa-dces-report-service/dces-report-service && ./gradlew test -PincludeE2E="true"
 
   deploy-uat:
     executor: cloud-platform-executor
