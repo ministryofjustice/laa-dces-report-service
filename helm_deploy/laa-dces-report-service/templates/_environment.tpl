@@ -17,9 +17,15 @@ env:
   - name: MAAT_API_OAUTH_URL
     value: {{ .Values.maatApi.oauthUrl }}
   - name: MAAT_API_OAUTH_CLIENT_ID
-    value: {{ .Values.maatApi.clientId }}
+    valueFrom:
+        secretKeyRef:
+            name: maat-api-oauth-client-id
+            key: MAAT_API_OAUTH_CLIENT_ID
   - name: MAAT_API_OAUTH_CLIENT_SECRET
-    value: {{ .Values.maatApi.clientSecret }}
+    valueFrom:
+        secretKeyRef:
+            name: maat-api-oauth-client-secret
+            key: MAAT_API_OAUTH_CLIENT_SECRET
   - name: MAAT_API_OAUTH_SCOPE
     value: {{ .Values.maatApi.oauthScope }}
   - name: NOTIFY_KEY
