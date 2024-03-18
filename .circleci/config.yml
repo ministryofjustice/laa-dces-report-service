@@ -169,7 +169,7 @@ jobs:
           region: $ECR_REGION
           repo: $ECR_REPOSITORY
       - snyk/scan:
-          docker-image-name: "$AWS_ECR_ACCOUNT_URL/laa-crime-apps-team/laa-dces-report-service-dev-ecr:${CIRCLE_SHA1}"
+          docker-image-name: "$AWS_ECR_ACCOUNT_URL/laa-dces-team/laa-dces-report-service-dev-ecr:${CIRCLE_SHA1}"
           <<: *snyk_options
 
   build_and_push_image:
