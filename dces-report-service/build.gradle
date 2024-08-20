@@ -9,7 +9,7 @@ plugins {
 
 def versions = [
         pitestVersion          : '1.4.10',
-        sentryVersion          : '6.15.0',
+        sentryVersion          : '6.27.0',
         springdocVersion       : '1.6.15',
         okhttpVersion          : '4.9.3',
         mockwebserverVersion   : '4.9.3',
@@ -35,16 +35,6 @@ def versions = [
 ]
 group = 'uk.gov.justice.laa.crime'
 
-
-dependencyManagement {
-    dependencies {
-        dependencySet(group: 'io.sentry', version: versions.sentryVersion) {
-            entry 'sentry-spring-boot-starter'
-            entry 'sentry-logback'
-        }
-    }
-}
-
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -66,9 +56,8 @@ repositories {
 }
 
 dependencies {
-    implementation platform('io.sentry:sentry-bom:6.17.0')
-    implementation('io.sentry:sentry-spring-boot-starter')
-    implementation('io.sentry:sentry-logback')
+    // Import Maven bills-of-materials (BOM) files as Gradle platforms:
+    implementation platform("io.sentry:sentry-bom:$versions.sentryVersion")
 
     // Spring
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -84,6 +73,9 @@ dependencies {
     implementation "org.springframework.boot:spring-boot-starter-oauth2-client:$versions.springOAuthClient"
     implementation "org.springframework.security:spring-security-oauth2-jose:$versions.springOAuthJose"
 
+    implementation('io.sentry:sentry-spring-boot-starter-jakarta')
+    implementation('io.sentry:sentry-logback')
+
     implementation "org.glassfish.jaxb:jaxb-runtime:$versions.glassfishJaxb"
     implementation "com.sun.xml.bind:jaxb-core:$versions.jaxbCore"
 
@@ -95,8 +87,6 @@ dependencies {
     implementation "io.micrometer:micrometer-tracing-bom:$versions.micrometerio"
     implementation "io.micrometer:micrometer-tracing-bridge-brave:$versions.micrometerio"
     implementation "io.micrometer:micrometer-registry-prometheus:$versions.prometheus"
-
-    implementation 'io.sentry:sentry-spring-boot-starter-jakarta:6.27.0'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
