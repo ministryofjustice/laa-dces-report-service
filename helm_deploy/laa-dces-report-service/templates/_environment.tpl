@@ -36,8 +36,12 @@ env:
     value: {{ .Values.emailClient.notify_recipient }}
   - name: DCES_CRON_ENABLED
     value: {{ .Values.scheduling.dces_cron_enabled | quote}}
-  - name: DCES_CRON_CONTRIBUTIONS
-    value: {{ .Values.scheduling.dces_cron_contributions }}
-  - name: DCES_CRON_FDC
-    value: {{ .Values.scheduling.dces_cron_fdc }}
+  - name: DCES_CRON_CONTRIBUTIONS_MONTHLY
+    value: {{ .Values.scheduling.dces_cron_contributions_monthly }}
+  - name: DCES_CRON_CONTRIBUTIONS_DAILY
+    value: {{ .Values.scheduling.dces_cron_contributions_daily }}
+  - name: DCES_CRON_FDC_MONTHLY
+    value: {{ .Values.scheduling.dces_cron_fdc_monthly }}
+  - name: DCES_CRON_FDC_DAILY
+    value: {{ .Values.scheduling.dces_cron_fdc_daily }}
 {{- end -}}

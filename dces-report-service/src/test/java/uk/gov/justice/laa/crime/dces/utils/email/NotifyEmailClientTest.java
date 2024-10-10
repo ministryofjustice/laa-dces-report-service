@@ -31,6 +31,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
+import static uk.gov.justice.laa.crime.dces.report.scheduler.DcesReportScheduler.ReportPeriod.Monthly;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
@@ -133,7 +134,7 @@ class NotifyEmailClientTest {
     void givenEnvironmentIsNotProductionNoEnvPersonalisationShouldBeSet() throws NotificationClientException, IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("testContributionReport.csv").getFile());
-        NotifyEmailObject emailObject = notifyConfiguration.createEmail(file, "Contribution", LocalDate.of(2023, 8, 10), LocalDate.now(), "templateId", List.of("email@address.com"));
+        NotifyEmailObject emailObject = notifyConfiguration.createEmail(file, "Contribution", Monthly.getDescription(), LocalDate.of(2023, 8, 10), LocalDate.now(), "templateId", List.of("email@address.com"));
 
         softly.assertThat(emailObject.getPersonalisation().get("env")).isEqualTo(environment);
     }

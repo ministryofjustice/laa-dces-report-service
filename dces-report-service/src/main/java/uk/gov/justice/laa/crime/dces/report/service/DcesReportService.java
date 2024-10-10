@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
+import uk.gov.justice.laa.crime.dces.report.scheduler.DcesReportScheduler.ReportPeriod;
 import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
@@ -48,34 +49,37 @@ public class DcesReportService {
     private NotifyConfiguration notifyConfiguration;
 
 
-    public void sendContributionsReport(LocalDate start, LocalDate end)
+    public void sendContributionsReport(ReportPeriod reportPeriod)
             throws JAXBException, IOException,
             DcesReportSourceFilesDataNotFound, NotificationClientException {
-        processReportRequest(contributionFilesService, start, end);
+        processReportRequest(contributionFilesService, reportPeriod);
     }
 
-    public void sendFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
-        processReportRequest(fdcFilesService, start, end);
+    public void sendFdcReport(ReportPeriod reportPeriod) throws JAXBException, IOException, NotificationClientException {
+        processReportRequest(fdcFilesService, reportPeriod);
     }
 
-    private void processReportRequest(DcesReportFileService fileService, LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
-        log.info("{} Report between {} and {}, generation requested",
-                fileService.getType(), start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+    private void processReportRequest(DcesReportFileService fileService, ReportPeriod reportPeriod) throws JAXBException, IOException, NotificationClientException {
+        LocalDate start = DateUtils.getDefaultStartDateForReport(reportPeriod);
+        LocalDate end = DateUtils.getDefaultEndDateForReport(reportPeriod);
+
+        log.info("{} {} Report between {} and {}, generation requested",
+                fileService.getType(), reportPeriod.getDescription(), start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
         List<String> files = fileService.getFiles(start, end);
         File reportFile = fileService.processFiles(files, start, end);
-        sendEmailReport(reportFile, fileService.getType(), start, end);
+        sendEmailReport(reportFile, fileService.getType(), reportPeriod, start, end);
 
-        log.info("{} Report between {} and {} generated successfully",
-                fileService.getType(), start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+        log.info("{} {} Report between {} and {} generated successfully",
+                fileService.getType(), reportPeriod.getDescription(), start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
     }
 
     @Timed("sendEmail")
-    private void sendEmailReport(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
+    public void sendEmailReport(File attachment, String reportType, ReportPeriod reportPeriod, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
         log.info("[{} report] :: Creating email object for time period {} - {} ",
                 reportType, start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
-        EmailObject emailObject = notifyConfiguration.createEmail(attachment, reportType, start, end, templateId, recipients);
+        EmailObject emailObject = notifyConfiguration.createEmail(attachment, reportType, reportPeriod.getDescription(), start, end, templateId, recipients);
 
         Timer timer = Metrics.globalRegistry.timer("laa_dces_report_service_send_email");
         timer.record(() -> sendEmail(emailObject, emailClient));

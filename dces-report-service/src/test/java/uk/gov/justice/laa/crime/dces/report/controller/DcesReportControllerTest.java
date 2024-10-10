@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 import uk.gov.justice.laa.crime.dces.report.service.FdcFilesService;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
@@ -32,6 +30,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static uk.gov.justice.laa.crime.dces.report.scheduler.DcesReportScheduler.ReportPeriod.Monthly;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
@@ -41,10 +40,6 @@ import static org.mockito.Mockito.doThrow;
 class DcesReportControllerTest {
     @InjectSoftAssertions
     private SoftAssertions softly;
-    private static final LocalDate startPeriod = LocalDate.of(2021, 1, 1);
-    private static final LocalDate finishPeriod = LocalDate.of(2021, 1, 31);
-    private static final LocalDate fdcReportDate = LocalDate.of(2023, 6, 10);
-    private static final String MAAT_ID_EXPECTED = "5635978";
 
     @Autowired
     ContributionFilesService contributionsFileService;
@@ -68,65 +63,17 @@ class DcesReportControllerTest {
     }
 
     @Test
-    void givenValidPeriod_whenGetContributionsReportIsInvoked() {
-        assertDoesNotThrow(() -> controller.getContributionsReport(startPeriod, finishPeriod));
+    void givenValidPeriod_whenGetContributionsReportIsInvoked_thenNoExceptionIsThrown() {
+        assertDoesNotThrow(() -> controller.getContributionsReport(Monthly.getDescription()));
     }
 
     @Test
-    void givenValidPeriod_whenGetFdcReportIsInvoked_thenFileWithExpectedContentIsReturned() {
-        assertDoesNotThrow(() -> controller.getFdcReport(fdcReportDate, fdcReportDate));
+    void givenValidPeriod_whenGetFdcReportIsInvoked_thenNoExceptionIsThrown() {
+        assertDoesNotThrow(() -> controller.getFdcReport(Monthly.getDescription()));
     }
 
     @Test
-    void givenDateWithNoData_whenGetContributionsReportIsInvoked_thenDcesReportSourceFilesDataNotFoundIsThrown() {
-        // setup
-        LocalDate testDate = LocalDate.of(2474, 10, 3);
-        String expectedMessage = "NOT FOUND";
-
-        // execute
-        softly.assertThatThrownBy(() -> controller.getContributionsReport(testDate, testDate))
-                .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
-                .hasMessageContaining(expectedMessage);
-    }
-
-    @Test
-    void givenDateNotMappedOnStub_whenGetContributionsReportIsInvoked_then404WebClientResponseExceptionIsThrownAfter2Retries() {
-        // setup
-        LocalDate testDate = LocalDate.of(2474, 10, 30);
-        String expectedMessage = "404 Not Found";
-
-        // execute
-        softly.assertThatThrownBy(() -> controller.getContributionsReport(testDate, testDate))
-                .isInstanceOf(WebClientResponseException.class)
-                .hasMessageContaining(expectedMessage);
-    }
-
-    @Test
-    void givenDateWithNoData_whenGetFdcReportIsInvoked_thenDcesReportSourceFilesDataNotFoundIsThrown() {
-        // setup
-        LocalDate testDate = LocalDate.of(2474, 10, 3);
-        String expectedMessage = "NOT FOUND";
-
-        // execute
-        softly.assertThatThrownBy(() -> controller.getFdcReport(testDate, testDate))
-                .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
-                .hasMessageContaining(expectedMessage);
-    }
-
-    @Test
-    void givenDateNotMappedOnStub_whenGetFdcReportIsInvoked_then404WebClientResponseExceptionIsThrownAfter2Retries() {
-        // setup
-        LocalDate testDate = LocalDate.of(2474, 10, 30);
-        String expectedMessage = "404 Not Found";
-
-        // execute
-        softly.assertThatThrownBy(() -> controller.getFdcReport(testDate, testDate))
-                .isInstanceOf(WebClientResponseException.class)
-                .hasMessageContaining(expectedMessage);
-    }
-
-    @Test
-    void givenInvalidEmailMock_whenGetContributionsReportIsInvoked_thenEmailClientExceptionIsThrown() throws NotificationClientException {
+    void givenInvalidEmailMock_whenGetContributionsReportIsInvoked_thenEmailClientExceptionIsThrown() {
         // setup
         String expectedMessage = "400 BAD REQUEST";
         doThrow(new EmailClientException(expectedMessage))
@@ -136,7 +83,7 @@ class DcesReportControllerTest {
 
         // execute
         softly.assertThatThrownBy(() ->
-                        controller.getContributionsReport(startPeriod, finishPeriod))
+                        controller.getContributionsReport(Monthly.getDescription()))
                 .isInstanceOf(EmailClientException.class)
                 .hasMessageContaining(expectedMessage);
     }

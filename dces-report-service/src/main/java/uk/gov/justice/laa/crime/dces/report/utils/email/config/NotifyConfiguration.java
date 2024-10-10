@@ -33,11 +33,13 @@ public class NotifyConfiguration {
     public NotifyEmailObject createEmail(
             File file,
             String reportType,
+            String reportPeriod,
             LocalDate fromDate,
             LocalDate toDate,
             String templateId,
             List<String> recipients) throws NotificationClientException, IOException {
         HashMap<String, Object> personalisation = new HashMap<>();
+        personalisation.put("report_period", reportPeriod);
         personalisation.put("report_type", reportType);
         personalisation.put("from_date", fromDate.toString());
         personalisation.put("to_date", toDate.toString());

@@ -16,11 +16,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import uk.gov.justice.laa.crime.dces.report.scheduler.DcesReportScheduler.ReportPeriod;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
 import uk.gov.service.notify.NotificationClientException;
-
 import java.io.IOException;
-import java.time.LocalDate;
 
 @Slf4j
 @RestController
@@ -31,7 +30,7 @@ public class DcesReportController {
 
     private final DcesReportService reportService;
 
-    @GetMapping(value = "/contributions/{start}/{finish}")
+    @GetMapping(value = "/contributions/{period}")
     @Operation(description = "Generate Contributions report for the given period and send it by email")
     @ApiResponse(responseCode = "200")
     @ApiResponse(responseCode = "400",
@@ -46,13 +45,13 @@ public class DcesReportController {
                     schema = @Schema(implementation = ProblemDetail.class)
             )
     )
-    public void getContributionsReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException, NotificationClientException {
-        log.info("Contributions Report entry point");
+    public void getContributionsReport(@PathVariable("period") String reportPeriod) throws JAXBException, IOException, NotificationClientException {
+        log.info("Contributions Report entry point called with period {}", reportPeriod);
         Sentry.captureMessage("Processing contri", SentryLevel.INFO);
-        reportService.sendContributionsReport(start, finish);
+        reportService.sendContributionsReport(ReportPeriod.valueOf(reportPeriod));
     }
 
-    @GetMapping(value = "/fdc/{start}/{finish}")
+    @GetMapping(value = "/fdc/{period}")
     @Operation(description = "Generate FDC report for the given period and send it by email")
     @ApiResponse(responseCode = "200")
     @ApiResponse(responseCode = "400",
@@ -67,8 +66,8 @@ public class DcesReportController {
                     schema = @Schema(implementation = ProblemDetail.class)
             )
     )
-    public void getFdcReport(@PathVariable("start") LocalDate start, @PathVariable("finish") LocalDate finish) throws JAXBException, IOException, NotificationClientException {
-        log.info("FDC Report entry point");
-        reportService.sendFdcReport(start, finish);
+    public void getFdcReport(@PathVariable("period") String reportPeriod) throws JAXBException, IOException, NotificationClientException {
+        log.info("FDC Report entry point called with period {}", reportPeriod);
+        reportService.sendFdcReport(ReportPeriod.valueOf(reportPeriod));
     }
 }

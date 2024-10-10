@@ -30,7 +30,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
-
+import static uk.gov.justice.laa.crime.dces.report.scheduler.DcesReportScheduler.ReportPeriod.Daily;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
@@ -110,11 +110,11 @@ final class DcesReportingServiceTest {
         }
 
         // execute
-        softly.assertThatThrownBy(() -> controller.getContributionsReport(start.minusDays(2), start.minusDays(2)))
+        softly.assertThatThrownBy(() -> controller.getContributionsReport(Daily.getDescription()))
                 .isInstanceOf(DcesReportSourceFilesDataNotFound.class);
 
         // assert
-        Mockito.verify(spyReporting, times(1)).sendContributionsReport(start.minusDays(2), start.minusDays(2));
+        Mockito.verify(spyReporting, times(1)).sendContributionsReport(Daily);
         Mockito.verify(spyContributionsClient, times(1)).getContributions(any(), any());
         Mockito.verify(spyEmailClient, times(0)).send(any());
     }
@@ -127,10 +127,10 @@ final class DcesReportingServiceTest {
         }
 
         // execute
-        controller.getContributionsReport(start, end);
+        controller.getContributionsReport(Daily.getDescription());
 
         // assert
-        Mockito.verify(spyReporting, times(1)).sendContributionsReport(start, end);
+        Mockito.verify(spyReporting, times(1)).sendContributionsReport(Daily);
         Mockito.verify(spyContributionsClient, times(30)).getContributions(any(), any());
         Mockito.verify(spyEmailClient, times(1)).send(any());
     }
@@ -143,11 +143,11 @@ final class DcesReportingServiceTest {
         }
 
         // execute
-        softly.assertThatThrownBy(() -> controller.getFdcReport(start, end))
+        softly.assertThatThrownBy(() -> controller.getFdcReport(Daily.getDescription()))
                 .isInstanceOf(DcesReportSourceFilesDataNotFound.class);
 
         // assert
-        Mockito.verify(spyReporting, times(1)).sendFdcReport(start, end);
+        Mockito.verify(spyReporting, times(1)).sendFdcReport(Daily);
         Mockito.verify(spyFdcFilesClient, times(1)).getContributions(any(), any());
         Mockito.verify(spyEmailClient, times(0)).send(any());
     }
@@ -160,12 +160,11 @@ final class DcesReportingServiceTest {
         }
 
         // execute
-        LocalDate date = LocalDate.of(2023, 7, 3);
-        controller.getFdcReport(date, date);
+        controller.getFdcReport(Daily.getDescription());
 
 
         // assert
-        Mockito.verify(spyReporting, times(1)).sendFdcReport(date, date);
+        Mockito.verify(spyReporting, times(1)).sendFdcReport(Daily);
         Mockito.verify(spyFdcFilesClient, times(1)).getContributions(any(), any());
         Mockito.verify(spyEmailClient, times(1)).send(any());
     }
