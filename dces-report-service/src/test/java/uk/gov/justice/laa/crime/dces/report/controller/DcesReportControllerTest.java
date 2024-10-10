@@ -28,6 +28,7 @@ import java.util.Locale;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static uk.gov.justice.laa.crime.dces.report.scheduler.DcesReportScheduler.ReportPeriod.Monthly;
@@ -70,6 +71,11 @@ class DcesReportControllerTest {
     @Test
     void givenValidPeriod_whenGetFdcReportIsInvoked_thenNoExceptionIsThrown() {
         assertDoesNotThrow(() -> controller.getFdcReport(Monthly.getDescription()));
+    }
+
+    @Test
+    void givenInvalidPeriod_whenGetFdcReportIsInvoked_thenExceptionIsThrown() {
+        assertThrows(IllegalArgumentException.class, () -> controller.getFdcReport("Yearly"));
     }
 
     @Test
