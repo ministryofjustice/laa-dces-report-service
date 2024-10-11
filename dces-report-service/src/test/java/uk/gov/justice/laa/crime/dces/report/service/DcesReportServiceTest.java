@@ -61,13 +61,14 @@ class DcesReportServiceTest {
     void getFdcCollection() throws JAXBException, IOException, NotificationClientException {
         // setup
         setupMockitoForTest();
-        LocalDate dateParam = LocalDate.of(2023, 7, 10);
+        LocalDate startDate = LocalDate.now().minusMonths(1).withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now().withDayOfMonth(1).minusDays(1);
 
         // execute
         dcesReportService.sendFdcReport(Monthly);
 
         // assert
-        Mockito.verify(fdcFilesClient, times(1)).getContributions(dateParam, dateParam);
+        Mockito.verify(fdcFilesClient, times(1)).getContributions(startDate, endDate);
         Mockito.verify(contributionFilesClient, times(0)).getContributions(any(), any());
     }
 
@@ -75,13 +76,15 @@ class DcesReportServiceTest {
     void getInitialContributionsCollection() throws JAXBException, IOException, NotificationClientException {
         // setup
         setupMockitoForTest();
-        LocalDate dateParam = LocalDate.of(2023, 7, 10);
+
+        LocalDate startDate = LocalDate.now().minusMonths(1).withDayOfMonth(1);
+        LocalDate endDate = LocalDate.now().withDayOfMonth(1).minusDays(1);
 
         // execute
         dcesReportService.sendContributionsReport(Monthly);
 
         // assert
-        Mockito.verify(contributionFilesClient, times(1)).getContributions(dateParam, dateParam);
+        Mockito.verify(contributionFilesClient, times(1)).getContributions(startDate, endDate);
         Mockito.verify(fdcFilesClient, times(0)).getContributions(any(), any());
     }
 

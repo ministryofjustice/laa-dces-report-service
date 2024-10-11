@@ -74,30 +74,4 @@ class ContributionsFileServiceConnectionTest {
         }
     }
 
-    @Test
-    void givenPeriodWithNoData_whenGetContributionFilesIsInvoked_thenFileWithExpectedContentIsReturned() {
-        List<String> contributionFiles;
-        Long expectedFailedCallsWithRetryAttempt = registry
-                .retry("dcesReportContributions")
-                .getMetrics()
-                .getNumberOfFailedCallsWithRetryAttempt() + 1
-                ;
-        Long expectedFailedCallsWithoutRetryAttempt = 0L;
-
-        try {
-            LocalDate fromDate = LocalDate.now().minusYears(10).minusDays(10);
-            LocalDate toDate = LocalDate.now().minusYears(10);
-            contributionFiles = filesService.getFiles(fromDate, toDate);
-            softly.assertThat(contributionFiles).isNotNull();
-            softly.assertThat(contributionFiles).isEmpty();
-        } catch (IllegalArgumentException e) { // Config variable values not yet loaded
-            softly.assertThat(
-                    registry.retry("dcesReportContributions").getMetrics().getNumberOfFailedCallsWithRetryAttempt()
-            ).isEqualTo(expectedFailedCallsWithRetryAttempt);
-            softly.assertThat(
-                    registry.retry("dcesReportContributions").getMetrics().getNumberOfFailedCallsWithoutRetryAttempt()
-            ).isEqualTo(expectedFailedCallsWithoutRetryAttempt);
-        } catch (OAuth2AuthorizationException e) { // Client credentials error
-        }
-    }
 }

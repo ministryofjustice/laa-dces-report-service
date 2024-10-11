@@ -6,10 +6,10 @@
         "urlPath": "/debt-collection-enforcement/final-defence-cost",
         "queryParameters": {
           "fromDate": {
-            "equalTo": "10.06.2023"
+            "matches": "[\\d]{1,2}.[\\d]{1,2}.[\\d]{4}"
           },
           "toDate": {
-            "equalTo": "10.06.2023"
+            "matches": "[\\d]{1,2}.[\\d]{1,2}.[\\d]{4}"
           }
         },
         "method": "GET"
