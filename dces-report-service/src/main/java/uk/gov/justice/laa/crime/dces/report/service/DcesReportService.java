@@ -64,7 +64,7 @@ public class DcesReportService {
                 fileService.getType(), reportTitle, start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
         List<String> files = fileService.getFiles(start, end);
-        File reportFile = fileService.processFiles(files, start, end);
+        File reportFile = fileService.processFiles(files, reportTitle, start, end);
         sendEmailReport(reportFile, fileService.getType(), reportTitle, start, end);
 
         log.info("{} {} Report between {} and {} generated successfully",

@@ -134,7 +134,7 @@ class ContributionFilesServiceTest {
         List<String> testFiles = new ArrayList<>();
         String expectedMessage = "NOT FOUND";
 
-        softly.assertThatThrownBy(() -> contributionFilesReportService.processFiles(testFiles, testDate, testDate))
+        softly.assertThatThrownBy(() -> contributionFilesReportService.processFiles(testFiles, "Test", testDate, testDate))
             .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
             .hasMessageContaining(expectedMessage);
     }

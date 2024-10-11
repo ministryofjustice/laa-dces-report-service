@@ -59,7 +59,7 @@ class CSVFileServiceTest {
 
             List<ContributionCSVDataLine> contFile = buildTestContributionFile();
             LocalDate date = LocalDate.now();
-            csvFileService.writeContributionToCsv(contFile, date.minusDays(30), date, testFile);
+            csvFileService.writeContributionToCsv(contFile, "Test", date.minusDays(30), date, testFile);
             String output = FileUtils.readText(testFile);
 
             softly.assertThat(output).contains(CONTRIBUTIONS_HEADER);
@@ -84,7 +84,7 @@ class CSVFileServiceTest {
 
         List<ContributionCSVDataLine> contFile = buildTestContributionFile();
         LocalDate date = LocalDate.now();
-        csvFileService.writeContributionToCsv(contFile, date.minusDays(30), date, testFile);
+        csvFileService.writeContributionToCsv(contFile, "Test", date.minusDays(30), date, testFile);
         String output = FileUtils.readText(testFile);
 
         softly.assertThat(output).startsWith("Mocked Title");
@@ -99,7 +99,7 @@ class CSVFileServiceTest {
         testFile = File.createTempFile("test", ".csv");
 
         if (testFile.setWritable(false)) { // This will force IO Exception
-            softly.assertThatThrownBy(() -> csvFileService.writeContributionToCsv(contFile, date, date, testFile))
+            softly.assertThatThrownBy(() -> csvFileService.writeContributionToCsv(contFile, "Test", date, date, testFile))
                     .isInstanceOf(IOException.class);
         };
     }
@@ -112,7 +112,7 @@ class CSVFileServiceTest {
 
             FdcFile fdcFile = buildTestFdcFile();
             LocalDate date = LocalDate.now();
-            csvFileService.writeFdcToCsv(fdcFile, testFile, date.minusDays(30), date);
+            csvFileService.writeFdcToCsv(fdcFile, testFile, "Test", date.minusDays(30), date);
             String output = FileUtils.readText(testFile);
 
             softly.assertThat(output).contains(FDC_HEADER);
@@ -138,7 +138,7 @@ class CSVFileServiceTest {
 
         FdcFile fdcFile = buildTestFdcFile();
         LocalDate date = LocalDate.now();
-        csvFileService.writeFdcToCsv(fdcFile, testFile, date.minusDays(30), date);
+        csvFileService.writeFdcToCsv(fdcFile, testFile, "Test", date.minusDays(30), date);
         String output = FileUtils.readText(testFile);
 
         softly.assertThat(output).startsWith("Mocked Title");
@@ -154,7 +154,7 @@ class CSVFileServiceTest {
         testFile = File.createTempFile("test", ".csv");
 
         if (testFile.setWritable(false)) { // This will force IO Exception
-            softly.assertThatThrownBy(() -> csvFileService.writeFdcToCsv(fdcFile, testFile, date, date))
+            softly.assertThatThrownBy(() -> csvFileService.writeFdcToCsv(fdcFile, testFile, "Test", date, date))
                     .isInstanceOf(IOException.class);
         };
     }

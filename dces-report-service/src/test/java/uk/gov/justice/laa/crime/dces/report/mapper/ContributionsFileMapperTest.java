@@ -37,7 +37,7 @@ class ContributionsFileMapperTest {
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final String filename = "this_is_a_test.xml";
     private static final String EXPECTED_HEADER = "MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date";
-    private static final String EXPECTED_TITLE = "Monthly Contributions Report REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s\n";
+    private static final String EXPECTED_TITLE = "Test Contributions Report REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s\n";
 
 
     @InjectSoftAssertions
@@ -142,9 +142,9 @@ class ContributionsFileMapperTest {
             LocalDate startDate = getDate("01-01-2020");
             LocalDate endDate = getDate("01-01-2023");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
-            when(csvServiceMock.writeContributionToCsv(any(), any(), any(), anyString())).thenReturn(new File(filename));
+            when(csvServiceMock.writeContributionToCsv(any(), anyString(), any(), any(), anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
-            csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, startDate, endDate, filename);
+            csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, "Test", startDate, endDate, filename);
             softly.assertThat(csvFile).isNotNull();
             softly.assertThat(csvFile.getName()).isEqualTo(filename);
         } catch (JAXBException | IOException e) {
@@ -158,9 +158,9 @@ class ContributionsFileMapperTest {
             LocalDate startDate = getDate("01-01-2010");
             LocalDate endDate = getDate("01-01-2011");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
-            when(csvServiceMock.writeContributionToCsv(any(), any(), any(), anyString())).thenReturn(new File(filename));
+            when(csvServiceMock.writeContributionToCsv(any(), anyString(), any(), any(), anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
-            csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, startDate, endDate, filename);
+            csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, "Test", startDate, endDate, filename);
             softly.assertThat(csvFile).isNotNull();
             softly.assertThat(csvFile.getName()).isEqualTo(filename);
         } catch (JAXBException | IOException e) {
@@ -178,9 +178,9 @@ class ContributionsFileMapperTest {
             LocalDate startDate = getDate("01-01-2025");
             LocalDate endDate = getDate("01-01-2025");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
-            when(csvServiceMock.writeContributionToCsv(any(), any(), any(), anyString())).thenReturn(new File(filename));
+            when(csvServiceMock.writeContributionToCsv(any(), anyString(), any(), any(), anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
-            csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, startDate, endDate, filename);
+            csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, "Test", startDate, endDate, filename);
             softly.assertThat(csvFile).isNotNull();
             softly.assertThat(csvFile.getName()).isEqualTo(filename);
         } catch (JAXBException | IOException e) {
@@ -193,7 +193,7 @@ class ContributionsFileMapperTest {
         try {
             LocalDate startDate = getDate("01-01-2021");
             LocalDate endDate = getDate("02-02-2021");
-            csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, startDate, endDate, filename);
+            csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, "Test", startDate, endDate, filename);
 
             softly.assertThat(csvFile).isNotNull();
             String csvOutput = FileUtils.readText(csvFile);
@@ -211,7 +211,7 @@ class ContributionsFileMapperTest {
         try {
             LocalDate startDate = getDate("01-01-2022");
             LocalDate endDate = getDate("02-02-2022");
-            csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, startDate, endDate, filename);
+            csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()},"Test", startDate, endDate, filename);
 
             softly.assertThat(csvFile).isNotNull();
             String csvOutput = FileUtils.readText(csvFile);
@@ -229,7 +229,7 @@ class ContributionsFileMapperTest {
         try {
             LocalDate startDate = getDate("01-01-2021");
             LocalDate endDate = getDate("02-02-2021");
-            csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString(),getXMLString()}, startDate, endDate, filename);
+            csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString(),getXMLString()},"Test", startDate, endDate, filename);
 
             softly.assertThat(csvFile).isNotNull();
             String csvOutput = FileUtils.readText(csvFile);
@@ -264,6 +264,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceData },
+           "Test",
                 testDate,
                 testDate,
                 filename
@@ -289,6 +290,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -319,6 +321,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -350,6 +353,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -372,6 +376,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -407,6 +412,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -438,6 +444,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -460,6 +467,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -495,6 +503,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -524,6 +533,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -551,6 +561,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -578,6 +589,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -608,6 +620,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -638,6 +651,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -669,6 +683,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -700,6 +715,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename
@@ -722,6 +738,7 @@ class ContributionsFileMapperTest {
         LocalDate testDate = LocalDate.now();
         csvFile = contributionsFileMapper.processRequest(
                 new String[]{ sourceXmlData },
+            "Test",
                 testDate,
                 testDate,
                 filename

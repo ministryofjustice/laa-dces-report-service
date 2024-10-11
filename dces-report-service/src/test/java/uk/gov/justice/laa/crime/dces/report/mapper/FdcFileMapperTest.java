@@ -137,10 +137,10 @@ class FdcFileMapperTest {
         File f = null;
         try {
             CSVFileService csvServiceMock = mock(CSVFileService.class);
-            when(csvServiceMock.writeFdcFileListToCsv(any(), anyString(), any(), any())).thenReturn(new File(filename));
+            when(csvServiceMock.writeFdcFileListToCsv(any(), anyString(), anyString(), any(), any())).thenReturn(new File(filename));
             fdcFileMapper.csvFileService = csvServiceMock;
             LocalDate date = LocalDate.now();
-            f = fdcFileMapper.processRequest(new String[]{getXMLString(false)}, filename, date, date);
+            f = fdcFileMapper.processRequest(new String[]{getXMLString(false)}, filename, "Test", date, date);
             softly.assertThat(f).isNotNull();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:" + e.getMessage());
@@ -156,14 +156,14 @@ class FdcFileMapperTest {
         File f = null;
         try {
             LocalDate date = LocalDate.now();
-            f = fdcFileMapper.processRequest(new String[]{FileUtils.readText(input)}, filename, date, date);
+            f = fdcFileMapper.processRequest(new String[]{FileUtils.readText(input)}, filename, "Test", date, date);
 
             softly.assertThat(f).isNotNull();
             String csvOutput = FileUtils.readText(f);
             // check header present
             softly.assertThat(csvOutput).contains("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date");
             // verify content has been mapped
-            String title = String.format("Monthly Final Defence Cost Report REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s\n", date, date, date);
+            String title = String.format("Test Final Defence Cost Report REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s\n", date, date, date);
             softly.assertThat(csvOutput).isEqualTo(title +
                     "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date\n" +
                     "2525925,30/09/2016,22/12/2016,1774.40,1180.64,593.76,25/07/2018\n" +
