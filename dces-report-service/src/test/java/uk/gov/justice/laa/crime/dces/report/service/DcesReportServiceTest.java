@@ -77,14 +77,13 @@ class DcesReportServiceTest {
         // setup
         setupMockitoForTest();
 
-        LocalDate startDate = LocalDate.now().minusMonths(1).withDayOfMonth(1);
-        LocalDate endDate = LocalDate.now().withDayOfMonth(1).minusDays(1);
+        LocalDate reportDate = LocalDate.now().minusMonths(1).withDayOfMonth(1);
 
         // execute
         dcesReportService.sendContributionsReport(Monthly);
 
         // assert
-        Mockito.verify(contributionFilesClient, times(1)).getContributions(startDate, endDate);
+        Mockito.verify(contributionFilesClient, times(1)).getContributions(reportDate, reportDate);
         Mockito.verify(fdcFilesClient, times(0)).getContributions(any(), any());
     }
 

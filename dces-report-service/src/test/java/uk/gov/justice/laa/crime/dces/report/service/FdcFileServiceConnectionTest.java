@@ -25,7 +25,7 @@ class FdcFileServiceConnectionTest {
     private SoftAssertions softly;
     private static final LocalDate startPeriod = LocalDate.of(2021, 1, 2);
 
-    private static final LocalDate finishPeriod = LocalDate.of(2021, 1, 26);
+    private static final LocalDate finishPeriod = LocalDate.of(2021, 1, 2);
 
     @Autowired
     FdcFilesService filesService;

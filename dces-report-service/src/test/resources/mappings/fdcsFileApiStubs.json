@@ -31,10 +31,10 @@
         "urlPath": "/debt-collection-enforcement/final-defence-cost",
         "queryParameters": {
           "fromDate": {
-            "matches": "03.10.2474"
+            "matches": "[\\d]{1,2}.[\\d]{1,2}.[\\d]{4}"
           },
           "toDate": {
-            "matches": "03.10.2474"
+            "matches": "[\\d]{1,2}.[\\d]{1,2}.[\\d]{4}"
           }
         },
         "method": "GET"
