@@ -10,9 +10,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
+import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
 import uk.gov.service.notify.NotificationClientException;
 
 import java.io.IOException;
+import java.time.LocalDate;
 
 @Configuration
 @Slf4j
@@ -59,10 +61,11 @@ public class DcesReportScheduler {
     private void sendRequestedReport(ReportPeriod reportPeriod, ReportType reportType) throws JAXBException, IOException, NotificationClientException {
 
         log.info("Scheduled {} {} Report", reportType, reportPeriod);
-
+        LocalDate fromDate = DateUtils.getDefaultStartDateForReport(reportPeriod);
+        LocalDate toDate = DateUtils.getDefaultEndDateForReport(reportPeriod);
         switch (reportType) {
-            case Contribution -> reportService.sendContributionsReport(reportPeriod);
-            case FDC -> reportService.sendFdcReport(reportPeriod);
+            case Contribution -> reportService.sendContributionsReport(reportPeriod.description, fromDate, toDate);
+            case FDC -> reportService.sendFdcReport(reportPeriod.description, fromDate, toDate);
         }
 
         log.info("Successfully finished {} {} Report", reportType, reportPeriod);

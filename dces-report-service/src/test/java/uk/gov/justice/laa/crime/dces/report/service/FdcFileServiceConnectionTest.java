@@ -23,9 +23,9 @@ import java.util.Locale;
 class FdcFileServiceConnectionTest {
     @InjectSoftAssertions
     private SoftAssertions softly;
-    private static final LocalDate startPeriod = LocalDate.of(2021, 1, 2);
+    private static final LocalDate startPeriod = LocalDate.of(2024, 10, 8);
 
-    private static final LocalDate finishPeriod = LocalDate.of(2021, 1, 2);
+    private static final LocalDate finishPeriod = LocalDate.of(2024, 10, 10);
 
     @Autowired
     FdcFilesService filesService;
@@ -39,7 +39,7 @@ class FdcFileServiceConnectionTest {
     void postTest() { softly.assertAll(); }
 
     @Test
-    void givenValidPeriod_whenGetContributionFilesIsInvoked_thenFileWithExpectedContentIsReturned() {
+    void givenValidPeriod_whenGetFdcFilesIsInvoked_thenFileWithExpectedContentIsReturned() {
         List<String> resultFiles;
 
         try {
@@ -52,7 +52,7 @@ class FdcFileServiceConnectionTest {
     }
 
     @Test
-    void givenPeriodWithNoData_whenGetContributionFilesIsInvoked_thenFileWithExpectedContentIsReturned() {
+    void givenPeriodWithNoData_whenGetFdcFilesIsInvoked_thenFileWithExpectedContentIsReturned() {
         List<String> resultFiles;
 
         try {
@@ -68,7 +68,7 @@ class FdcFileServiceConnectionTest {
     }
 
     @Test
-    void givenValidPeriodWithBigData_whenGetContributionFilesIsInvoked_thenShouldThrowMaatApiExceptionAfterRetry2Times() {
+    void givenValidPeriodWithBigData_whenGetFdcFilesIsInvoked_thenShouldThrowMaatApiExceptionAfterRetry2Times() {
         String expectedMessage = "413 PAYLOAD_TOO_LARGE";
 
         try {

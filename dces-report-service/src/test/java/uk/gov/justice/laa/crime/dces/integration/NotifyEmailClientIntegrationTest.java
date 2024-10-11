@@ -17,7 +17,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static uk.gov.justice.laa.crime.dces.report.scheduler.DcesReportScheduler.ReportPeriod.Monthly;
 import static uk.gov.justice.laa.crime.dces.report.service.MailerService.sendEmail;
 
 @SpringBootTest
@@ -46,7 +45,7 @@ final class NotifyEmailClientIntegrationTest {
         testEmailObject = notifyConfiguration.createEmail(
                 file,
                 "Contribution",
-                Monthly.getDescription(),
+                "Test",
                 LocalDate.of(2023, 8, 10),
                 LocalDate.now(),
                 TEMPLATE_ID,

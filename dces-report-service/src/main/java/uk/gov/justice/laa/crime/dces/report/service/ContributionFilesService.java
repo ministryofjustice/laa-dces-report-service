@@ -3,6 +3,8 @@ package uk.gov.justice.laa.crime.dces.report.service;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.micrometer.core.annotation.Timed;
 import jakarta.xml.bind.JAXBException;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -43,7 +45,11 @@ public class ContributionFilesService implements DcesReportFileService {
 
         while (!currentDate.isAfter(finish)) {
             log.info("Adding contribution files for {}", currentDate.format(DateUtils.dateFormatter));
-            resultList.addAll(contributionFilesClient.getContributions(currentDate, currentDate));
+            resultList.addAll(contributionFilesClient.getContributions(currentDate, currentDate)
+                .stream()
+                .filter(Objects::nonNull)
+                .toList()
+            );
             currentDate = currentDate.plusDays(1);
         }
 

@@ -2,7 +2,6 @@ package uk.gov.justice.laa.crime.dces.report.service;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import jakarta.xml.bind.JAXBException;
-import java.io.File;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -15,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
+import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -25,7 +25,6 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
-import static uk.gov.justice.laa.crime.dces.report.scheduler.DcesReportScheduler.ReportPeriod.Monthly;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
@@ -61,14 +60,13 @@ class DcesReportServiceTest {
     void getFdcCollection() throws JAXBException, IOException, NotificationClientException {
         // setup
         setupMockitoForTest();
-        LocalDate startDate = LocalDate.now().minusMonths(1).withDayOfMonth(1);
-        LocalDate endDate = LocalDate.now().withDayOfMonth(1).minusDays(1);
+        LocalDate dateParam = LocalDate.of(2023, 7, 10);
 
         // execute
-        dcesReportService.sendFdcReport(Monthly);
+        dcesReportService.sendFdcReport("Test", dateParam, dateParam);
 
         // assert
-        Mockito.verify(fdcFilesClient, times(1)).getContributions(startDate, endDate);
+        Mockito.verify(fdcFilesClient, times(1)).getContributions(dateParam, dateParam);
         Mockito.verify(contributionFilesClient, times(0)).getContributions(any(), any());
     }
 
@@ -76,19 +74,37 @@ class DcesReportServiceTest {
     void getInitialContributionsCollection() throws JAXBException, IOException, NotificationClientException {
         // setup
         setupMockitoForTest();
-
-        LocalDate reportDate = LocalDate.now().minusMonths(1).withDayOfMonth(1);
+        LocalDate dateParam = LocalDate.of(2023, 7, 10);
 
         // execute
-        dcesReportService.sendContributionsReport(Monthly);
+        dcesReportService.sendContributionsReport("Test", dateParam, dateParam);
 
         // assert
-        Mockito.verify(contributionFilesClient, times(1)).getContributions(reportDate, reportDate);
+        Mockito.verify(contributionFilesClient, times(1)).getContributions(dateParam, dateParam);
         Mockito.verify(fdcFilesClient, times(0)).getContributions(any(), any());
     }
 
     @Test
-    void sendEmailReport() throws NotificationClientException, IOException {
-        dcesReportService.sendEmailReport(new File(getClass().getClassLoader().getResource("contributions/CONTRIBUTIONS_202102122031.xml").getFile()), "Full Defence Cost", Monthly, LocalDate.of(2023, 7, 10), LocalDate.of(2023, 7, 10));
+    void givenDateWithNoData_whenSendFdcReportIsInvoked_thenDcesReportSourceFilesDataNotFoundIsThrown() {
+        // setup
+        LocalDate testDate = LocalDate.of(2474, 10, 3);
+        String expectedMessage = "NOT FOUND";
+
+        // execute
+        softly.assertThatThrownBy(() -> dcesReportService.sendFdcReport("Test", testDate, testDate))
+                .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
+                .hasMessageContaining(expectedMessage);
+    }
+
+    @Test
+    void givenDateWithNoData_whenSendContributionsReportIsInvoked_thenDcesReportSourceFilesDataNotFoundIsThrown() {
+        // setup
+        LocalDate testDate = LocalDate.of(2474, 10, 3);
+        String expectedMessage = "NOT FOUND";
+
+        // execute
+        softly.assertThatThrownBy(() -> dcesReportService.sendContributionsReport("Test", testDate, testDate))
+                .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
+                .hasMessageContaining(expectedMessage);
     }
 }

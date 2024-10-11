@@ -6,10 +6,10 @@
         "urlPath": "/debt-collection-enforcement/contributions",
         "queryParameters": {
           "fromDate": {
-            "matches": "[\\d]{1,2}.[\\d]{1,2}.[\\d]{4}"
+            "matches": "[\\d]{1,2}.01.2023"
           },
           "toDate": {
-            "matches": "[\\d]{1,2}.[\\d]{1,2}.[\\d]{4}"
+            "matches": "[\\d]{1,2}.01.2023"
           }
         },
         "method": "GET"
