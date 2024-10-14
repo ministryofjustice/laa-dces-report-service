@@ -43,7 +43,7 @@ public class ContributionsFileMapper {
         for (String xmlString : xmlData) {
             processXMLFile(xmlString, startDate, endDate, csvLineList);
         }
-        return csvFileService.writeContributionToCsv(csvLineList, reportTitle, startDate, endDate, filename);
+        return csvFileService.writeContributionToCsv(csvLineList, filename, reportTitle, startDate, endDate);
     }
 
     private void processXMLFile(String xmlData, LocalDate startDate, LocalDate endDate, List<ContributionCSVDataLine> csvLineList) throws JAXBException {

@@ -39,7 +39,8 @@ public class CSVFileService {
     private static final String FILE_PERMISSIONS = "rwx------";
 
 
-    protected File writeContributionToCsv(List<ContributionCSVDataLine> contributionData, String reportTitle, LocalDate fromDate, LocalDate toDate, File targetFile) throws IOException {
+    public File writeContributionToCsv(List<ContributionCSVDataLine> contributionData, String fileName, String reportTitle, LocalDate fromDate, LocalDate toDate) throws IOException {
+        File targetFile = createCsvFile(fileName);
         // file-writer initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {
             // if file does not exist, we need to add the headers.
@@ -59,34 +60,27 @@ public class CSVFileService {
         return targetFile;
     }
 
-    public File writeContributionToCsv(List<ContributionCSVDataLine> contributionData, String reportTitle, LocalDate fromDate, LocalDate toDate, String fileName) throws IOException {
+    public File writeFdcFileListToCsv(List<FdcFile> fdcFiles, String fileName, String reportTitle, LocalDate fromDate, LocalDate toDate) throws IOException {
         File targetFile = createCsvFile(fileName);
-        return writeContributionToCsv(contributionData, reportTitle, fromDate, toDate, targetFile);
-    }
-
-    public void writeFdcToCsv(FdcFile fdcFile, File targetFile, String reportTitle, LocalDate fromDate, LocalDate toDate) throws IOException {
-        List<Fdc> fdcList = fdcFile.getFdcList().getFdc();
-        String dateGenerated = DateUtils.convertXmlGregorianToString(fdcFile.getHeader().getDateGenerated());
         // file-writer initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {
             if (targetFile.length() == 0) {
                 writeFdcHeader(fw, reportTitle, fromDate, toDate);
             }
-            for (Fdc fdcLine : fdcList) {
-                writeFdcLine(fw, fdcLine, dateGenerated);
+            for (FdcFile fdcFile : fdcFiles) {
+                List<Fdc> fdcList = fdcFile.getFdcList().getFdc();
+                String dateGenerated = DateUtils.convertXmlGregorianToString(
+                    fdcFile.getHeader().getDateGenerated());
+                for (Fdc fdcLine : fdcList) {
+                    writeFdcLine(fw, fdcLine, dateGenerated);
+                }
             }
         } catch (IOException e) {
             throw new IOException(e);
         }
-    }
-
-    public File writeFdcFileListToCsv(List<FdcFile> fdcFiles, String fileName, String reportTitle, LocalDate fromDate, LocalDate toDate) throws IOException {
-        File targetFile = createCsvFile(fileName);
-        for (FdcFile file : fdcFiles) {
-            writeFdcToCsv(file, targetFile, reportTitle, fromDate, toDate);
-        }
         return targetFile;
     }
+
 
     private ContributionCSVDataLine getContributionsHeader() {
         return ContributionCSVDataLine.builder()

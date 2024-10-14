@@ -49,7 +49,9 @@ public class NotifyConfiguration {
         emailObject.setEmailAddresses(recipients);
         emailObject.setTemplateId(templateId);
         emailObject.setPersonalisation(personalisation);
-        emailObject.addAttachment(file);
+        if (file != null) {
+            emailObject.addAttachment(file);
+        }
 
         return emailObject;
     }
