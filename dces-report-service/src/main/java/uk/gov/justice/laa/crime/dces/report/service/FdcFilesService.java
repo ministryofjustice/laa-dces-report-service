@@ -60,7 +60,8 @@ public class FdcFilesService implements DcesReportFileService {
               log.info(String.format("NOT FOUND: No FDC Files data between %s and %s", start, finish));
         }
 
-        File file = fdcFileMapper.processRequest(fdcFiles.toArray(new String[0]), reportTitle, start, finish, getFileName(start, finish));
+        File file = fdcFileMapper.processRequest(fdcFiles.toArray(new String[0]),
+            getFileName(start, finish), reportTitle, start, finish);
         log.info("CSV file generated for FDC Report between {} and {}",
                 start.format(DateUtils.dateFormatter), finish.format(DateUtils.dateFormatter));
         return file;

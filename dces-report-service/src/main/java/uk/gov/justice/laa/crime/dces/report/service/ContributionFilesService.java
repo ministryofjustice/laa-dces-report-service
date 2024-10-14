@@ -43,7 +43,6 @@ public class ContributionFilesService implements DcesReportFileService {
         List<String> resultList = new ArrayList<>();
 
         while (!currentDate.isAfter(finish)) {
-            log.info("Adding contribution files for {}", currentDate.format(DateUtils.dateFormatter));
             resultList.addAll(contributionFilesClient.getContributions(currentDate, currentDate)
                 .stream()
                 .filter(Objects::nonNull)
