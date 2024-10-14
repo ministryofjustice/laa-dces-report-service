@@ -63,9 +63,7 @@ public class ContributionFilesService implements DcesReportFileService {
         log.info("Start generating CSV Contributions report from received XML files");
 
         if (files.isEmpty()) {
-            throw new DcesReportSourceFilesDataNotFound(
-                    String.format("NOT FOUND: No Contributions Files data between %s and %s", start, finish)
-            );
+            log.info(String.format("NOT FOUND: No Contributions Files data between %s and %s", start, finish));
         }
 
         String fileName = getFileName(start, finish);

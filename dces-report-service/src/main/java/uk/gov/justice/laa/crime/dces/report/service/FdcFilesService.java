@@ -57,12 +57,10 @@ public class FdcFilesService implements DcesReportFileService {
     public File processFiles(List<String> fdcFiles, String reportTitle, LocalDate start, LocalDate finish)
             throws JAXBException, IOException, DcesReportSourceFilesDataNotFound {
         if (fdcFiles.isEmpty()) {
-            throw new DcesReportSourceFilesDataNotFound(
-                    String.format("NOT FOUND: No FDC Files data between %s and %s", start, finish)
-            );
+              log.info(String.format("NOT FOUND: No FDC Files data between %s and %s", start, finish));
         }
 
-        File file = fdcFileMapper.processRequest(fdcFiles.toArray(new String[0]), reportTitle, getFileName(start, finish), start, finish);
+        File file = fdcFileMapper.processRequest(fdcFiles.toArray(new String[0]), getFileName(start, finish), reportTitle, start, finish);
         log.info("CSV file generated for FDC Report between {} and {}",
                 start.format(DateUtils.dateFormatter), finish.format(DateUtils.dateFormatter));
         return file;
