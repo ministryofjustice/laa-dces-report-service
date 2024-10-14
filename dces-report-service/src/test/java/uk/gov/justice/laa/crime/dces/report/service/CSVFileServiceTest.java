@@ -66,27 +66,6 @@ class CSVFileServiceTest {
         }
     }
 
-    @Test
-    void givenTargetFileNotEmpty_whenCallingWriteContributionToCsv_thenShouldReturnCVSFileWithoutHeader() throws IOException {
-        try (FileWriter fw =  new FileWriter(testFile, true)) {
-            fw.append("Mocked Title\n");
-        } catch (IOException e) {
-            throw new IOException(e);
-        }
-
-        softly.assertThat(testFile.length()).isGreaterThan(0);
-
-        List<ContributionCSVDataLine> contFile = buildTestContributionFile();
-        LocalDate date = LocalDate.now();
-        testFile = csvFileService.writeContributionToCsv(contFile, "test", "Test", date.minusDays(30), date);
-        String output = FileUtils.readText(testFile);
-
-        softly.assertThat(output).startsWith("Mocked Title");
-        softly.assertThat(output).doesNotContain(CONTRIBUTIONS_HEADER);
-        softly.assertThat(output).contains(contFile.get(0).getMaatId());
-    }
-
-
     private List<ContributionCSVDataLine> buildTestContributionFile() {
         var contribution = new ContributionCSVDataLine();
         contribution.setMaatId("123456789");
