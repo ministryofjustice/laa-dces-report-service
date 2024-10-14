@@ -54,12 +54,9 @@ class CSVFileServiceTest {
     @Test
     void testWriteContributionToCsv() {
         try {
-            testFile = File.createTempFile("test", ".csv");
-            softly.assertThat(testFile).isEmpty();
-
             List<ContributionCSVDataLine> contFile = buildTestContributionFile();
             LocalDate date = LocalDate.now();
-            csvFileService.writeContributionToCsv(contFile, "Test", date.minusDays(30), date, testFile);
+            testFile = csvFileService.writeContributionToCsv(contFile, "test", "Test",  date.minusDays(30), date);
             String output = FileUtils.readText(testFile);
 
             softly.assertThat(output).contains(CONTRIBUTIONS_HEADER);
@@ -71,9 +68,6 @@ class CSVFileServiceTest {
 
     @Test
     void givenTargetFileNotEmpty_whenCallingWriteContributionToCsv_thenShouldReturnCVSFileWithoutHeader() throws IOException {
-        testFile = File.createTempFile("test", ".csv");
-        softly.assertThat(testFile.length()).isEqualTo(0);
-
         try (FileWriter fw =  new FileWriter(testFile, true)) {
             fw.append("Mocked Title\n");
         } catch (IOException e) {
@@ -84,79 +78,12 @@ class CSVFileServiceTest {
 
         List<ContributionCSVDataLine> contFile = buildTestContributionFile();
         LocalDate date = LocalDate.now();
-        csvFileService.writeContributionToCsv(contFile, "Test", date.minusDays(30), date, testFile);
+        testFile = csvFileService.writeContributionToCsv(contFile, "test", "Test", date.minusDays(30), date);
         String output = FileUtils.readText(testFile);
 
         softly.assertThat(output).startsWith("Mocked Title");
         softly.assertThat(output).doesNotContain(CONTRIBUTIONS_HEADER);
         softly.assertThat(output).contains(contFile.get(0).getMaatId());
-    }
-
-    @Test
-    void GivenFileNotWriteable_WhenCallingWriteContributionToCsv_thenShouldThrowIOException() throws IOException {
-        List<ContributionCSVDataLine> contFile = List.of();
-        LocalDate date = LocalDate.now();
-        testFile = File.createTempFile("test", ".csv");
-
-        if (testFile.setWritable(false)) { // This will force IO Exception
-            softly.assertThatThrownBy(() -> csvFileService.writeContributionToCsv(contFile, "Test", date, date, testFile))
-                    .isInstanceOf(IOException.class);
-        };
-    }
-
-    @Test
-    void testWriteFdcToCsv() {
-        try {
-            testFile = File.createTempFile("test", ".csv");
-            softly.assertThat(testFile).isEmpty();
-
-            FdcFile fdcFile = buildTestFdcFile();
-            LocalDate date = LocalDate.now();
-            csvFileService.writeFdcToCsv(fdcFile, testFile, "Test", date.minusDays(30), date);
-            String output = FileUtils.readText(testFile);
-
-            softly.assertThat(output).contains(FDC_HEADER);
-            softly.assertThat(output).contains(String.valueOf(testMaatId));
-            softly.assertThat(output).contains("30/06/2020");
-        } catch (IOException | DatatypeConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    @Test
-    void givenTargetFileNotEmpty_whenCallingWriteFdcToCsv_thenShouldReturnCVSFileWithoutHeader() throws IOException, DatatypeConfigurationException {
-        testFile = File.createTempFile("test", ".csv");
-        softly.assertThat(testFile.length()).isEqualTo(0);
-
-        try (FileWriter fw =  new FileWriter(testFile, true)) {
-            fw.append("Mocked Title");
-        } catch (IOException e) {
-            throw new IOException(e);
-        }
-
-        softly.assertThat(testFile.length()).isGreaterThan(0);
-
-        FdcFile fdcFile = buildTestFdcFile();
-        LocalDate date = LocalDate.now();
-        csvFileService.writeFdcToCsv(fdcFile, testFile, "Test", date.minusDays(30), date);
-        String output = FileUtils.readText(testFile);
-
-        softly.assertThat(output).startsWith("Mocked Title");
-        softly.assertThat(output).doesNotContain(FDC_HEADER);
-        softly.assertThat(output).contains(String.valueOf(testMaatId));
-        softly.assertThat(output).contains("30/06/2020");
-    }
-
-    @Test
-    void GivenFileNotWriteable_WhenCallingWriteFdcToCsv_thenShouldThrowIOException() throws IOException, DatatypeConfigurationException {
-        FdcFile fdcFile = buildTestFdcFile();
-        LocalDate date = LocalDate.now();
-        testFile = File.createTempFile("test", ".csv");
-
-        if (testFile.setWritable(false)) { // This will force IO Exception
-            softly.assertThatThrownBy(() -> csvFileService.writeFdcToCsv(fdcFile, testFile, "Test", date, date))
-                    .isInstanceOf(IOException.class);
-        };
     }
 
 

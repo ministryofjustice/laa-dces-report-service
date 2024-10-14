@@ -140,7 +140,7 @@ class FdcFileMapperTest {
             when(csvServiceMock.writeFdcFileListToCsv(any(), anyString(), anyString(), any(), any())).thenReturn(new File(filename));
             fdcFileMapper.csvFileService = csvServiceMock;
             LocalDate date = LocalDate.now();
-            f = fdcFileMapper.processRequest(new String[]{getXMLString(false)}, filename, "Test", date, date);
+            f = fdcFileMapper.processRequest(new String[]{getXMLString(false)}, "Test", date, date, filename);
             softly.assertThat(f).isNotNull();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:" + e.getMessage());
@@ -156,7 +156,7 @@ class FdcFileMapperTest {
         File f = null;
         try {
             LocalDate date = LocalDate.now();
-            f = fdcFileMapper.processRequest(new String[]{FileUtils.readText(input)}, filename, "Test", date, date);
+            f = fdcFileMapper.processRequest(new String[]{FileUtils.readText(input)}, "Test", date, date, filename);
 
             softly.assertThat(f).isNotNull();
             String csvOutput = FileUtils.readText(f);
