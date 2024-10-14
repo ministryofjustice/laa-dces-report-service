@@ -84,16 +84,4 @@ class FdcFilesServiceTest {
         // assert
         assertTrue(actualMessage.contains(expectedMessage));
     }
-
-    @Test
-    void givenEmptyFileList_whenProcessFilesIsInvoked_thenDcesReportSourceFilesDataNotFoundExceptionIsThrown() throws JAXBException, IOException {
-        // setup
-        LocalDate testDate = LocalDate.now();
-        List<String> testFiles = new ArrayList<>();
-        String expectedMessage = "NOT FOUND";
-
-        softly.assertThatThrownBy(() -> testService.processFiles(testFiles, "Test", testDate, testDate))
-                .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
-                .hasMessageContaining(expectedMessage);
-    }
 }

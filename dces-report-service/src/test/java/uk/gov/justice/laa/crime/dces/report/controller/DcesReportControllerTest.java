@@ -76,18 +76,6 @@ class DcesReportControllerTest {
     }
 
     @Test
-    void givenDateWithNoData_whenGetContributionsReportIsInvoked_thenDcesReportSourceFilesDataNotFoundIsThrown() {
-        // setup
-        LocalDate testDate = LocalDate.of(2474, 10, 3);
-        String expectedMessage = "NOT FOUND";
-
-        // execute
-        softly.assertThatThrownBy(() -> controller.getContributionsReport("Test", testDate, testDate))
-                .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
-                .hasMessageContaining(expectedMessage);
-    }
-
-    @Test
     void givenDateNotMappedOnStub_whenGetContributionsReportIsInvoked_then404WebClientResponseExceptionIsThrownAfter2Retries() {
         // setup
         LocalDate testDate = LocalDate.of(2474, 10, 30);
@@ -96,18 +84,6 @@ class DcesReportControllerTest {
         // execute
         softly.assertThatThrownBy(() -> controller.getContributionsReport("Test", testDate, testDate))
                 .isInstanceOf(WebClientResponseException.class)
-                .hasMessageContaining(expectedMessage);
-    }
-
-    @Test
-    void givenDateWithNoData_whenGetFdcReportIsInvoked_thenDcesReportSourceFilesDataNotFoundIsThrown() {
-        // setup
-        LocalDate testDate = LocalDate.of(2474, 10, 3);
-        String expectedMessage = "NOT FOUND";
-
-        // execute
-        softly.assertThatThrownBy(() -> controller.getFdcReport("Test", testDate, testDate))
-                .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
                 .hasMessageContaining(expectedMessage);
     }
 

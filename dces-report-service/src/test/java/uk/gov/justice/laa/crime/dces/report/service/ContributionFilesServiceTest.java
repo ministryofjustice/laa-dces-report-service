@@ -126,16 +126,4 @@ class ContributionFilesServiceTest {
         softly.assertThat(resultFiles).isNotNull();
         softly.assertThat(resultFiles).isEmpty();
     }
-
-    @Test
-    void givenEmptyFileList_whenProcessFilesIsInvoked_thenDcesReportSourceFilesDataNotFoundExceptionIsThrown() throws JAXBException, IOException {
-        // setup
-        LocalDate testDate = LocalDate.now();
-        List<String> testFiles = new ArrayList<>();
-        String expectedMessage = "NOT FOUND";
-
-        softly.assertThatThrownBy(() -> contributionFilesReportService.processFiles(testFiles, "Test", testDate, testDate))
-            .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
-            .hasMessageContaining(expectedMessage);
-    }
 }

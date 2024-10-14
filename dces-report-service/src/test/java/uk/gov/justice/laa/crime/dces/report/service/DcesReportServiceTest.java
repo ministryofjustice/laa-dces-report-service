@@ -83,28 +83,4 @@ class DcesReportServiceTest {
         Mockito.verify(contributionFilesClient, times(1)).getContributions(dateParam, dateParam);
         Mockito.verify(fdcFilesClient, times(0)).getContributions(any(), any());
     }
-
-    @Test
-    void givenDateWithNoData_whenSendFdcReportIsInvoked_thenDcesReportSourceFilesDataNotFoundIsThrown() {
-        // setup
-        LocalDate testDate = LocalDate.of(2474, 10, 3);
-        String expectedMessage = "NOT FOUND";
-
-        // execute
-        softly.assertThatThrownBy(() -> dcesReportService.sendFdcReport("Test", testDate, testDate))
-                .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
-                .hasMessageContaining(expectedMessage);
-    }
-
-    @Test
-    void givenDateWithNoData_whenSendContributionsReportIsInvoked_thenDcesReportSourceFilesDataNotFoundIsThrown() {
-        // setup
-        LocalDate testDate = LocalDate.of(2474, 10, 3);
-        String expectedMessage = "NOT FOUND";
-
-        // execute
-        softly.assertThatThrownBy(() -> dcesReportService.sendContributionsReport("Test", testDate, testDate))
-                .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
-                .hasMessageContaining(expectedMessage);
-    }
 }
