@@ -37,6 +37,7 @@ class ContributionsFileMapperTest {
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final String filename = "this_is_a_test.xml";
     private static final String EXPECTED_HEADER = "MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date";
+    private static final String NO_DATA_MESSAGE = "\n### There is no data to report for the specified date range. ####";
     private static final String EXPECTED_TITLE = "Test Contributions Report REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s\n";
 
 
@@ -273,7 +274,7 @@ class ContributionsFileMapperTest {
         String csvOutput = FileUtils.readText(csvFile);
         // verify only title and header are present
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
-        softly.assertThat(csvOutput).isEqualTo(expectedTitle + EXPECTED_HEADER);
+        softly.assertThat(csvOutput).isEqualTo(expectedTitle + EXPECTED_HEADER + NO_DATA_MESSAGE);
     }
 
     @Test
@@ -299,7 +300,7 @@ class ContributionsFileMapperTest {
         String csvOutput = FileUtils.readText(csvFile);
         // verify only title and header are present
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
-        softly.assertThat(csvOutput).isEqualTo(expectedTitle + EXPECTED_HEADER);
+        softly.assertThat(csvOutput).isEqualTo(expectedTitle + EXPECTED_HEADER + NO_DATA_MESSAGE);
     }
 
     /**
