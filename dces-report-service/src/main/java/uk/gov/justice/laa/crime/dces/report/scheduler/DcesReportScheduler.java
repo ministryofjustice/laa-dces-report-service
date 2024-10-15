@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
+import uk.gov.justice.laa.crime.dces.report.config.FeatureFlags;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
 import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
 import uk.gov.service.notify.NotificationClientException;
@@ -34,6 +35,8 @@ public class DcesReportScheduler {
 
     private final DcesReportService reportService;
 
+    private final FeatureFlags featureFlags;
+
     @Timed("laa_dces_report_service_scheduled_contributions_monthly")
     @Scheduled(cron = "${spring.scheduling.cron.contributions.monthly}")
     public void contributionsReportMonthly() throws JAXBException, IOException, NotificationClientException {
@@ -43,7 +46,11 @@ public class DcesReportScheduler {
     @Timed("laa_dces_report_service_scheduled_contributions_daily")
     @Scheduled(cron = "${spring.scheduling.cron.contributions.daily}")
     public void contributionsReportDaily() throws JAXBException, IOException, NotificationClientException {
-        sendRequestedReport(ReportPeriod.Daily, ReportType.Contribution);
+        if (featureFlags.runDailyReport()) {
+            sendRequestedReport(ReportPeriod.Daily, ReportType.Contribution);
+        } else {
+            log.info("Not running Daily Contributions report because the feature flag run-daily-report is set to false.");
+        }
     }
 
     @Timed("laa_dces_report_service_scheduled_fdc_monthly")
@@ -55,7 +62,11 @@ public class DcesReportScheduler {
     @Timed("laa_dces_report_service_scheduled_fdc_daily")
     @Scheduled(cron = "${spring.scheduling.cron.fdc.daily}")
     public void fdcReportDaily() throws JAXBException, IOException, NotificationClientException {
-        sendRequestedReport(ReportPeriod.Daily, ReportType.FDC);
+        if (featureFlags.runDailyReport()) {
+            sendRequestedReport(ReportPeriod.Daily, ReportType.FDC);
+        } else {
+            log.info("Not running Daily FDC report because the feature flag run-daily-report is set to false.");
+        }
     }
 
     private void sendRequestedReport(ReportPeriod reportPeriod, ReportType reportType) throws JAXBException, IOException, NotificationClientException {
