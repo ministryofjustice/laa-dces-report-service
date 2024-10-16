@@ -30,12 +30,12 @@ public class FdcFileMapper {
         return this;
     }
 
-    public File processRequest(String[] xmlData, String filename, LocalDate fromDate, LocalDate toDate) throws JAXBException, IOException {
+    public File processRequest(String[] xmlData, String filename, String reportTitle, LocalDate fromDate, LocalDate toDate) throws JAXBException, IOException {
         List<FdcFile> csvLineList = new ArrayList<>();
         for (String xmlString : xmlData) {
             csvLineList.add(mapFdcXmlStringToObject(xmlString));
         }
-        return csvFileService.writeFdcFileListToCsv(csvLineList, filename, fromDate, toDate);
+        return csvFileService.writeFdcFileListToCsv(csvLineList, filename, reportTitle, fromDate, toDate);
     }
 
     public FdcFile mapFdcXmlStringToObject(String xmlString) throws JAXBException {

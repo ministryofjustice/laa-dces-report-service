@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import jakarta.xml.bind.JAXBException;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -13,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +32,8 @@ class FdcFilesServiceTest {
 
     @InjectSoftAssertions
     private SoftAssertions softly;
+  @Autowired
+  private FdcFilesService fdcFilesService;
 
     @AfterEach
     void assertAll(){
@@ -86,14 +85,11 @@ class FdcFilesServiceTest {
     }
 
     @Test
-    void givenEmptyFileList_whenProcessFilesIsInvoked_thenDcesReportSourceFilesDataNotFoundExceptionIsThrown() throws JAXBException, IOException {
+    void givenEmptyFileList_whenProcessFilesIsInvoked_thenNoExceptionIsThrown() {
         // setup
         LocalDate testDate = LocalDate.now();
         List<String> testFiles = new ArrayList<>();
-        String expectedMessage = "NOT FOUND";
 
-        softly.assertThatThrownBy(() -> testService.processFiles(testFiles, testDate, testDate))
-                .isInstanceOf(DcesReportSourceFilesDataNotFound.class)
-                .hasMessageContaining(expectedMessage);
+        assertDoesNotThrow(() -> fdcFilesService.processFiles(testFiles, "Test", testDate, testDate));
     }
 }

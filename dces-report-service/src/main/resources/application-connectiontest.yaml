@@ -54,10 +54,13 @@ spring:
               - ${MAAT_API_OAUTH_SCOPE}
   scheduling:
     enabled: true
-    contributions:
-      cron: "0-30/16 */5 * * * ?"
-    fdc:
-      cron: "31-59/15 */5 * * * ?"
+    cron:
+      contributions:
+        monthly: "0-15/8 */5 * * * ?"
+        daily: "16-30/8 */5 * * * ?"
+      fdc:
+        monthly: "31-45/10 */5 * * * ?"
+        daily: "46-59/10 */5 * * * ?"
 
 sentry:
   environment: development

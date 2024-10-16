@@ -15,7 +15,7 @@ import java.util.List;
 public interface DcesReportFileService {
     List<String> getFiles(LocalDate start, LocalDate end);
 
-    File processFiles(List<String> files, LocalDate start, LocalDate finish)
+    File processFiles(List<String> files, String reportTitle, LocalDate start, LocalDate finish)
             throws JAXBException, IOException, DcesReportSourceFilesDataNotFound;
 
     String getFileName(LocalDate start, LocalDate finish);

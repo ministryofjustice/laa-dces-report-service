@@ -30,7 +30,6 @@ public class ContributionsFileMapper {
     protected CSVFileService csvFileService;
     private static final String EMPTY_CHARACTER = "";
 
-
     @Autowired
     public ContributionsFileMapper contributionsFileMapper() throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(ContributionFile.class);
@@ -39,12 +38,13 @@ public class ContributionsFileMapper {
         return this;
     }
 
-    public File processRequest(String[] xmlData, LocalDate startDate, LocalDate endDate, String filename) throws IOException, JAXBException {
+    public File processRequest(String[] xmlData, String reportTitle, LocalDate startDate, LocalDate endDate, String filename) throws IOException, JAXBException {
         List<ContributionCSVDataLine> csvLineList = new ArrayList<>();
         for (String xmlString : xmlData) {
             processXMLFile(xmlString, startDate, endDate, csvLineList);
         }
-        return csvFileService.writeContributionToCsv(csvLineList, startDate, endDate, filename);
+        return csvFileService.writeContributionToCsv(csvLineList, reportTitle, startDate, endDate,
+            filename);
     }
 
     private void processXMLFile(String xmlData, LocalDate startDate, LocalDate endDate, List<ContributionCSVDataLine> csvLineList) throws JAXBException {
