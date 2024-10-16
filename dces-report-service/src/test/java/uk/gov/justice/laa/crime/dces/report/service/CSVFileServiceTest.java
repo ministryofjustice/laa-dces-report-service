@@ -18,7 +18,6 @@ import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList.Fdc;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
@@ -56,7 +55,8 @@ class CSVFileServiceTest {
         try {
             List<ContributionCSVDataLine> contFile = buildTestContributionFile();
             LocalDate date = LocalDate.now();
-            testFile = csvFileService.writeContributionToCsv(contFile, "test", "Test",  date.minusDays(30), date);
+            testFile = csvFileService.writeContributionToCsv(contFile, "Test", date.minusDays(30),
+                date, "test");
             String output = FileUtils.readText(testFile);
 
             softly.assertThat(output).contains(CONTRIBUTIONS_HEADER);

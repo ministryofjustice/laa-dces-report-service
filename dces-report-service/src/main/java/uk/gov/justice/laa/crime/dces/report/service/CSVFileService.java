@@ -41,7 +41,13 @@ public class CSVFileService {
     private static final String FILE_PERMISSIONS = "rwx------";
 
 
-    public File writeContributionToCsv(List<ContributionCSVDataLine> contributionData, String fileName, String reportTitle, LocalDate fromDate, LocalDate toDate) throws IOException {
+    public File writeContributionToCsv(
+        List<ContributionCSVDataLine> contributionData,
+        String reportTitle,
+        LocalDate fromDate,
+        LocalDate toDate,
+        String fileName
+    ) throws IOException {
         File targetFile = createCsvFile(fileName);
         // file-writer initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {

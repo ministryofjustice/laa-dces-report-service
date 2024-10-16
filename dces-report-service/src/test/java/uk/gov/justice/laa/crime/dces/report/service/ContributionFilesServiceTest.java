@@ -1,5 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import jakarta.xml.bind.JAXBException;
 import org.assertj.core.api.SoftAssertions;
@@ -15,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 
@@ -125,5 +128,15 @@ class ContributionFilesServiceTest {
 
         softly.assertThat(resultFiles).isNotNull();
         softly.assertThat(resultFiles).isEmpty();
+    }
+
+    @Test
+    void givenEmptyFileList_whenProcessFilesIsInvoked_thenNoExceptionIsThrown() {
+        // setup
+        LocalDate testDate = LocalDate.now();
+        List<String> testFiles = new ArrayList<>();
+        String expectedMessage = "NOT FOUND";
+
+        assertDoesNotThrow(() -> contributionFilesReportService.processFiles(testFiles, "Test", testDate, testDate));
     }
 }

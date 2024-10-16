@@ -143,7 +143,8 @@ class ContributionsFileMapperTest {
             LocalDate startDate = getDate("01-01-2020");
             LocalDate endDate = getDate("01-01-2023");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
-            when(csvServiceMock.writeContributionToCsv(any(), anyString(), anyString(), any(), any())).thenReturn(new File(filename));
+            when(csvServiceMock.writeContributionToCsv(any(), anyString(), any(), any(),
+                anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
             csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, "Test", startDate, endDate, filename);
             softly.assertThat(csvFile).isNotNull();
@@ -159,7 +160,8 @@ class ContributionsFileMapperTest {
             LocalDate startDate = getDate("01-01-2010");
             LocalDate endDate = getDate("01-01-2011");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
-            when(csvServiceMock.writeContributionToCsv(any(), anyString(), anyString(), any(), any())).thenReturn(new File(filename));
+            when(csvServiceMock.writeContributionToCsv(any(), anyString(), any(), any(),
+                anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
             csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, "Test", startDate, endDate, filename);
             softly.assertThat(csvFile).isNotNull();
@@ -179,7 +181,8 @@ class ContributionsFileMapperTest {
             LocalDate startDate = getDate("01-01-2025");
             LocalDate endDate = getDate("01-01-2025");
             CSVFileService csvServiceMock = mock(CSVFileService.class);
-            when(csvServiceMock.writeContributionToCsv(any(), anyString(), anyString(), any(), any())).thenReturn(new File(filename));
+            when(csvServiceMock.writeContributionToCsv(any(), anyString(), any(), any(),
+                anyString())).thenReturn(new File(filename));
             contributionsFileMapper.csvFileService=csvServiceMock;
             csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, "Test", startDate, endDate, filename);
             softly.assertThat(csvFile).isNotNull();
@@ -254,7 +257,7 @@ class ContributionsFileMapperTest {
      **/
 
     @Test
-    void givenContributionListNull_whenCallingProcessRequest_ShouldReturnFileOnlyWithHeader()
+    void givenContributionListNull_whenCallingProcessRequest_ShouldReturnFileWithHeaderAndNoDataMessage()
             throws JAXBException, IOException {
         String sourceData = getXmlDataContributionsList(true);
         ContributionFile fileToTest = contributionsFileMapper.mapContributionsXmlStringToObject(
@@ -278,7 +281,7 @@ class ContributionsFileMapperTest {
     }
 
     @Test
-    void givenContributionsListEmpty_whenCallingProcessRequest_ShouldReturnFileOnlyWithHeader()
+    void givenContributionsListEmpty_whenCallingProcessRequest_ShouldReturnFileWithHeaderAndNoDataMessage()
             throws JAXBException, IOException {
         String sourceData = getXmlDataContributionsList(false);
         ContributionFile fileToTest = contributionsFileMapper.mapContributionsXmlStringToObject(

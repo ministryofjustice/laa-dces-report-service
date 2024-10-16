@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
+import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
@@ -82,5 +84,23 @@ class DcesReportServiceTest {
         // assert
         Mockito.verify(contributionFilesClient, times(1)).getContributions(dateParam, dateParam);
         Mockito.verify(fdcFilesClient, times(0)).getContributions(any(), any());
+    }
+
+    @Test
+    void givenDateWithNoData_whenSendFdcReportIsInvoked_thenNoExceptionIsThrown() {
+        // setup
+        LocalDate testDate = LocalDate.of(2474, 10, 3);
+
+        // execute
+        assertDoesNotThrow(() -> dcesReportService.sendFdcReport(ReportType.FDC.name(), testDate, testDate));
+    }
+
+    @Test
+    void givenDateWithNoData_whenSendContributionsReportIsInvoked_thenNoExceptionIsThrown() {
+        // setup
+        LocalDate testDate = LocalDate.of(2474, 10, 3);
+
+        // execute
+        assertDoesNotThrow(() -> dcesReportService.sendContributionsReport(ReportType.Contribution.name(), testDate, testDate));
     }
 }

@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import uk.gov.justice.laa.crime.dces.report.enums.ReportPeriod;
+import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 
@@ -35,6 +37,8 @@ class FdcFilesServiceTest {
 
     @InjectSoftAssertions
     private SoftAssertions softly;
+  @Autowired
+  private FdcFilesService fdcFilesService;
 
     @AfterEach
     void assertAll(){
@@ -83,5 +87,14 @@ class FdcFilesServiceTest {
 
         // assert
         assertTrue(actualMessage.contains(expectedMessage));
+    }
+
+    @Test
+    void givenEmptyFileList_whenProcessFilesIsInvoked_thenNoExceptionIsThrown() {
+        // setup
+        LocalDate testDate = LocalDate.now();
+        List<String> testFiles = new ArrayList<>();
+
+        assertDoesNotThrow(() -> fdcFilesService.processFiles(testFiles, "Test", testDate, testDate));
     }
 }

@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.dces.report.controller;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.sentry.util.FileUtils;
+import jakarta.xml.bind.JAXBException;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -15,7 +16,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import uk.gov.justice.laa.crime.dces.report.enums.ReportPeriod;
+import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
+import uk.gov.justice.laa.crime.dces.report.model.generated.ContributionFile.CONTRIBUTIONSLIST.CONTRIBUTIONS;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 import uk.gov.justice.laa.crime.dces.report.service.FdcFilesService;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
@@ -27,6 +31,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Optional;
+import uk.gov.service.notify.NotificationClientException;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
@@ -71,9 +76,22 @@ class DcesReportControllerTest {
     }
 
     @Test
+    void givenDateWithNoData_whenGetContributionsReportIsInvoked_thenExceptionIsNotThrown() {
+        LocalDate testDate = LocalDate.of(2474, 10, 3);
+        assertDoesNotThrow(() -> controller.getContributionsReport(ReportType.Contribution.name(), testDate, testDate));
+    }
+
+    @Test
     void givenValidPeriod_whenGetFdcReportIsInvoked_thenFileWithExpectedContentIsReturned() {
         assertDoesNotThrow(() -> controller.getFdcReport("Test", fdcReportDate, fdcReportDate));
     }
+
+    @Test
+    void givenDateWithNoData_whenGetFdcReportIsInvoked_thenExceptionIsNotThrown() {
+        LocalDate testDate = LocalDate.of(2474, 10, 3);
+        assertDoesNotThrow(() -> controller.getFdcReport(ReportType.FDC.name(), testDate, testDate));
+    }
+
 
     @Test
     void givenDateNotMappedOnStub_whenGetContributionsReportIsInvoked_then404WebClientResponseExceptionIsThrownAfter2Retries() {
