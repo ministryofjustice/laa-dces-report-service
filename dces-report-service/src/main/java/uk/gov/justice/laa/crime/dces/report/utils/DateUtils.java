@@ -38,15 +38,15 @@ public class DateUtils {
 
     public static LocalDate getDefaultStartDateForReport(ReportPeriod reportPeriod) {
         return switch (reportPeriod) {
-            case Monthly -> LocalDate.now().minusMonths(1).withDayOfMonth(1);
-            case Daily -> LocalDate.now().minusDays(1);
+            case MONTHLY -> LocalDate.now().minusMonths(1).withDayOfMonth(1);
+            case DAILY -> LocalDate.now().minusDays(1);
         };
     }
 
     public static LocalDate getDefaultEndDateForReport(ReportPeriod reportPeriod) {
         return switch (reportPeriod) {
-            case Monthly -> LocalDate.now().withDayOfMonth(1).minusDays(1);
-            case Daily -> LocalDate.now().minusDays(1);
+            case MONTHLY -> LocalDate.now().withDayOfMonth(1).minusDays(1);
+            case DAILY -> LocalDate.now().minusDays(1);
         };
     }
 }

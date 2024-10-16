@@ -74,7 +74,22 @@ class CSVFileServiceTest {
         return contributionList;
     }
 
-    private FdcFile buildTestFdcFile() throws DatatypeConfigurationException {
+    @Test
+    void testWriteFdcToCsv() {
+        try {
+            List<FdcFile> fdcFiles = buildTestFdcFiles();
+            LocalDate date = LocalDate.now();
+            testFile = csvFileService.writeFdcFileListToCsv(fdcFiles, "Test", "Test", date.minusDays(30), date);
+            String output = FileUtils.readText(testFile);
+
+            softly.assertThat(output).contains(FDC_HEADER);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private List<FdcFile> buildTestFdcFiles() throws DatatypeConfigurationException {
+        ArrayList<FdcFile> fdcFiles = new ArrayList<>();
         var fdc = new Fdc();
         fdc.setMaatId(testMaatId);
         fdc.setCalculationDate(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar(2020, Calendar.JUNE, 30, 4, 0, 0)));
@@ -87,6 +102,7 @@ class CSVFileServiceTest {
         FdcFile.Header header = new FdcFile.Header();
         header.setDateGenerated(DatatypeFactory.newInstance().newXMLGregorianCalendar(new GregorianCalendar(2020, Calendar.JUNE, 30, 4, 0, 0)));
         fdcFile.setHeader(header);
-        return fdcFile;
+        fdcFiles.add(fdcFile);
+        return fdcFiles;
     }
 }

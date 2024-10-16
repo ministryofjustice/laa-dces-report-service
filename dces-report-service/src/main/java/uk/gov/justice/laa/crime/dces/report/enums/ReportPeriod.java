@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum ReportPeriod {
-  Monthly("Monthly"), Daily("Daily");
+  MONTHLY("Monthly"), DAILY("Daily");
   private final String description;
 }

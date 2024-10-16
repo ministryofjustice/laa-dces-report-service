@@ -15,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
-import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -92,7 +91,7 @@ class DcesReportServiceTest {
         LocalDate testDate = LocalDate.of(2474, 10, 3);
 
         // execute
-        assertDoesNotThrow(() -> dcesReportService.sendFdcReport(ReportType.FDC.name(), testDate, testDate));
+        assertDoesNotThrow(() -> dcesReportService.sendFdcReport(ReportType.FDC.getDescription(), testDate, testDate));
     }
 
     @Test
@@ -101,6 +100,6 @@ class DcesReportServiceTest {
         LocalDate testDate = LocalDate.of(2474, 10, 3);
 
         // execute
-        assertDoesNotThrow(() -> dcesReportService.sendContributionsReport(ReportType.Contribution.name(), testDate, testDate));
+        assertDoesNotThrow(() -> dcesReportService.sendContributionsReport(ReportType.CONTRIBUTION.getDescription(), testDate, testDate));
     }
 }

@@ -32,14 +32,14 @@ public class DcesReportScheduler {
     @Timed("laa_dces_report_service_scheduled_contributions_monthly")
     @Scheduled(cron = "${spring.scheduling.cron.contributions.monthly}")
     public void contributionsReportMonthly() throws JAXBException, IOException, NotificationClientException {
-        sendRequestedReport(ReportPeriod.Monthly, ReportType.Contribution);
+        sendRequestedReport(ReportPeriod.MONTHLY, ReportType.CONTRIBUTION);
     }
 
     @Timed("laa_dces_report_service_scheduled_contributions_daily")
     @Scheduled(cron = "${spring.scheduling.cron.contributions.daily}")
     public void contributionsReportDaily() throws JAXBException, IOException, NotificationClientException {
         if (featureFlags.runDailyReport()) {
-            sendRequestedReport(ReportPeriod.Daily, ReportType.Contribution);
+            sendRequestedReport(ReportPeriod.DAILY, ReportType.CONTRIBUTION);
         } else {
             log.info("Not running Daily Contributions report because the feature flag FEATURE_RUNDAILYREPORT is set to false.");
         }
@@ -48,14 +48,14 @@ public class DcesReportScheduler {
     @Timed("laa_dces_report_service_scheduled_fdc_monthly")
     @Scheduled(cron = "${spring.scheduling.cron.fdc.monthly}")
     public void fdcReportMonthly() throws JAXBException, IOException, NotificationClientException {
-        sendRequestedReport(ReportPeriod.Monthly, ReportType.FDC);
+        sendRequestedReport(ReportPeriod.MONTHLY, ReportType.FDC);
     }
 
     @Timed("laa_dces_report_service_scheduled_fdc_daily")
     @Scheduled(cron = "${spring.scheduling.cron.fdc.daily}")
     public void fdcReportDaily() throws JAXBException, IOException, NotificationClientException {
         if (featureFlags.runDailyReport()) {
-            sendRequestedReport(ReportPeriod.Daily, ReportType.FDC);
+            sendRequestedReport(ReportPeriod.DAILY, ReportType.FDC);
         } else {
             log.info("Not running Daily FDC report because the feature flag FEATURE_RUNDAILYREPORT is set to false.");
         }
@@ -67,7 +67,7 @@ public class DcesReportScheduler {
         LocalDate fromDate = DateUtils.getDefaultStartDateForReport(reportPeriod);
         LocalDate toDate = DateUtils.getDefaultEndDateForReport(reportPeriod);
         switch (reportType) {
-            case Contribution -> reportService.sendContributionsReport(reportPeriod.getDescription(), fromDate, toDate);
+            case CONTRIBUTION -> reportService.sendContributionsReport(reportPeriod.getDescription(), fromDate, toDate);
             case FDC -> reportService.sendFdcReport(reportPeriod.getDescription(), fromDate, toDate);
         }
 
