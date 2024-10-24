@@ -3,6 +3,7 @@ package uk.gov.justice.laa.crime.dces.report.service;
 import io.github.resilience4j.retry.annotation.Retry;
 import io.micrometer.core.annotation.Timed;
 import jakarta.xml.bind.JAXBException;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,11 @@ public class ContributionFilesService implements DcesReportFileService {
         List<String> resultList = new ArrayList<>();
 
         while (!currentDate.isAfter(finish)) {
-            resultList.addAll(contributionFilesClient.getContributions(currentDate, currentDate));
+            resultList.addAll(contributionFilesClient.getContributions(currentDate, currentDate)
+                .stream()
+                .filter(Objects::nonNull)
+                .toList()
+            );
             currentDate = currentDate.plusDays(1);
         }
 
@@ -52,18 +57,16 @@ public class ContributionFilesService implements DcesReportFileService {
     }
 
     @Timed("laa_dces_report_service_contributions_process_file")
-    public File processFiles(List<String> files, LocalDate start, LocalDate finish)
+    public File processFiles(List<String> files, String reportTitle, LocalDate start, LocalDate finish)
             throws JAXBException, IOException, DcesReportSourceFilesDataNotFound {
         log.info("Start generating CSV Contributions report from received XML files");
 
         if (files.isEmpty()) {
-            throw new DcesReportSourceFilesDataNotFound(
-                    String.format("NOT FOUND: No Contributions Files data between %s and %s", start, finish)
-            );
+            log.info(String.format("NOT FOUND: No Contributions Files data between %s and %s", start, finish));
         }
 
         String fileName = getFileName(start, finish);
-        File file = contributionFilesMapper.processRequest(files.toArray(new String[0]), start, finish, fileName);
+        File file = contributionFilesMapper.processRequest(files.toArray(new String[0]), reportTitle, start, finish, fileName);
 
         log.info("End generating CSV Contributions Report for time period {} - {}",
                 start.format(DateUtils.dateFormatter), finish.format(DateUtils.dateFormatter));

@@ -66,6 +66,10 @@ spec:
             periodSeconds: {{ .Values.actuator.readiness.periodSeconds }}
             timeoutSeconds: {{ .Values.actuator.readiness.timeoutSeconds }}
             failureThreshold: {{ .Values.actuator.readiness.failureThreshold }}
+          envFrom:
+            - secretRef:
+                name: feature-flags
+                optional: true
           {{ include "laa-dces-report-service.env-vars" . | nindent 10 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}

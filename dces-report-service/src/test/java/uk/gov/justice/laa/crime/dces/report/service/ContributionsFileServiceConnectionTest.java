@@ -29,7 +29,6 @@ class ContributionsFileServiceConnectionTest {
     private static final LocalDate startPeriod = LocalDate.of(2021, 1, 2);
 
     private static final LocalDate finishPeriod = LocalDate.of(2021, 1, 27);
-    private static final String MAAT_ID_EXPECTED = "5635978";
 
     @Autowired
     ContributionFilesService filesService;

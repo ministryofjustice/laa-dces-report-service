@@ -16,16 +16,19 @@ spring:
   # secs and min range from 0-59, hour 0-23, month 1-12, day-of-month 1-31 (be aware of month day restrictions, day-of-week 1-7)
   scheduling:
     enabled: true
-    contributions:
-      cron: "0-30/16 */5 * * * ?"
-    fdc:
-      cron: "31-59/15 */5 * * * ?"
+    cron:
+      contributions:
+        monthly: "0-15/8 */5 * * * ?"
+        daily: "16-30/8 */5 * * * ?"
+      fdc:
+        monthly: "31-45/10 */5 * * * ?"
+        daily: "46-59/10 */5 * * * ?"
 
 emailClient:
   notify:
     key: notify_test_key
     template-id: notify-template-id
-    recipient: "tariq.hossain@digital.justice.gov.uk"
+    recipient: "vidyanand.vartak@digital.justice.gov.uk"
 
 sentry:
   environment: development

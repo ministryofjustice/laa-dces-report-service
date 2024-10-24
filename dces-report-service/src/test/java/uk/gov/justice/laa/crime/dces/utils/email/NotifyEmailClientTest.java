@@ -133,7 +133,7 @@ class NotifyEmailClientTest {
     void givenEnvironmentIsNotProductionNoEnvPersonalisationShouldBeSet() throws NotificationClientException, IOException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("testContributionReport.csv").getFile());
-        NotifyEmailObject emailObject = notifyConfiguration.createEmail(file, "Contribution", LocalDate.of(2023, 8, 10), LocalDate.now(), "templateId", List.of("email@address.com"));
+        NotifyEmailObject emailObject = notifyConfiguration.createEmail(file, "Contribution", "Test", LocalDate.of(2023, 8, 10), LocalDate.now(), "templateId", List.of("email@address.com"));
 
         softly.assertThat(emailObject.getPersonalisation().get("env")).isEqualTo(environment);
     }

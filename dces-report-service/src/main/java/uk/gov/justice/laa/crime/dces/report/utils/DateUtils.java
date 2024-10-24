@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import uk.gov.justice.laa.crime.dces.report.enums.ReportPeriod;
 
 @UtilityClass
 @ConfigurationPropertiesScan
@@ -16,7 +17,6 @@ public class DateUtils {
     public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private final DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-
 
     public String convertXmlGregorianToString(XMLGregorianCalendar xmlGregorianCalendar) {
         if (Objects.nonNull(xmlGregorianCalendar)) {
@@ -36,12 +36,17 @@ public class DateUtils {
                 && !convertedDate.isAfter(endDate));
     }
 
-    public static LocalDate getDefaultStartDateForReport() {
-        return LocalDate.now().minusMonths(1).withDayOfMonth(1);
+    public static LocalDate getDefaultStartDateForReport(ReportPeriod reportPeriod) {
+        return switch (reportPeriod) {
+            case MONTHLY -> LocalDate.now().minusMonths(1).withDayOfMonth(1);
+            case DAILY -> LocalDate.now().minusDays(1);
+        };
     }
 
-    public static LocalDate getDefaultEndDateForReport() {
-        return LocalDate.now().withDayOfMonth(1).minusDays(1);
+    public static LocalDate getDefaultEndDateForReport(ReportPeriod reportPeriod) {
+        return switch (reportPeriod) {
+            case MONTHLY -> LocalDate.now().withDayOfMonth(1).minusDays(1);
+            case DAILY -> LocalDate.now().minusDays(1);
+        };
     }
-
 }

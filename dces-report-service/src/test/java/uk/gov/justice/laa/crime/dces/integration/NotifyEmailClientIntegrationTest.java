@@ -45,6 +45,7 @@ final class NotifyEmailClientIntegrationTest {
         testEmailObject = notifyConfiguration.createEmail(
                 file,
                 "Contribution",
+                "Test",
                 LocalDate.of(2023, 8, 10),
                 LocalDate.now(),
                 TEMPLATE_ID,

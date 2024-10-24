@@ -48,34 +48,35 @@ public class DcesReportService {
     private NotifyConfiguration notifyConfiguration;
 
 
-    public void sendContributionsReport(LocalDate start, LocalDate end)
+    public void sendContributionsReport(String reportTitle, LocalDate start, LocalDate end)
             throws JAXBException, IOException,
             DcesReportSourceFilesDataNotFound, NotificationClientException {
-        processReportRequest(contributionFilesService, start, end);
+        processReportRequest(contributionFilesService, reportTitle, start, end);
     }
 
-    public void sendFdcReport(LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
-        processReportRequest(fdcFilesService, start, end);
+    public void sendFdcReport(String reportTitle, LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
+        processReportRequest(fdcFilesService, reportTitle, start, end);
     }
 
-    private void processReportRequest(DcesReportFileService fileService, LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
-        log.info("{} Report between {} and {}, generation requested",
-                fileService.getType(), start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+    private void processReportRequest(DcesReportFileService fileService, String reportTitle, LocalDate start, LocalDate end) throws JAXBException, IOException, NotificationClientException {
+
+        log.info("{} {} Report between {} and {}, generation requested",
+                fileService.getType(), reportTitle, start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
         List<String> files = fileService.getFiles(start, end);
-        File reportFile = fileService.processFiles(files, start, end);
-        sendEmailReport(reportFile, fileService.getType(), start, end);
+        File reportFile = fileService.processFiles(files, reportTitle, start, end);
+        sendEmailReport(reportFile, fileService.getType(), reportTitle, start, end);
 
-        log.info("{} Report between {} and {} generated successfully",
-                fileService.getType(), start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
+        log.info("{} {} Report between {} and {} generated successfully",
+                fileService.getType(), reportTitle, start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
     }
 
     @Timed("sendEmail")
-    private void sendEmailReport(File attachment, String reportType, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
+    private void sendEmailReport(File attachment, String reportType, String reportTitle, LocalDate start, LocalDate end) throws IOException, NotificationClientException {
         log.info("[{} report] :: Creating email object for time period {} - {} ",
                 reportType, start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
-        EmailObject emailObject = notifyConfiguration.createEmail(attachment, reportType, start, end, templateId, recipients);
+        EmailObject emailObject = notifyConfiguration.createEmail(attachment, reportType, reportTitle, start, end, templateId, recipients);
 
         Timer timer = Metrics.globalRegistry.timer("laa_dces_report_service_send_email");
         timer.record(() -> sendEmail(emailObject, emailClient));
