@@ -4,7 +4,6 @@ import io.micrometer.core.annotation.Timed;
 import jakarta.xml.bind.JAXBException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -22,7 +21,6 @@ import java.time.LocalDate;
 @Slf4j
 @RequiredArgsConstructor
 @EnableScheduling
-@ConditionalOnProperty(name="spring.scheduling.enabled", havingValue = "true")
 public class DcesReportScheduler {
 
     private final DcesReportService reportService;
@@ -30,13 +28,13 @@ public class DcesReportScheduler {
     private final FeatureFlags featureFlags;
 
     @Timed("laa_dces_report_service_scheduled_contributions_monthly")
-    @Scheduled(cron = "${spring.scheduling.cron.contributions.monthly}")
+    @Scheduled(cron = "${spring.scheduling.cron.contributions.monthly:-}")
     public void contributionsReportMonthly() throws JAXBException, IOException, NotificationClientException {
         sendRequestedReport(ReportPeriod.MONTHLY, ReportType.CONTRIBUTION);
     }
 
     @Timed("laa_dces_report_service_scheduled_contributions_daily")
-    @Scheduled(cron = "${spring.scheduling.cron.contributions.daily}")
+    @Scheduled(cron = "${spring.scheduling.cron.contributions.daily:-}")
     public void contributionsReportDaily() throws JAXBException, IOException, NotificationClientException {
         if (featureFlags.runDailyReport()) {
             sendRequestedReport(ReportPeriod.DAILY, ReportType.CONTRIBUTION);
@@ -46,13 +44,13 @@ public class DcesReportScheduler {
     }
 
     @Timed("laa_dces_report_service_scheduled_fdc_monthly")
-    @Scheduled(cron = "${spring.scheduling.cron.fdc.monthly}")
+    @Scheduled(cron = "${spring.scheduling.cron.fdc.monthly:-}")
     public void fdcReportMonthly() throws JAXBException, IOException, NotificationClientException {
         sendRequestedReport(ReportPeriod.MONTHLY, ReportType.FDC);
     }
 
     @Timed("laa_dces_report_service_scheduled_fdc_daily")
-    @Scheduled(cron = "${spring.scheduling.cron.fdc.daily}")
+    @Scheduled(cron = "${spring.scheduling.cron.fdc.daily:-}")
     public void fdcReportDaily() throws JAXBException, IOException, NotificationClientException {
         if (featureFlags.runDailyReport()) {
             sendRequestedReport(ReportPeriod.DAILY, ReportType.FDC);

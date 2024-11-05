@@ -54,17 +54,17 @@ spring:
             scope:
               - ${MAAT_API_OAUTH_SCOPE}
   # Cron template: second   minute  hour  day-of-month  month  day-of-week
+  # default is disabled: "-"
   # * is used to indicate include all; ? is used to ignore
-  # secs and min range from 0-59, hour 0-23, month 1-12, day-of-month 1-31 (be aware of month day restrictions, day-of-week 1-7)
+  # secs and min range from 0-59, hour 0-23, month 1-12, day-of-month 1-31 (be aware of month day restrictions, day-of-week 1-7 or MON-FRI etc.)
   scheduling:
-    enabled: ${DCES_CRON_ENABLED}
     cron:
       contributions:
-        monthly: ${DCES_CRON_CONTRIBUTIONS_MONTHLY} # "0 0 5 5 * ?" # (5th of every month at 05:00am)
-        daily: ${DCES_CRON_CONTRIBUTIONS_DAILY} #"16-30/8 */5 * * * ?"
+        monthly: ${DCES_CRON_CONTRIBUTIONS_MONTHLY:-} # "0 0 5 5 * ?" # (5th of every month at 05:00am)
+        daily: ${DCES_CRON_CONTRIBUTIONS_DAILY:-} #"16-30/8 */5 * * * ?"
       fdc:
-        monthly: ${DCES_CRON_FDC_MONTHLY} # "0 20 5 5 * ?" # (5th of every month at 05:20am)
-        daily: ${DCES_CRON_FDC_DAILY} # "46-59/10 */5 * * * ?"
+        monthly: ${DCES_CRON_FDC_MONTHLY:-} # "0 20 5 5 * ?" # (5th of every month at 05:20am)
+        daily: ${DCES_CRON_FDC_DAILY:-} # "46-59/10 */5 * * * ?"
 
 sentry:
   debug: off
