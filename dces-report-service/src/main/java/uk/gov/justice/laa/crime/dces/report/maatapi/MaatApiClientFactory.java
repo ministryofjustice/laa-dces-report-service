@@ -15,7 +15,7 @@ public class MaatApiClientFactory {
     @Bean
     public static <T extends MaatApiClient> T maatApiClient(WebClient maatApiWebClient, Class<T> returnClass) {
         HttpServiceProxyFactory httpServiceProxyFactory =
-                HttpServiceProxyFactory.builder(WebClientAdapter.forClient(maatApiWebClient))
+                HttpServiceProxyFactory.builderFor(WebClientAdapter.create(maatApiWebClient))
                         .build();
         return httpServiceProxyFactory.createClient(returnClass);
     }
