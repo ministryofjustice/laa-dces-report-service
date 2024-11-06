@@ -32,16 +32,4 @@ env:
     value: {{ .Values.emailClient.notify_key }}
   - name: NOTIFY_TEMPLATEID
     value: {{ .Values.emailClient.notify_templateId }}
-  - name: NOTIFY_RECIPIENT
-    value: {{ .Values.emailClient.notify_recipient }}
-  - name: DCES_CRON_ENABLED
-    value: {{ .Values.scheduling.dces_cron_enabled | quote}}
-  - name: DCES_CRON_CONTRIBUTIONS_MONTHLY
-    value: {{ .Values.scheduling.dces_cron_contributions_monthly }}
-  - name: DCES_CRON_CONTRIBUTIONS_DAILY
-    value: {{ .Values.scheduling.dces_cron_contributions_daily }}
-  - name: DCES_CRON_FDC_MONTHLY
-    value: {{ .Values.scheduling.dces_cron_fdc_monthly }}
-  - name: DCES_CRON_FDC_DAILY
-    value: {{ .Values.scheduling.dces_cron_fdc_daily }}
 {{- end -}}

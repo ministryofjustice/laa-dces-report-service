@@ -70,6 +70,11 @@ spec:
             - secretRef:
                 name: feature-flags
                 optional: true
+            {{/* All the keys defined in config-variables secret mentioned below will become environment variables, but only if
+             same named variables haven't already been defined via the env: tag, here or in _environment.tpl */}}
+            - secretRef:
+                name: config-variables
+                optional: true
           {{ include "laa-dces-report-service.env-vars" . | nindent 10 }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
