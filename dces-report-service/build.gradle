@@ -66,6 +66,9 @@ dependencies {
 
     implementation "uk.gov.service.notify:notifications-java-client:$versions.notifyVersion"
 
+    runtimeOnly "io.micrometer:micrometer-tracing-bridge-brave"
+    runtimeOnly "io.micrometer:micrometer-registry-prometheus"
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
