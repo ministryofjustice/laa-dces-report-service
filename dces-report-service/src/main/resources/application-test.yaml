@@ -1,7 +1,6 @@
 services:
   maat-api:
     baseUrl: http://localhost:1111
-    registrationId: MATT_API_REG_ID
     oAuthEnabled: false
 
 spring:

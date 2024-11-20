@@ -17,7 +17,7 @@ import org.springframework.web.reactive.function.client.*;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.resources.ConnectionProvider;
-import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesConfiguration;
+import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesProperties;
 import uk.gov.justice.laa.crime.dces.report.maatapi.exception.MaatApiClientException;
 
 import java.time.Duration;
@@ -30,7 +30,7 @@ public class MaatApiWebClientFactory {
 
     @Bean
     public WebClient maatApiWebClient(
-            ServicesConfiguration servicesConfiguration,
+            ServicesProperties services,
             OAuth2AuthorizedClientManager authorizedClientManager
     ) {
 
@@ -43,7 +43,7 @@ public class MaatApiWebClientFactory {
                 .build();
 
         WebClient.Builder clientBuilder = WebClient.builder()
-            .baseUrl(servicesConfiguration.getMaatApi().getBaseUrl())
+            .baseUrl(services.getMaatApi().getBaseUrl())
             .filter(addLaaTransactionIdToRequest())
             .filter(logClientResponse())
             .filter(handleErrorResponse())
@@ -57,20 +57,16 @@ public class MaatApiWebClientFactory {
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
 
-        if (servicesConfiguration.getMaatApi().isOAuthEnabled()) {
+        if (services.getMaatApi().isOAuthEnabled()) {
             ServletOAuth2AuthorizedClientExchangeFilterFunction oauth2Client =
                     new ServletOAuth2AuthorizedClientExchangeFilterFunction(authorizedClientManager);
-
-            oauth2Client.setDefaultClientRegistrationId(
-                    servicesConfiguration.getMaatApi().getRegistrationId()
-            );
-
+            oauth2Client.setDefaultClientRegistrationId("maatapi");
             clientBuilder.filter(oauth2Client);
         }
 
         final ExchangeStrategies strategies = ExchangeStrategies.builder()
             .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(
-                convertMaxBufferSize(servicesConfiguration.getMaatApi().getMaxBufferSize())
+                convertMaxBufferSize(services.getMaatApi().getMaxBufferSize())
                 ))
             .build();
         clientBuilder.exchangeStrategies(strategies);
