@@ -1,4 +1,7 @@
-microservice-template/.gradle
+dces-report-service/.gradle
+dces-report-service/src/main/java/uk/gov/justice/laa/crime/dces/report/model/generated/
+dces-report-service/src/main/resources/*.json
+
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar

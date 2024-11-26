@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
-import uk.gov.justice.laa.crime.dces.report.config.FeatureFlags;
+import uk.gov.justice.laa.crime.dces.report.config.FeatureProperties;
 import uk.gov.justice.laa.crime.dces.report.enums.ReportPeriod;
 import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
@@ -25,7 +25,7 @@ public class DcesReportScheduler {
 
     private final DcesReportService reportService;
 
-    private final FeatureFlags featureFlags;
+    private final FeatureProperties feature;
 
     @Timed("laa_dces_report_service_scheduled_contributions_monthly")
     @Scheduled(cron = "${spring.scheduling.cron.contributions.monthly:-}")
@@ -36,7 +36,7 @@ public class DcesReportScheduler {
     @Timed("laa_dces_report_service_scheduled_contributions_daily")
     @Scheduled(cron = "${spring.scheduling.cron.contributions.daily:-}")
     public void contributionsReportDaily() throws JAXBException, IOException, NotificationClientException {
-        if (featureFlags.runDailyReport()) {
+        if (feature.runDailyReport()) {
             sendRequestedReport(ReportPeriod.DAILY, ReportType.CONTRIBUTION);
         } else {
             log.info("Not running Daily Contributions report because the feature flag FEATURE_RUNDAILYREPORT is set to false.");
@@ -52,7 +52,7 @@ public class DcesReportScheduler {
     @Timed("laa_dces_report_service_scheduled_fdc_daily")
     @Scheduled(cron = "${spring.scheduling.cron.fdc.daily:-}")
     public void fdcReportDaily() throws JAXBException, IOException, NotificationClientException {
-        if (featureFlags.runDailyReport()) {
+        if (feature.runDailyReport()) {
             sendRequestedReport(ReportPeriod.DAILY, ReportType.FDC);
         } else {
             log.info("Not running Daily FDC report because the feature flag FEATURE_RUNDAILYREPORT is set to false.");

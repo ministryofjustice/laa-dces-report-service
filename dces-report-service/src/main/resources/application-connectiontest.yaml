@@ -23,8 +23,7 @@ springdoc:
 
 services:
   maat-api:
-    baseUrl: ${MAAT_API_BASE_URL}
-    registrationId: ${MAAT_API_REGISTRATION_ID}
+    baseUrl: ${MAATCDAPI_BASEURL}
     oAuthEnabled: true
     maxBufferSize: 16
 
@@ -44,14 +43,14 @@ spring:
       client:
         provider:
           maatapi:
-            token-uri: ${MAAT_API_OAUTH_URL}
+            token-uri: ${MAATCDAPI_OAUTH2_TOKENURI}
         registration:
           maatapi:
-            client-id: ${MAAT_API_OAUTH_CLIENT_ID}
-            client-secret: ${MAAT_API_OAUTH_CLIENT_SECRET}
+            client-id: ${MAATCDAPI_OAUTH2_CLIENTID}
+            client-secret: ${MAATCDAPI_OAUTH2_CLIENTSECRET}
             authorization-grant-type: client_credentials
             scope:
-              - ${MAAT_API_OAUTH_SCOPE}
+              - ${MAATCDAPI_OAUTH2_SCOPE}
   scheduling:
     enabled: true
     cron:

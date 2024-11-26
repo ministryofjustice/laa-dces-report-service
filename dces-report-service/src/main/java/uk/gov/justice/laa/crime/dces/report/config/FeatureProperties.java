@@ -35,5 +35,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *                           This enables the daily reports.
  */
 @ConfigurationProperties(prefix = "feature")
-public record FeatureFlags(boolean runDailyReport   /* feature.run-daily-report */) {
+public record FeatureProperties(boolean runDailyReport   /* feature.run-daily-report */) {
 }

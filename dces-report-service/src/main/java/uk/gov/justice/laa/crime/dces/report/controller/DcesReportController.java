@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import uk.gov.justice.laa.crime.dces.report.config.FeatureFlags;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
 import uk.gov.service.notify.NotificationClientException;
 import java.io.IOException;
