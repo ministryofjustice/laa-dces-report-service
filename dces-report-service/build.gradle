@@ -14,7 +14,7 @@ def versions = [
         jakartaActivation      : '2.0.1',
         resilience4jVersion    : '2.0.2',
         wiremockVersion        : '3.9.1',
-        notifyVersion          : '4.1.0-RELEASE'
+        notifyVersion          : '5.2.1-RELEASE'
 ]
 group = 'uk.gov.justice.laa.crime'
 
