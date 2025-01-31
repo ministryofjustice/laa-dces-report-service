@@ -107,3 +107,4 @@ logging:
   level:
     root: DEBUG
     org.springframework: DEBUG
+    org.springframework.beans.factory: DEBUG
