@@ -1,7 +1,12 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.crime.dces.report.dto.FailureReport;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList.Fdc;
@@ -33,11 +38,15 @@ public class CSVFileService {
 
     private static final String FDC_HEADING = "Final Defence Cost Report";
 
+    private static final String FAILURES_HEADING = "DCES DRC API Failures Report";
+
+    private static final String FAILURES_COLUMNS_HEADER = "MAAT Id,ContributionType,ContributionId,sentToDrc,drcSendAttempts,firstDrcAttemptDate,lastDrcAttemptDate,updatedInMaat,maatUpdateAttempts,firstMaatAttemptDate,lastMaatAttemptDate" + System.lineSeparator();
+
     private static final String NO_DATA_MESSAGE = "### There is no data to report for the specified date range. ####";
 
     private static final String TITLE_TEMPLATE = "%s %s REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s" + System.lineSeparator();
 
-    private static final String FDC_HEADER = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date" + System.lineSeparator();
+    private static final String FDC_COLUMNS_HEADER = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date" + System.lineSeparator();
     private static final String FILE_PERMISSIONS = "rwx------";
 
 
@@ -93,6 +102,27 @@ public class CSVFileService {
     }
 
 
+    public File writeFailuresToCsv(List<FailureReport> failures, String fileName, String reportTitle, LocalDate reportDate) throws IOException {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (OutputStreamWriter writer = new OutputStreamWriter(outputStream)) {
+            writeFailuresHeader(writer, reportTitle, reportDate);
+            boolean someDataFound = false;
+            for (FailureReport failure : failures) {
+                writer.append(buildFailureLine(failure));
+                someDataFound = true;
+            }
+            if (!someDataFound) {
+                writer.append(NO_DATA_MESSAGE);
+            }
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
+        InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+        File targetFile = new File(fileName);
+        Files.copy(inputStream, targetFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        return targetFile;
+    }
+
     private ContributionCSVDataLine getContributionsHeader() {
         return ContributionCSVDataLine.builder()
                 .maatId("MAAT ID")
@@ -109,7 +139,13 @@ public class CSVFileService {
 
     private void writeFdcHeader(FileWriter fw, String reportTitle, LocalDate fromDate, LocalDate toDate) throws IOException {
         String headerLine = String.format(TITLE_TEMPLATE, reportTitle, FDC_HEADING, fromDate, toDate, LocalDate.now());
-        headerLine += FDC_HEADER;
+        headerLine += FDC_COLUMNS_HEADER;
+        fw.append(headerLine);
+    }
+
+    private void writeFailuresHeader(OutputStreamWriter fw, String reportTitle, LocalDate reportDate) throws IOException {
+        String headerLine = String.format(TITLE_TEMPLATE, reportTitle, FAILURES_HEADING, "N/A", reportDate, LocalDate.now());
+        headerLine += FAILURES_COLUMNS_HEADER;
         fw.append(headerLine);
     }
 
@@ -131,6 +167,21 @@ public class CSVFileService {
                 getFdcValue(fdcLine.getAgfsTotal()) +
                 dateGenerated +
                 System.lineSeparator();
+    }
+
+    private String buildFailureLine(FailureReport failure) {
+        return Objects.toString(failure.getMaatId(), "")
+            + ',' + Objects.toString(failure.getContributionType(), "")
+            + ',' + Objects.toString(failure.getContributionId(), "")
+            + ',' + failure.getSentToDrc().toString()
+            + ',' + failure.getDrcSendAttempts()
+            + ',' + failure.getFirstDrcAttemptDate()
+            + ',' + failure.getLastDrcAttemptDate()
+            + ',' + failure.getUpdatedInMaat()
+            + ',' + failure.getMaatUpdateAttempts()
+            + ',' + failure.getFirstMaatAttemptDate()
+            + ',' + failure.getLastMaatAttemptDate()
+            + System.lineSeparator();
     }
 
     private String getFdcValue(Object o) {

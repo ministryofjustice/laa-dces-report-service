@@ -6,6 +6,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum ReportType {
-  CONTRIBUTION("Contribution"), FDC("FDC");
+  CONTRIBUTION("Contribution"), FDC("FDC"), FAILURES("Failures");
   private final String description;
 }

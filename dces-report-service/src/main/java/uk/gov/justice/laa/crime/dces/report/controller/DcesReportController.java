@@ -30,7 +30,6 @@ public class DcesReportController {
 
     private final DcesReportService reportService;
 
-
     @GetMapping(value = "/contributions/{reportTitle}/{start}/{finish}")
     @Operation(description = "Generate Contributions report for the given period and send it by email")
     @ApiResponse(responseCode = "200")
@@ -71,4 +70,25 @@ public class DcesReportController {
         log.info("FDC Report entry point called with title {}, start:{}, end: {}", reportTitle, start, finish);
         reportService.sendFdcReport(reportTitle, start, finish);
     }
+
+    @GetMapping(value = "/failures/{reportTitle}/{reportDate}")
+    @Operation(description = "Generate Failures report and send it by email")
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "400",
+        description = "Bad request.",
+        content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+            schema = @Schema(implementation = ProblemDetail.class)
+        )
+    )
+    @ApiResponse(responseCode = "500",
+        description = "Server Error.",
+        content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+            schema = @Schema(implementation = ProblemDetail.class)
+        )
+    )
+    public void getFailuresReport(@PathVariable("reportTitle") String reportTitle, @PathVariable("reportDate") LocalDate reportDate) throws IOException, NotificationClientException {
+        log.info("Failures Report entry point called with title {}, date: {}", reportTitle, reportDate);
+        reportService.sendFailuresReport(reportTitle, reportDate);
+    }
+
 }

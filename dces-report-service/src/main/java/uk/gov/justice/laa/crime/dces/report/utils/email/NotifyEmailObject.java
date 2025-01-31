@@ -46,6 +46,6 @@ public final class NotifyEmailObject implements EmailObject {
     @Override
     public void addAttachment(File file) throws IOException, NotificationClientException {
         byte[] fileContents = readFileToByteArray(file);
-        personalisation.put(uploadKey, NotificationClient.prepareUpload(fileContents, true));
+        personalisation.put(uploadKey, NotificationClient.prepareUpload(fileContents, file.getName()));
     }
 }

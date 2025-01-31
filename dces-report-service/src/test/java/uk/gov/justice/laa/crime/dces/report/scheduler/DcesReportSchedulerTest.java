@@ -41,4 +41,10 @@ class DcesReportSchedulerTest {
         assertDoesNotThrow(() -> scheduler.fdcReportDaily());
     }
 
+    @Test
+    void givenDefaultDate_whenFailuresReport_thenNoExceptionShouldBeThrown() {
+        assertDoesNotThrow(() -> scheduler.failuresReportDaily());
+    }
+
+
 }

@@ -59,6 +59,12 @@ public class DcesReportScheduler {
         }
     }
 
+    @Timed("laa_dces_report_service_scheduled_failures_daily")
+    @Scheduled(cron = "${spring.scheduling.cron.failures.daily:-}")
+    public void failuresReportDaily() throws JAXBException, IOException, NotificationClientException {
+        sendRequestedReport(ReportPeriod.DAILY, ReportType.FAILURES);
+    }
+
     private void sendRequestedReport(ReportPeriod reportPeriod, ReportType reportType) throws JAXBException, IOException, NotificationClientException {
 
         log.info("Scheduled {} {} Report", reportType, reportPeriod);
@@ -67,6 +73,7 @@ public class DcesReportScheduler {
         switch (reportType) {
             case CONTRIBUTION -> reportService.sendContributionsReport(reportPeriod.getDescription(), fromDate, toDate);
             case FDC -> reportService.sendFdcReport(reportPeriod.getDescription(), fromDate, toDate);
+            case FAILURES -> reportService.sendFailuresReport(reportPeriod.getDescription(), toDate);
         }
 
         log.info("Successfully finished {} {} Report", reportType, reportPeriod);

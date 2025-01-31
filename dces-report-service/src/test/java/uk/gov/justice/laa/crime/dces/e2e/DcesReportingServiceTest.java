@@ -19,6 +19,7 @@ import uk.gov.justice.laa.crime.dces.report.controller.DcesReportController;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
+import uk.gov.justice.laa.crime.dces.report.service.FailuresReportService;
 import uk.gov.justice.laa.crime.dces.report.service.FdcFilesService;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.config.NotifyConfiguration;
@@ -53,6 +54,9 @@ final class DcesReportingServiceTest {
 
     @SpyBean
     private FdcFilesClient spyFdcFilesClient;
+
+    @SpyBean
+    private FailuresReportService spyFailuresReportService;
 
     @SpyBean
     private NotifyEmailClient spyEmailClient;
@@ -168,4 +172,24 @@ final class DcesReportingServiceTest {
         Mockito.verify(spyFdcFilesClient, times(1)).getContributions(any(), any());
         Mockito.verify(spyEmailClient, times(1)).send(any());
     }
+
+
+    @Test
+    void failuresReportRunsSuccessfully() throws NotificationClientException, IOException {
+        // setup
+        if (!notifyConfiguration.getEnvironment().equals("development")) {
+            return;
+        }
+
+        // execute
+        LocalDate date = LocalDate.of(2023, 7, 3);
+        controller.getFailuresReport("Daily", date);
+
+
+        // assert
+        Mockito.verify(spyReporting, times(1)).sendFailuresReport("Daily", date);
+        Mockito.verify(spyFailuresReportService, times(1)).generateReport(any(), any());
+        Mockito.verify(spyEmailClient, times(1)).send(any());
+    }
+
 }
