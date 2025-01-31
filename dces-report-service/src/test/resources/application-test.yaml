@@ -44,7 +44,3 @@ emailClient:
 
 sentry:
   environment: development
-logging:
-  level:
-    org:
-      springframework: DEBUG
