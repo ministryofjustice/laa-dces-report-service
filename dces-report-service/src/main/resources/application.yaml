@@ -93,4 +93,5 @@ sentry:
   in-app-includes: uk.gov.justice.laa.crime.dces.report
 logging:
   level:
-    root: DEBUG
+    org:
+      springframework: DEBUG
