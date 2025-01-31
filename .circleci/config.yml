@@ -72,7 +72,6 @@ jobs:
       # Configure the JVM and Gradle to avoid OOM errors
       _JAVA_OPTIONS: "-Xmx3g"
       GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.workers.max=2"
-      SPRING_PROFILES_ACTIVE: test
     docker:
       - image: cimg/openjdk:17.0.4
     working_directory: ~/laa-dces-report-service/dces-report-service
@@ -84,10 +83,8 @@ jobs:
       - restore_cache:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - run:
-          name: List /src/main/resources
-          command: ls -la src/main/resources
-      - run: echo "export SPRING_PROFILES_ACTIVE=test" >> $BASH_ENV
-      - run: source $BASH_ENV && ./gradlew test
+          name: Install Dependencies and Build
+          command: ./gradlew clean build
       - run:
           name: Run Sonar
           command: ./gradlew sonar
