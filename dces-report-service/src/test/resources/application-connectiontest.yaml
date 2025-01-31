@@ -32,8 +32,8 @@ emailClient:
     key: notify_test_key
     template-id: notify-template-id
     recipient:
-      default: ${NOTIFY_RECIPIENT}
-      failures: ${NOTIFY_RECIPIENT_FAILURES}
+      default: ${NOTIFY_RECIPIENT:test@example.com}
+      failures: ${NOTIFY_RECIPIENT_FAILURES:test@example.com}
 
 spring:
   mvc:
