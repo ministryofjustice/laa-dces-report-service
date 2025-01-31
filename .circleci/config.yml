@@ -83,6 +83,18 @@ jobs:
       - restore_cache:
           key: v1-gradle-cache-{{ checksum "build.gradle" }}
       - run:
+          name: List /src/main/resources
+          command: ls -la src/main/resources
+      - run:
+          name: echo spring profiles active
+          command: echo $SPRING_PROFILES_ACTIVE
+      - run:
+          name: set test profile
+          command: export SPRING_PROFILES_ACTIVE=test
+      - run:
+          name: echo spring profiles active again
+          command: echo $SPRING_PROFILES_ACTIVE
+      - run:
           name: Install Dependencies and Build
           command: ./gradlew clean build
       - run:
