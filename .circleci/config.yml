@@ -88,7 +88,7 @@ jobs:
           command: ls -la src/main/resources
       - run:
           name: Install Dependencies and Build
-          command: ./gradlew clean build
+          command: SPRING_PROFILES_ACTIVE=test ./gradlew clean build --stacktrace
       - run:
           name: Run Sonar
           command: ./gradlew sonar
