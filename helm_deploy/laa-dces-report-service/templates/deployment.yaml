@@ -69,9 +69,12 @@ spec:
           envFrom:
             - secretRef:
                 name: feature-flags
-                optional: true
+                optional: false
             - secretRef:
                 name: maat-cd-api
+                optional: true
+            - secretRef:
+                name: datasource
                 optional: true
             {{/* All the keys defined in config-variables secret mentioned below will become environment variables, but only if
              same named variables haven't already been defined via the env: tag, here or in _environment.tpl */}}
