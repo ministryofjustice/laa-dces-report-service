@@ -103,23 +103,21 @@ public class CSVFileService {
 
 
     public File writeFailuresToCsv(List<FailureReport> failures, String fileName, String reportTitle, LocalDate reportDate) throws IOException {
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try (OutputStreamWriter writer = new OutputStreamWriter(outputStream)) {
-            writeFailuresHeader(writer, reportTitle, reportDate);
+        File targetFile = createCsvFile(fileName);
+        // file-writer initialise
+        try (FileWriter fw = new FileWriter(targetFile, true)) {
+            writeFailuresHeader(fw, reportTitle, reportDate);
             boolean someDataFound = false;
             for (FailureReport failure : failures) {
-                writer.append(buildFailureLine(failure));
+                fw.append(buildFailureLine(failure));
                 someDataFound = true;
             }
             if (!someDataFound) {
-                writer.append(NO_DATA_MESSAGE);
+                fw.append(NO_DATA_MESSAGE);
             }
         } catch (IOException e) {
             throw new IOException(e);
         }
-        InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-        File targetFile = new File(fileName);
-        Files.copy(inputStream, targetFile.toPath(), java.nio.file.StandardCopyOption.REPLACE_EXISTING);
         return targetFile;
     }
 
