@@ -57,8 +57,11 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: false
+    show-sql: true
     generate-ddl: false
+    properties:
+      hibernate:
+        format_sql: true
 
   # Cron template: second   minute  hour  day-of-month  month  day-of-week
   # default is disabled: "-"
