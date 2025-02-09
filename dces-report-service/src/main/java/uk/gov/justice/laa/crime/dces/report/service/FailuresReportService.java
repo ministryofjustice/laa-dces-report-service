@@ -51,8 +51,8 @@ public class FailuresReportService {
      * @return list of case submissions that are repeat failures
      */
     private List<CaseSubmissionEntity> findFailures(String recordType) {
-        long latestBatchId = caseSubmissionRepository.findTopByRecordTypeOrderByBatchIdDesc(recordType).getBatchId();
-        long previousBatchId = caseSubmissionRepository.findTopByRecordTypeAndBatchIdLessThanOrderByBatchIdDesc(recordType, latestBatchId).getBatchId();
+        int latestBatchId = caseSubmissionRepository.findTopByRecordTypeOrderByBatchIdDesc(recordType).getBatchId();
+        int previousBatchId = caseSubmissionRepository.findTopByRecordTypeAndBatchIdLessThanOrderByBatchIdDesc(recordType, latestBatchId).getBatchId();
 
         List<CaseSubmissionEntity> caseSubmissionsForLatestBatch = caseSubmissionRepository.findByBatchIdAndMaatIdIsNotNull(latestBatchId);
         List<CaseSubmissionEntity> failuresInlatestBatch = extractFailures(caseSubmissionsForLatestBatch);
