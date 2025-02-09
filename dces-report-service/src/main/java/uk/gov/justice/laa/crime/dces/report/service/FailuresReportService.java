@@ -32,6 +32,7 @@ public class FailuresReportService {
             log.info("No failures found and feature flag to send empty reports is absent/set to false, so not generating the failure report");
             return null;
         } else {
+            log.info("{} repeat failures found, generating the failure report", failures.size());
             return csvFileService.writeFailuresToCsv(failures, getFileName(reportDate), reportTitle, reportDate);
         }
     }
@@ -51,15 +52,19 @@ public class FailuresReportService {
      * @return list of case submissions that are repeat failures
      */
     private List<CaseSubmissionEntity> findFailures(String recordType) {
+        log.info("Finding repeat failures for record type: {}", recordType);
         int latestBatchId = caseSubmissionRepository.findTopByRecordTypeOrderByBatchIdDesc(recordType).getBatchId();
+        log.info("Latest batch ID for record type {} is: {}", recordType, latestBatchId);
         int previousBatchId = caseSubmissionRepository.findTopByRecordTypeAndBatchIdLessThanOrderByBatchIdDesc(recordType, latestBatchId).getBatchId();
-
+        log.info("Previous batch ID for record type {} is: {}", recordType, previousBatchId);
         List<CaseSubmissionEntity> caseSubmissionsForLatestBatch = caseSubmissionRepository.findByBatchIdAndMaatIdIsNotNull(latestBatchId);
         List<CaseSubmissionEntity> failuresInlatestBatch = extractFailures(caseSubmissionsForLatestBatch);
+        log.info("Failures in latest batch for record type {}: {}", recordType, failuresInlatestBatch.size());
         List<CaseSubmissionEntity> caseSubmissionsForPreviousBatch = caseSubmissionRepository.findByBatchIdAndMaatIdIsNotNull(previousBatchId);
         List<CaseSubmissionEntity> failuresInPreviousBatch = extractFailures(caseSubmissionsForPreviousBatch);
+        log.info("Failures in previous batch for record type {}: {}", recordType, failuresInPreviousBatch.size());
 
-        return failuresInlatestBatch.stream()
+        List<CaseSubmissionEntity> repeatFailures = failuresInlatestBatch.stream()
             .flatMap(latest -> failuresInPreviousBatch.stream()
                 .filter(previous -> previous.getMaatId().equals(latest.getMaatId()) &&
                     previous.getRecordType().equals(latest.getRecordType()))
@@ -74,6 +79,9 @@ public class FailuresReportService {
             .sorted(Comparator.comparingLong(CaseSubmissionEntity::getMaatId)
                 .thenComparingLong(CaseSubmissionEntity::getId))
             .collect(Collectors.toList());
+
+        log.info("Repeat failures for record type {}: {}", recordType, repeatFailures.size());
+        return repeatFailures;
     }
 
     /**
