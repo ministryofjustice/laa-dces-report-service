@@ -31,10 +31,10 @@ public class ContributionsFileMapper {
     private static final String EMPTY_CHARACTER = "";
 
     @Autowired
-    public ContributionsFileMapper contributionsFileMapper() throws JAXBException {
+    public ContributionsFileMapper contributionsFileMapper(CSVFileService csvFileService) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(ContributionFile.class);
         unmarshaller = jaxbContext.createUnmarshaller();
-        this.csvFileService = new CSVFileService();
+        this.csvFileService = csvFileService;
         return this;
     }
 

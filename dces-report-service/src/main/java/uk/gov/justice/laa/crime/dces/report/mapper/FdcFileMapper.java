@@ -23,10 +23,10 @@ public class FdcFileMapper {
     protected CSVFileService csvFileService;
 
     @Autowired
-    public FdcFileMapper fdcFileMapper() throws JAXBException {
+    public FdcFileMapper fdcFileMapper(CSVFileService csvFileService) throws JAXBException {
         JAXBContext jaxbContext = JAXBContext.newInstance(FdcFile.class);
         unmarshaller = jaxbContext.createUnmarshaller();
-        this.csvFileService = new CSVFileService();
+        this.csvFileService = csvFileService;
         return this;
     }
 

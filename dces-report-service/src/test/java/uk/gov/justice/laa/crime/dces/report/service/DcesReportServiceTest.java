@@ -15,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
-import uk.gov.justice.laa.crime.dces.report.repository.FailureReportRepository;
+import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionRepository;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -49,7 +49,10 @@ class DcesReportServiceTest {
     NotificationClient notifyClient;
 
     @MockBean
-    FailureReportRepository failureReportRepository;
+    CaseSubmissionRepository caseSubmissionRepository;
+
+    @MockBean
+    FailuresReportService failuresReportService;
 
     @AfterEach
     void postTest() {
@@ -117,7 +120,7 @@ class DcesReportServiceTest {
         dcesReportService.sendFailuresReport("Test", dateParam);
 
         // assert
-        Mockito.verify(failureReportRepository, times(1)).findFailures();
+        Mockito.verify(failuresReportService, times(1)).generateReport("Test", dateParam);
     }
 
 

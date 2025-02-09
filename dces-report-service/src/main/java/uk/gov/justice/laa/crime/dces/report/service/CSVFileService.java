@@ -1,12 +1,9 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import uk.gov.justice.laa.crime.dces.report.dto.FailureReport;
+import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionEntity;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList.Fdc;
@@ -40,7 +37,7 @@ public class CSVFileService {
 
     private static final String FAILURES_HEADING = "DCES DRC API Failures Report";
 
-    private static final String FAILURES_COLUMNS_HEADER = "MAAT Id,ContributionType,ContributionId,sentToDrc,drcSendAttempts,firstDrcAttemptDate,lastDrcAttemptDate,updatedInMaat,maatUpdateAttempts,firstMaatAttemptDate,lastMaatAttemptDate" + System.lineSeparator();
+    private static final String FAILURES_COLUMNS_HEADER = "MAAT Id,Contribution Type,Contribution Id,Batch No,Trace Id,Case Submission Id,Processed Date,Event Type Id,Event Type Desc,HTTP Status,Payload" + System.lineSeparator();
 
     private static final String NO_DATA_MESSAGE = "### There is no data to report for the specified date range. ####";
 
@@ -48,7 +45,7 @@ public class CSVFileService {
 
     private static final String FDC_COLUMNS_HEADER = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date" + System.lineSeparator();
     private static final String FILE_PERMISSIONS = "rwx------";
-
+    private final EventTypeService eventTypeService;
 
     public File writeContributionToCsv(
         List<ContributionCSVDataLine> contributionData,
@@ -101,14 +98,13 @@ public class CSVFileService {
         return targetFile;
     }
 
-
-    public File writeFailuresToCsv(List<FailureReport> failures, String fileName, String reportTitle, LocalDate reportDate) throws IOException {
+    public File writeFailuresToCsv(List<CaseSubmissionEntity> failures, String fileName, String reportTitle, LocalDate reportDate) throws IOException {
         File targetFile = createCsvFile(fileName);
         // file-writer initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {
             writeFailuresHeader(fw, reportTitle, reportDate);
             boolean someDataFound = false;
-            for (FailureReport failure : failures) {
+            for (CaseSubmissionEntity failure : failures) {
                 fw.append(buildFailureLine(failure));
                 someDataFound = true;
             }
@@ -167,18 +163,18 @@ public class CSVFileService {
                 System.lineSeparator();
     }
 
-    private String buildFailureLine(FailureReport failure) {
+    private String buildFailureLine(CaseSubmissionEntity failure) {
         return Objects.toString(failure.getMaatId(), "")
-            + ',' + Objects.toString(failure.getContributionType(), "")
-            + ',' + Objects.toString(failure.getContributionId(), "")
-            + ',' + failure.getSentToDrc().toString()
-            + ',' + failure.getDrcSendAttempts()
-            + ',' + failure.getFirstDrcAttemptDate()
-            + ',' + failure.getLastDrcAttemptDate()
-            + ',' + failure.getUpdatedInMaat()
-            + ',' + failure.getMaatUpdateAttempts()
-            + ',' + failure.getFirstMaatAttemptDate()
-            + ',' + failure.getLastMaatAttemptDate()
+            + ',' + Objects.toString(failure.getRecordType(), "")
+            + ',' + Objects.toString(failure.getRecordType().equals("Fdc")?failure.getFdcId():failure.getConcorContributionId(), "")
+            + ',' + failure.getBatchId()
+            + ',' + failure.getTraceId()
+            + ',' + failure.getId()
+            + ',' + failure.getProcessedDate()
+            + ',' + failure.getEventType()
+            + ',' + eventTypeService.getEventTypeEntity(failure.getEventType()).getDescription()
+            + ',' + failure.getHttpStatus()
+            + ',' + failure.getPayload()
             + System.lineSeparator();
     }
 

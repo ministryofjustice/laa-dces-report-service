@@ -26,12 +26,12 @@ public class CaseSubmissionEntity {
   @Id
   @SequenceGenerator(name = "case_submission_gen_seq", sequenceName = "case_submission_id_seq", allocationSize = 1)
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "case_submission_gen_seq")
-  private Long id;
-  private Long batchId;
-  private Long traceId;
-  private Long maatId;
-  private Long concorContributionId;
-  private Long fdcId;
+  private Integer id;
+  private Integer batchId;
+  private Integer traceId;
+  private Integer maatId;
+  private Integer concorContributionId;
+  private Integer fdcId;
   private String recordType;
   private LocalDateTime processedDate;
   private Integer eventType;

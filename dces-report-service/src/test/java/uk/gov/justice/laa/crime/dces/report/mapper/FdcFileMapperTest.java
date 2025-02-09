@@ -44,12 +44,13 @@ class FdcFileMapperTest {
 
     @AfterEach
     void resetCsvFileService() {
-        fdcFileMapper.csvFileService = new CSVFileService();
+        fdcFileMapper.csvFileService = new CSVFileService(null);
     }
 
     @Test
     void testXMLFileMappingValid() {
-        File f = new File(getClass().getClassLoader().getResource("fdc/single_fdc.xml").getFile());
+        File f = new File(
+            Objects.requireNonNull(getClass().getClassLoader().getResource("fdc/single_fdc.xml")).getFile());
         FdcFile fdcFile = null;
         try {
             fdcFile = fdcFileMapper.mapFdcXMLFileToObject(f);
@@ -96,7 +97,8 @@ class FdcFileMapperTest {
 
     @Test
     void testMultipleFileFdcEntries() {
-        File f = new File(getClass().getClassLoader().getResource("fdc/multiple_fdc.xml").getFile());
+        File f = new File(
+            Objects.requireNonNull(getClass().getClassLoader().getResource("fdc/multiple_fdc.xml")).getFile());
         FdcFile fdcFile = null;
         try {
             fdcFile = fdcFileMapper.mapFdcXMLFileToObject(f);
@@ -121,14 +123,14 @@ class FdcFileMapperTest {
 
     @Test
     void testInvalidXML() {
-        File f = new File(getClass().getClassLoader().getResource("fdc/invalid_fdc.xml").getFile());
-        assertThrows(UnmarshalException.class, () -> {
-            fdcFileMapper.mapFdcXMLFileToObject(f);
-        });
+        File f = new File(
+            Objects.requireNonNull(getClass().getClassLoader().getResource("fdc/invalid_fdc.xml")).getFile());
+            assertThrows(UnmarshalException.class, () -> fdcFileMapper.mapFdcXMLFileToObject(f));
     }
 
     String getXMLString(boolean wantsSingle) throws IOException {
-        File f = new File(getClass().getClassLoader().getResource(wantsSingle ? "fdc/single_fdc.xml" : "fdc/multiple_fdc.xml").getFile());
+        File f = new File(Objects.requireNonNull(getClass().getClassLoader()
+            .getResource(wantsSingle ? "fdc/single_fdc.xml" : "fdc/multiple_fdc.xml")).getFile());
         return FileUtils.readText(f);
     }
 
@@ -152,7 +154,8 @@ class FdcFileMapperTest {
 
     @Test
     void testProcessRequestFileGeneration() {
-        File input = new File(getClass().getClassLoader().getResource("fdc/multiple_fdc.xml").getFile());
+        File input = new File(
+            Objects.requireNonNull(getClass().getClassLoader().getResource("fdc/multiple_fdc.xml")).getFile());
         File f = null;
         try {
             LocalDate date = LocalDate.now();
