@@ -43,19 +43,19 @@ class FailuresReportServiceTest {
     testDataUtil.createTestDataWithFailures();
     generateReportAndCheckOutput(
         """
-        101,Contribution,201,100,200,21,2025-01-01T11:10:01,2,SyncRequestResponseToDrc,418,null
-        101,Contribution,201,102,200,37,2025-01-02T11:10:01,2,SyncRequestResponseToDrc,418,null
-        103,Contribution,203,100,200,27,2025-01-01T11:10:02,3,SyncResponseLoggedToMAAT,418,null
-        103,Contribution,203,102,200,40,2025-01-02T11:10:02,3,SyncResponseLoggedToMAAT,418,null
-        104,Contribution,204,102,200,42,2025-01-02T11:10:01,2,SyncRequestResponseToDrc,502,null
-        105,Contribution,205,100,200,29,2025-01-01T11:10,1,FetchedFromMAAT,500,No parse XML! :(
-        105,Contribution,206,102,200,43,2025-01-02T11:10,1,FetchedFromMAAT,500,null
-        106,Contribution,200,100,200,31,2025-01-01T11:10:01,2,SyncRequestResponseToDrc,502,null
-        106,Contribution,206,102,200,46,2025-01-02T11:10:02,3,SyncResponseLoggedToMAAT,502,null
-        107,Contribution,207,100,200,32,2025-01-01T11:10,1,FetchedFromMAAT,200,null
-        107,Contribution,207,102,200,47,2025-01-02T11:10,1,FetchedFromMAAT,200,null
-        198,Fdc,198,97,200,6,2025-01-01T11:10,2,SyncRequestResponseToDrc,504,null
-        198,Fdc,198,99,200,14,2025-01-02T11:10,2,SyncRequestResponseToDrc,504,null""");
+        101,Contribution,201,100,200,61,2025-01-01T11:10:01,2,SyncRequestResponseToDrc,418,null
+        101,Contribution,201,102,200,77,2025-01-02T11:10:01,2,SyncRequestResponseToDrc,418,null
+        103,Contribution,203,100,200,67,2025-01-01T11:10:02,3,SyncResponseLoggedToMAAT,418,null
+        103,Contribution,203,102,200,80,2025-01-02T11:10:02,3,SyncResponseLoggedToMAAT,418,null
+        104,Contribution,204,102,200,82,2025-01-02T11:10:01,2,SyncRequestResponseToDrc,502,null
+        105,Contribution,205,100,200,69,2025-01-01T11:10,1,FetchedFromMAAT,500,No parse XML! :(
+        105,Contribution,206,102,200,83,2025-01-02T11:10,1,FetchedFromMAAT,500,null
+        106,Contribution,200,100,200,71,2025-01-01T11:10:01,2,SyncRequestResponseToDrc,502,null
+        106,Contribution,206,102,200,86,2025-01-02T11:10:02,3,SyncResponseLoggedToMAAT,502,null
+        107,Contribution,207,100,200,72,2025-01-01T11:10,1,FetchedFromMAAT,200,null
+        107,Contribution,207,102,200,87,2025-01-02T11:10,1,FetchedFromMAAT,200,null
+        198,Fdc,198,97,200,46,2025-01-01T11:10,2,SyncRequestResponseToDrc,504,null
+        198,Fdc,198,99,200,54,2025-01-02T11:10,2,SyncRequestResponseToDrc,504,null""");
   }
 
   @Test

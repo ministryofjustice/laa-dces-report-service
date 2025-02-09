@@ -17,13 +17,11 @@ public class TestDataUtil {
   @Autowired
   private EventTypeRepository eventTypeRepository;
 
-  private Integer testId = 0;
   private Integer batchId = 100;
   private Integer traceId = 200;
   private String recordType = "Contribution";
 
   private void resetTestData() {
-    testId = 0;
     batchId = 100;
     traceId = 200;
     caseSubmissionRepository.deleteAll();
@@ -38,7 +36,7 @@ public class TestDataUtil {
   }
 
   private void saveCaseSubmission(Integer maatId, Integer contrId, Integer eventType, int httpStatus, LocalDateTime processedDate, String payload) {
-    CaseSubmissionEntity caseSubmission = new CaseSubmissionEntity(++testId, batchId, traceId, maatId,
+    CaseSubmissionEntity caseSubmission = new CaseSubmissionEntity(0, batchId, traceId, maatId,
         recordType.equals("Fdc")?null:contrId, recordType.equals("Fdc")?contrId:null,
         recordType, processedDate, eventType, httpStatus, payload);
     caseSubmissionRepository.save(caseSubmission);
@@ -71,9 +69,9 @@ public class TestDataUtil {
     saveCaseSubmission(99, 99, 3, 200, LocalDateTime.of(2025, 1, 2, 11, 10, 0), null);
 
     // Insert case submission that failed in DRC with one contr ID but succeeds in the this batch with a new contr ID
-    saveCaseSubmission(197, 198, 1, 200, LocalDateTime.of(2025, 1, 2, 11, 10, 0), null);
-    saveCaseSubmission(197, 198, 2, 200, LocalDateTime.of(2025, 1, 2, 11, 10, 0), null);
-    saveCaseSubmission(197, 198, 3, 200, LocalDateTime.of(2025, 1, 2, 11, 10, 0), null);
+    saveCaseSubmission(197, 199, 1, 200, LocalDateTime.of(2025, 1, 2, 11, 10, 0), null);
+    saveCaseSubmission(197, 199, 2, 200, LocalDateTime.of(2025, 1, 2, 11, 10, 0), null);
+    saveCaseSubmission(197, 199, 3, 200, LocalDateTime.of(2025, 1, 2, 11, 10, 0), null);
     // Insert case submission that fails again in DRC
     saveCaseSubmission(198, 198, 1, 200, LocalDateTime.of(2025, 1, 2, 11, 10, 0), null);
     saveCaseSubmission(198, 198, 2, 504, LocalDateTime.of(2025, 1, 2, 11, 10, 0), null);
@@ -155,7 +153,7 @@ public class TestDataUtil {
     saveCaseSubmission(107, 207, 1, 200, LocalDateTime.of(2025, 1, 2, 11, 10, 0), null);
 
     // Insert header case submission with null maatId and concorId
-    CaseSubmissionEntity caseSubmission = new CaseSubmissionEntity(++testId, batchId, traceId, null, null, null, "Contribution",
+    CaseSubmissionEntity caseSubmission = new CaseSubmissionEntity(0, batchId, traceId, null, null, null, "Contribution",
         LocalDateTime.of(2025, 1, 2, 11, 10, 0), 1, 200, "Fetched:3");
     caseSubmissionRepository.save(caseSubmission);
 
