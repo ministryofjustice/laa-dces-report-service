@@ -18,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.justice.laa.crime.dces.report.config.FeatureProperties;
 import uk.gov.justice.laa.crime.dces.report.config.TestConfig;
+import uk.gov.justice.laa.crime.dces.report.dto.FailureReportDto;
 import uk.gov.justice.laa.crime.dces.report.utils.TestDataUtil;
 
 @SpringBootTest
@@ -41,7 +42,7 @@ class FailuresReportServiceTest {
   @Test
   void givenTestDataWithFailures_whenGenerateReport_thenOutputIsAsExpected() throws IOException {
     testDataUtil.createTestDataWithFailures();
-    generateReportAndCheckOutput(
+    generateReportAndCheckOutput(13,
         """
         101,Contribution,201,100,200,61,2025-01-01T11:10:01,2,SyncRequestResponseToDrc,418,null
         101,Contribution,201,102,200,77,2025-01-02T11:10:01,2,SyncRequestResponseToDrc,418,null
@@ -62,27 +63,28 @@ class FailuresReportServiceTest {
   void givenTestDataWithNoRepeatFailuresAndEmptyReportsEnabled_whenGenerateReport_thenNoDataToReportOutput() throws IOException {
     when(feature.sendEmptyFailuresReport()).thenReturn(true);
     testDataUtil.createTestDataWithNoRepeatFailures();
-    generateReportAndCheckOutput("### There is no data to report for the specified date range. ####");
+    generateReportAndCheckOutput(0, "### There is no data to report for the specified date range. ####");
   }
 
   @Test
   void givenTestDataWithNoRepeatFailuresAndEmptyReportsDisabled_whenGenerateReport_thenNullOutput() throws IOException {
     when(feature.sendEmptyFailuresReport()).thenReturn(false);
     testDataUtil.createTestDataWithNoRepeatFailures();
-    generateReportAndCheckOutput(null);
+    generateReportAndCheckOutput(0, null);
   }
 
   private void generateReportAndCheckOutput(
+      int expectedCount,
       String expectedOutput
   ) throws IOException {
-    String title = String.format("Test DCES DRC API Failures Report REPORTING DATE FROM: N/A | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s\n", LocalDate.now().minusDays(1), LocalDate.now());
+    String title = String.format(" failures found for DCES DRC API Failures Report REPORTING DATE FROM: N/A | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s\n", LocalDate.now().minusDays(1), LocalDate.now());
     String header = "MAAT Id,Contribution Type,Contribution Id,Batch No,Trace Id,Case Submission Id,Processed Date,Event Type Id,Event Type Desc,HTTP Status,Payload\n";
-    File failureReport = failuresReportService.generateReport("Test", LocalDate.now().minusDays(1));
-    String csvOutput = FileUtils.readText(failureReport);
+    FailureReportDto failureReport = failuresReportService.generateReport(LocalDate.now().minusDays(1));
     if (expectedOutput == null) {
-      softly.assertThat(csvOutput).isNull();
+      softly.assertThat(failureReport).isNull();
     } else {
-      softly.assertThat(csvOutput).isEqualTo(title + header + expectedOutput);
+      String csvOutput = FileUtils.readText(failureReport.getReportFile());
+      softly.assertThat(csvOutput).isEqualTo(expectedCount + title + header + expectedOutput);
     }
   }
 

@@ -100,7 +100,7 @@ public class CSVFileService {
     }
 
     public FailureReportDto writeFailuresToCsv(List<CaseSubmissionEntity> failures, String fileName, LocalDate reportDate) throws IOException {
-        String failuresCountMessage = failures.size() +" failures found for ";
+        String failuresCountMessage = failures.size() +" failures found for";
         File targetFile = createCsvFile(fileName);
         // file-writer initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {

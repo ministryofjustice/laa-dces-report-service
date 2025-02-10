@@ -188,7 +188,7 @@ final class DcesReportingServiceTest {
 
         // assert
         Mockito.verify(spyReporting, times(1)).sendFailuresReport("Daily", date);
-        Mockito.verify(spyFailuresReportService, times(1)).generateReport(any(), any());
+        Mockito.verify(spyFailuresReportService, times(1)).generateReport(any());
         Mockito.verify(spyEmailClient, times(1)).send(any());
     }
 
