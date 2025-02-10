@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.crime.dces.report.dto.FailureReportDto;
 import uk.gov.justice.laa.crime.dces.report.exception.DcesReportSourceFilesDataNotFound;
 import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailClient;
@@ -60,9 +61,9 @@ public class DcesReportService {
     public void sendFailuresReport(String reportTitle, LocalDate reportDate) throws IOException, NotificationClientException {
         log.info("{} Report generation requested",  reportTitle);
 
-        File reportFile = failuresReportService.generateReport(reportTitle, reportDate);
-        if (reportFile != null) {
-            sendEmailReport(reportFile, failuresReportService.getType(), reportTitle, reportDate,
+        FailureReportDto failureReportDto = failuresReportService.generateReport(reportDate);
+        if (failureReportDto != null) {
+            sendEmailReport(failureReportDto.getReportFile(), failuresReportService.getType(), failureReportDto.getFailuresCountMessage(), reportDate,
                 reportDate);
             log.info("{} Report generated and sent successfully", reportTitle);
         } else {

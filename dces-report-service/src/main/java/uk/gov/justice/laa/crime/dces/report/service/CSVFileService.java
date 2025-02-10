@@ -3,6 +3,7 @@ package uk.gov.justice.laa.crime.dces.report.service;
 import java.io.OutputStreamWriter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import uk.gov.justice.laa.crime.dces.report.dto.FailureReportDto;
 import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionEntity;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
@@ -98,11 +99,12 @@ public class CSVFileService {
         return targetFile;
     }
 
-    public File writeFailuresToCsv(List<CaseSubmissionEntity> failures, String fileName, String reportTitle, LocalDate reportDate) throws IOException {
+    public FailureReportDto writeFailuresToCsv(List<CaseSubmissionEntity> failures, String fileName, LocalDate reportDate) throws IOException {
+        String failuresCountMessage = failures.size() +" failures found for ";
         File targetFile = createCsvFile(fileName);
         // file-writer initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {
-            writeFailuresHeader(fw, reportTitle, reportDate);
+            writeFailuresHeader(fw, failuresCountMessage, reportDate);
             boolean someDataFound = false;
             for (CaseSubmissionEntity failure : failures) {
                 fw.append(buildFailureLine(failure));
@@ -114,7 +116,7 @@ public class CSVFileService {
         } catch (IOException e) {
             throw new IOException(e);
         }
-        return targetFile;
+        return new FailureReportDto(targetFile, failuresCountMessage);
     }
 
     private ContributionCSVDataLine getContributionsHeader() {
