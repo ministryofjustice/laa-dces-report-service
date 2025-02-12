@@ -48,4 +48,5 @@ public final class NotifyEmailObject implements EmailObject {
         byte[] fileContents = readFileToByteArray(file);
         personalisation.put(uploadKey, NotificationClient.prepareUpload(fileContents, file.getName()));
     }
+
 }
