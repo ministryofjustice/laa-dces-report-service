@@ -63,7 +63,7 @@ public class DcesReportService {
 
         FailureReportDto failureReportDto = failuresReportService.generateReport(reportTitle, reportDate);
         if (failureReportDto != null) {
-            sendEmailReport(failureReportDto.getReportFile(), failuresReportService.getType(), failureReportDto.getFailuresCount() + " failures found for", reportDate,
+            sendEmailReport(failureReportDto.getReportFile(), failuresReportService.getType(), failureReportDto.getFailuresCount() + " failures found for " + reportTitle, reportDate,
                 reportDate);
             log.info("{} Report generated and sent successfully", reportTitle);
         } else {
