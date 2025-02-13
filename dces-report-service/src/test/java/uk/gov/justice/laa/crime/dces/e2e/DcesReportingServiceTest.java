@@ -30,6 +30,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 
 @SpringBootTest
@@ -188,7 +189,7 @@ final class DcesReportingServiceTest {
 
         // assert
         Mockito.verify(spyReporting, times(1)).sendFailuresReport("Daily", date);
-        Mockito.verify(spyFailuresReportService, times(1)).generateReport(any());
+        Mockito.verify(spyFailuresReportService, times(1)).generateReport(anyString(), any());
         Mockito.verify(spyEmailClient, times(1)).send(any());
     }
 

@@ -120,7 +120,7 @@ class DcesReportServiceTest {
         dcesReportService.sendFailuresReport("Test", dateParam);
 
         // assert
-        Mockito.verify(failuresReportService, times(1)).generateReport(dateParam);
+        Mockito.verify(failuresReportService, times(1)).generateReport("Test", dateParam);
     }
 
 

@@ -61,7 +61,7 @@ public class DcesReportService {
     public void sendFailuresReport(String reportTitle, LocalDate reportDate) throws IOException, NotificationClientException {
         log.info("{} Report generation requested",  reportTitle);
 
-        FailureReportDto failureReportDto = failuresReportService.generateReport(reportDate);
+        FailureReportDto failureReportDto = failuresReportService.generateReport(reportTitle, reportDate);
         if (failureReportDto != null) {
             sendEmailReport(failureReportDto.getReportFile(), failuresReportService.getType(), failureReportDto.getFailuresCount() + " failures found for", reportDate,
                 reportDate);

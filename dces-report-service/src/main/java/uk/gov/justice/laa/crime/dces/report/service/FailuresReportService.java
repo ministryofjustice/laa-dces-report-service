@@ -26,7 +26,7 @@ public class FailuresReportService {
     private final CSVFileService csvFileService;
     private final FeatureProperties feature;
 
-    public FailureReportDto generateReport(LocalDate reportDate) throws IOException {
+    public FailureReportDto generateReport(String reportTitle, LocalDate reportDate) throws IOException {
         List<CaseSubmissionEntity> failures = new ArrayList<>(findFailures("Contribution"));
         failures.addAll(findFailures("Fdc"));
         if (failures.isEmpty() && !feature.sendEmptyFailuresReport()) {
@@ -34,7 +34,7 @@ public class FailuresReportService {
             return null;
         } else {
             log.info("{} repeat failures found, generating the failure report", failures.size());
-            return csvFileService.writeFailuresToCsv(failures, getFileName(reportDate));
+            return csvFileService.writeFailuresToCsv(failures, getFileName(reportDate), reportTitle);
         }
     }
 

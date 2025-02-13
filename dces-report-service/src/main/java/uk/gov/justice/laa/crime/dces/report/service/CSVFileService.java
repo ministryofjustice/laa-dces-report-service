@@ -44,7 +44,7 @@ public class CSVFileService {
 
     private static final String DRC_PROCESSING_TITLE_TEMPLATE = "%s %s REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s" + System.lineSeparator();
 
-    private static final String FAILURES_TITLE_TEMPLATE = "%s failures found for DCES DRC API failures report produced on %s" + System.lineSeparator();
+    private static final String FAILURES_TITLE_TEMPLATE = "%s failures found for %s DCES DRC API failures report produced on %s" + System.lineSeparator();
 
     private static final String FDC_COLUMNS_HEADER = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date" + System.lineSeparator();
     private static final String FILE_PERMISSIONS = "rwx------";
@@ -102,11 +102,11 @@ public class CSVFileService {
         return targetFile;
     }
 
-    public FailureReportDto writeFailuresToCsv(List<CaseSubmissionEntity> failures, String fileName) throws IOException {
+    public FailureReportDto writeFailuresToCsv(List<CaseSubmissionEntity> failures, String fileName, String reportTitle) throws IOException {
         File targetFile = createCsvFile(fileName);
         // file-writer initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {
-            writeFailuresHeader(fw, failures.size());
+            writeFailuresHeader(fw, reportTitle, failures.size());
             boolean someDataFound = false;
             for (CaseSubmissionEntity failure : failures) {
                 fw.append(buildFailureLine(failure));
@@ -141,8 +141,8 @@ public class CSVFileService {
         fw.append(headerLine);
     }
 
-    private void writeFailuresHeader(OutputStreamWriter fw, int failureCount) throws IOException {
-        String headerLine = String.format(FAILURES_TITLE_TEMPLATE, failureCount, LocalDate.now());
+    private void writeFailuresHeader(OutputStreamWriter fw, String reportTitle, int failureCount) throws IOException {
+        String headerLine = String.format(FAILURES_TITLE_TEMPLATE, failureCount, reportTitle, LocalDate.now());
         headerLine += FAILURES_COLUMNS_HEADER;
         fw.append(headerLine);
     }
