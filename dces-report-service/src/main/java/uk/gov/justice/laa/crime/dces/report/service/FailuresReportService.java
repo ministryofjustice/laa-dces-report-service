@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.dces.report.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ public class FailuresReportService {
     private final FeatureProperties feature;
 
     public FailureReportDto generateReport(LocalDate reportDate) throws IOException {
-        List<CaseSubmissionEntity> failures = findFailures("Contribution");
+        List<CaseSubmissionEntity> failures = new ArrayList<>(findFailures("Contribution"));
         failures.addAll(findFailures("Fdc"));
         if (failures.isEmpty() && !feature.sendEmptyFailuresReport()) {
             log.info("No failures found and feature flag to send empty reports is absent/set to false, so not generating the failure report");
@@ -78,7 +79,7 @@ public class FailuresReportService {
             .distinct()
             .sorted(Comparator.comparingLong(CaseSubmissionEntity::getMaatId)
                 .thenComparingLong(CaseSubmissionEntity::getId))
-            .collect(Collectors.toList());
+            .toList();
 
         log.info("Repeat failures for record type {}: {}", recordType, repeatFailures.size());
         return repeatFailures;
@@ -98,7 +99,7 @@ public class FailuresReportService {
             .filter(entry -> entry.getValue().stream().noneMatch(
                 submission -> submission.getEventType() == 3 && submission.getHttpStatus() == 200))
             .flatMap(entry -> entry.getValue().stream())
-            .collect(Collectors.toList());
+            .toList();
     }
 
 }

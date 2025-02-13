@@ -36,9 +36,9 @@ class ContributionsFileMapperTest {
     private final DateTimeFormatter dateFormatterCsv = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final String filename = "this_is_a_test.xml";
-    private static final String EXPECTED_HEADER = "MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date";
-    private static final String NO_DATA_MESSAGE = "\n### There is no data to report for the specified date range. ####";
-    private static final String EXPECTED_TITLE = "Test Contributions Report REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s\n";
+    private static final String EXPECTED_HEADER = "MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date" + System.lineSeparator();
+    private static final String NO_DATA_MESSAGE = "### There is no data to report for the specified date range. ####";
+    private static final String EXPECTED_TITLE = "Test Contributions Report REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s" + System.lineSeparator();
 
 
     @InjectSoftAssertions
@@ -248,8 +248,8 @@ class ContributionsFileMapperTest {
             softly.assertThat(csvOutput).contains("5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,");
 
             String expectedTitle = String.format(EXPECTED_TITLE, startDate, endDate, LocalDate.now());
-            softly.assertThat(csvOutput).isEqualTo(expectedTitle + EXPECTED_HEADER + "\n" +
-                    "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021\n" +
+            softly.assertThat(csvOutput).isEqualTo(expectedTitle + EXPECTED_HEADER  +
+                    "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021" + System.lineSeparator() +
                     "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021");
             softly.assertAll();
         } catch (JAXBException | IOException e) {

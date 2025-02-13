@@ -166,14 +166,14 @@ class FdcFileMapperTest {
             // check header present
             softly.assertThat(csvOutput).contains("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date");
             // verify content has been mapped
-            String title = String.format("Test Final Defence Cost Report REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s\n", date, date, date);
+            String title = String.format("Test Final Defence Cost Report REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s%n", date, date, date);
             softly.assertThat(csvOutput).isEqualTo(title +
-                    "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date\n" +
-                    "2525925,30/09/2016,22/12/2016,1774.40,1180.64,593.76,25/07/2018\n" +
-                    "2492027,04/02/2011,04/07/2018,1479.23,569.92,909.31,25/07/2018\n" +
-                    "5275089,19/08/2016,02/09/2016,2849.95,1497.60,1352.35,25/07/2018\n" +
-                    "5427879,23/08/2016,06/09/2016,2252.60,937.86,1314.74,25/07/2018\n" +
-                    "5438043,25/08/2016,19/12/2016,1969.47,1085.50,883.97,25/07/2018\n" +
+                    "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date" + System.lineSeparator() +
+                    "2525925,30/09/2016,22/12/2016,1774.40,1180.64,593.76,25/07/2018" + System.lineSeparator() +
+                    "2492027,04/02/2011,04/07/2018,1479.23,569.92,909.31,25/07/2018" + System.lineSeparator() +
+                    "5275089,19/08/2016,02/09/2016,2849.95,1497.60,1352.35,25/07/2018" + System.lineSeparator() +
+                    "5427879,23/08/2016,06/09/2016,2252.60,937.86,1314.74,25/07/2018" + System.lineSeparator() +
+                    "5438043,25/08/2016,19/12/2016,1969.47,1085.50,883.97,25/07/2018" + System.lineSeparator() +
                     "4971278,14/10/2016,11/01/2017,3226.01,1327.99,1898.02,25/07/2018");
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:" + e.getMessage());

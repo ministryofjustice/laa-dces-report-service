@@ -76,8 +76,8 @@ class FailuresReportServiceTest {
       int expectedCount,
       String expectedOutput
   ) throws IOException {
-    String title = String.format(" failures found for DCES DRC API failures report produced on %s\n", LocalDate.now());
-    String header = "MAAT Id,Contribution Type,Contribution Id,Batch No,Trace Id,Case Submission Id,Processed Date,Event Type Id,Event Type Desc,HTTP Status,Payload\n";
+    String title = String.format(" failures found for DCES DRC API failures report produced on %s%n", LocalDate.now());
+    String header = "MAAT Id,Contribution Type,Contribution Id,Batch No,Trace Id,Case Submission Id,Processed Date,Event Type Id,Event Type Desc,HTTP Status,Payload" + System.lineSeparator();
     FailureReportDto failureReport = failuresReportService.generateReport(LocalDate.now().minusDays(1));
     if (expectedOutput == null) {
       softly.assertThat(failureReport).isNull();
