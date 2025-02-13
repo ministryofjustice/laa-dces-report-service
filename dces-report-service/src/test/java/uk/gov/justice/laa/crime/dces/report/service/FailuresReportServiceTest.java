@@ -3,7 +3,6 @@ package uk.gov.justice.laa.crime.dces.report.service;
 import static org.mockito.Mockito.when;
 
 import io.sentry.util.FileUtils;
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import org.assertj.core.api.SoftAssertions;
@@ -44,19 +43,19 @@ class FailuresReportServiceTest {
     testDataUtil.createTestDataWithFailures();
     generateReportAndCheckOutput(13,
         """
-        101,Contribution,201,100,200,61,2025-01-01T11:10:01,2,SyncRequestResponseToDrc,418,null
-        101,Contribution,201,102,200,77,2025-01-02T11:10:01,2,SyncRequestResponseToDrc,418,null
-        103,Contribution,203,100,200,67,2025-01-01T11:10:02,3,SyncResponseLoggedToMAAT,418,null
-        103,Contribution,203,102,200,80,2025-01-02T11:10:02,3,SyncResponseLoggedToMAAT,418,null
-        104,Contribution,204,102,200,82,2025-01-02T11:10:01,2,SyncRequestResponseToDrc,502,null
-        105,Contribution,205,100,200,69,2025-01-01T11:10,1,FetchedFromMAAT,500,No parse XML! :(
-        105,Contribution,206,102,200,83,2025-01-02T11:10,1,FetchedFromMAAT,500,null
-        106,Contribution,200,100,200,71,2025-01-01T11:10:01,2,SyncRequestResponseToDrc,502,null
-        106,Contribution,206,102,200,86,2025-01-02T11:10:02,3,SyncResponseLoggedToMAAT,502,null
-        107,Contribution,207,100,200,72,2025-01-01T11:10,1,FetchedFromMAAT,200,null
-        107,Contribution,207,102,200,87,2025-01-02T11:10,1,FetchedFromMAAT,200,null
-        198,Fdc,198,97,200,46,2025-01-01T11:10,2,SyncRequestResponseToDrc,504,null
-        198,Fdc,198,99,200,54,2025-01-02T11:10,2,SyncRequestResponseToDrc,504,null""");
+        101,Contribution,201,100,200,61,2025-01-01T11:10:01,2,SyncRequestResponseToDrc,418,,
+        101,Contribution,201,102,200,77,2025-01-02T11:10:01,2,SyncRequestResponseToDrc,418,,
+        103,Contribution,203,100,200,67,2025-01-01T11:10:02,3,SyncResponseLoggedToMAAT,418,,
+        103,Contribution,203,102,200,80,2025-01-02T11:10:02,3,SyncResponseLoggedToMAAT,418,,
+        104,Contribution,204,102,200,82,2025-01-02T11:10:01,2,SyncRequestResponseToDrc,502,,
+        105,Contribution,205,100,200,69,2025-01-01T11:10,1,FetchedFromMAAT,500,No parse XML! :(,
+        105,Contribution,206,102,200,83,2025-01-02T11:10,1,FetchedFromMAAT,500,,
+        106,Contribution,200,100,200,71,2025-01-01T11:10:01,2,SyncRequestResponseToDrc,502,,
+        106,Contribution,206,102,200,86,2025-01-02T11:10:02,3,SyncResponseLoggedToMAAT,502,,
+        107,Contribution,207,100,200,72,2025-01-01T11:10,1,FetchedFromMAAT,200,,
+        107,Contribution,207,102,200,87,2025-01-02T11:10,1,FetchedFromMAAT,200,,
+        198,Fdc,198,97,200,46,2025-01-01T11:10,2,SyncRequestResponseToDrc,504,,
+        198,Fdc,198,99,200,54,2025-01-02T11:10,2,SyncRequestResponseToDrc,504,,""");
   }
 
   @Test
@@ -77,7 +76,7 @@ class FailuresReportServiceTest {
       int expectedCount,
       String expectedOutput
   ) throws IOException {
-    String title = String.format(" failures found for DCES DRC API Failures Report REPORTING DATE FROM: N/A | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s\n", LocalDate.now().minusDays(1), LocalDate.now());
+    String title = String.format(" failures found for DCES DRC API failures report produced on %s\n", LocalDate.now());
     String header = "MAAT Id,Contribution Type,Contribution Id,Batch No,Trace Id,Case Submission Id,Processed Date,Event Type Id,Event Type Desc,HTTP Status,Payload\n";
     FailureReportDto failureReport = failuresReportService.generateReport(LocalDate.now().minusDays(1));
     if (expectedOutput == null) {

@@ -8,5 +8,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class FailureReportDto {
   File reportFile;
-  String failuresCountMessage;
+  int failuresCount;
 }

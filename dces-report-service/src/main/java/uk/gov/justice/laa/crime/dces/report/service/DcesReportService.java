@@ -43,7 +43,7 @@ public class DcesReportService {
     private String templateId;
 
     @Value("#{'${emailClient.notify.recipient.default}'.split(',')}")
-    private List<String> recipients;
+    private List<String> drcProcessingReportRecipients;
 
     @Value("#{'${emailClient.notify.recipient.failures}'.split(',')}")
     private List<String> failuresReportRecipients;
@@ -63,7 +63,7 @@ public class DcesReportService {
 
         FailureReportDto failureReportDto = failuresReportService.generateReport(reportDate);
         if (failureReportDto != null) {
-            sendEmailReport(failureReportDto.getReportFile(), failuresReportService.getType(), failureReportDto.getFailuresCountMessage(), reportDate,
+            sendEmailReport(failureReportDto.getReportFile(), failuresReportService.getType(), failureReportDto.getFailuresCount() + " failures found for", reportDate,
                 reportDate);
             log.info("{} Report generated and sent successfully", reportTitle);
         } else {
@@ -89,7 +89,7 @@ public class DcesReportService {
         log.info("[{} report] :: Creating email object for time period {} - {} ",
                 reportType, start.format(DateUtils.dateFormatter), end.format(DateUtils.dateFormatter));
 
-        EmailObject emailObject = notifyConfiguration.createEmail(attachment, reportType, reportTitle, start, end, templateId, reportType.equals(failuresReportService.getType())?failuresReportRecipients:recipients);
+        EmailObject emailObject = notifyConfiguration.createEmail(attachment, reportType, reportTitle, start, end, templateId, reportType.equals(failuresReportService.getType())?failuresReportRecipients: drcProcessingReportRecipients);
 
         Timer timer = Metrics.globalRegistry.timer("laa_dces_report_service_send_email");
         timer.record(() -> sendEmail(emailObject, emailClient));

@@ -6,8 +6,10 @@ import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.dto.FailureReportDto;
 import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionEntity;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
+import uk.gov.justice.laa.crime.dces.report.model.EventTypeEntity;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList.Fdc;
+import uk.gov.justice.laa.crime.dces.report.repository.EventTypeRepository;
 import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -29,24 +31,25 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class CSVFileService {
 
-    public static final String FDC_FORMAT_COMMA = "%s,";
+    public static final String CSV_FIELD_FORMAT = "%s,";
     public static final String EMPTY_CHARACTER = "";
 
     private static final String CONTRIBUTIONS_HEADING = "Contributions Report";
 
     private static final String FDC_HEADING = "Final Defence Cost Report";
 
-    private static final String FAILURES_HEADING = "DCES DRC API Failures Report";
-
     private static final String FAILURES_COLUMNS_HEADER = "MAAT Id,Contribution Type,Contribution Id,Batch No,Trace Id,Case Submission Id,Processed Date,Event Type Id,Event Type Desc,HTTP Status,Payload" + System.lineSeparator();
 
     private static final String NO_DATA_MESSAGE = "### There is no data to report for the specified date range. ####";
 
-    private static final String TITLE_TEMPLATE = "%s %s REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s" + System.lineSeparator();
+    private static final String DRC_PROCESSING_TITLE_TEMPLATE = "%s %s REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s" + System.lineSeparator();
+
+    private static final String FAILURES_TITLE_TEMPLATE = "%s failures found for DCES DRC API failures report produced on %s" + System.lineSeparator();
 
     private static final String FDC_COLUMNS_HEADER = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date" + System.lineSeparator();
     private static final String FILE_PERMISSIONS = "rwx------";
-    private final EventTypeService eventTypeService;
+    private final EventTypeRepository eventTypeRepository;
+
 
     public File writeContributionToCsv(
         List<ContributionCSVDataLine> contributionData,
@@ -58,7 +61,7 @@ public class CSVFileService {
         File targetFile = createCsvFile(fileName);
         // file-writer initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {
-            String title = String.format(TITLE_TEMPLATE, reportTitle, CONTRIBUTIONS_HEADING, fromDate, toDate, LocalDate.now());
+            String title = String.format(DRC_PROCESSING_TITLE_TEMPLATE, reportTitle, CONTRIBUTIONS_HEADING, fromDate, toDate, LocalDate.now());
             fw.append(title);
 
             contributionData.add(0, getContributionsHeader());
@@ -99,12 +102,11 @@ public class CSVFileService {
         return targetFile;
     }
 
-    public FailureReportDto writeFailuresToCsv(List<CaseSubmissionEntity> failures, String fileName, LocalDate reportDate) throws IOException {
-        String failuresCountMessage = failures.size() +" failures found for";
+    public FailureReportDto writeFailuresToCsv(List<CaseSubmissionEntity> failures, String fileName) throws IOException {
         File targetFile = createCsvFile(fileName);
         // file-writer initialise
         try (FileWriter fw = new FileWriter(targetFile, true)) {
-            writeFailuresHeader(fw, failuresCountMessage, reportDate);
+            writeFailuresHeader(fw, failures.size());
             boolean someDataFound = false;
             for (CaseSubmissionEntity failure : failures) {
                 fw.append(buildFailureLine(failure));
@@ -116,7 +118,7 @@ public class CSVFileService {
         } catch (IOException e) {
             throw new IOException(e);
         }
-        return new FailureReportDto(targetFile, failuresCountMessage);
+        return new FailureReportDto(targetFile, failures.size());
     }
 
     private ContributionCSVDataLine getContributionsHeader() {
@@ -134,13 +136,13 @@ public class CSVFileService {
     }
 
     private void writeFdcHeader(FileWriter fw, String reportTitle, LocalDate fromDate, LocalDate toDate) throws IOException {
-        String headerLine = String.format(TITLE_TEMPLATE, reportTitle, FDC_HEADING, fromDate, toDate, LocalDate.now());
+        String headerLine = String.format(DRC_PROCESSING_TITLE_TEMPLATE, reportTitle, FDC_HEADING, fromDate, toDate, LocalDate.now());
         headerLine += FDC_COLUMNS_HEADER;
         fw.append(headerLine);
     }
 
-    private void writeFailuresHeader(OutputStreamWriter fw, String reportTitle, LocalDate reportDate) throws IOException {
-        String headerLine = String.format(TITLE_TEMPLATE, reportTitle, FAILURES_HEADING, "N/A", reportDate, LocalDate.now());
+    private void writeFailuresHeader(OutputStreamWriter fw, int failureCount) throws IOException {
+        String headerLine = String.format(FAILURES_TITLE_TEMPLATE, failureCount, LocalDate.now());
         headerLine += FAILURES_COLUMNS_HEADER;
         fw.append(headerLine);
     }
@@ -155,41 +157,41 @@ public class CSVFileService {
     }
 
     private String fdcLineBuilder(Fdc fdcLine, String dateGenerated) {
-        return getFdcValue(fdcLine.getMaatId()) +
-                getFdcValue(fdcLine.getSentenceDate()) +
-                getFdcValue(fdcLine.getCalculationDate()) +
-                getFdcValue(fdcLine.getFinalCost()) +
-                getFdcValue(fdcLine.getLgfsTotal()) +
-                getFdcValue(fdcLine.getAgfsTotal()) +
+        return getCsvFieldValue(fdcLine.getMaatId()) +
+                getCsvFieldValue(fdcLine.getSentenceDate()) +
+                getCsvFieldValue(fdcLine.getCalculationDate()) +
+                getCsvFieldValue(fdcLine.getFinalCost()) +
+                getCsvFieldValue(fdcLine.getLgfsTotal()) +
+                getCsvFieldValue(fdcLine.getAgfsTotal()) +
                 dateGenerated +
                 System.lineSeparator();
     }
 
     private String buildFailureLine(CaseSubmissionEntity failure) {
-        return Objects.toString(failure.getMaatId(), "")
-            + ',' + Objects.toString(failure.getRecordType(), "")
-            + ',' + Objects.toString(failure.getRecordType().equals("Fdc")?failure.getFdcId():failure.getConcorContributionId(), "")
-            + ',' + failure.getBatchId()
-            + ',' + failure.getTraceId()
-            + ',' + failure.getId()
-            + ',' + failure.getProcessedDate()
-            + ',' + failure.getEventType()
-            + ',' + eventTypeService.getEventTypeEntity(failure.getEventType()).getDescription()
-            + ',' + failure.getHttpStatus()
-            + ',' + failure.getPayload()
-            + System.lineSeparator();
+        return getCsvFieldValue(failure.getMaatId()) +
+                getCsvFieldValue(failure.getRecordType()) +
+                getCsvFieldValue(failure.getRecordType().equals("Fdc")?failure.getFdcId():failure.getConcorContributionId()) +
+                getCsvFieldValue(failure.getBatchId()) +
+                getCsvFieldValue(failure.getTraceId()) +
+                getCsvFieldValue(failure.getId()) +
+                getCsvFieldValue(failure.getProcessedDate()) +
+                getCsvFieldValue(failure.getEventType()) +
+                getCsvFieldValue(eventTypeRepository.findById(failure.getEventType()).map(EventTypeEntity::getDescription).orElse(null)) +
+                getCsvFieldValue(failure.getHttpStatus()) +
+                getCsvFieldValue(failure.getPayload()) +
+                System.lineSeparator();
     }
 
-    private String getFdcValue(Object o) {
-        return String.format((FDC_FORMAT_COMMA), (Objects.nonNull(o) ? o : EMPTY_CHARACTER));
+    private String getCsvFieldValue(Object o) {
+        return String.format((CSV_FIELD_FORMAT), (Objects.nonNull(o) ? o : EMPTY_CHARACTER));
     }
 
-    private String getFdcValue(BigDecimal o) {
-        return getFdcValue(Objects.nonNull(o) ? o.setScale(2, RoundingMode.UNNECESSARY).toString() : null);
+    private String getCsvFieldValue(BigDecimal o) {
+        return getCsvFieldValue(Objects.nonNull(o) ? o.setScale(2, RoundingMode.UNNECESSARY).toString() : null);
     }
 
-    private String getFdcValue(XMLGregorianCalendar o) {
-        return (getFdcValue(DateUtils.convertXmlGregorianToString(o)));
+    private String getCsvFieldValue(XMLGregorianCalendar o) {
+        return (getCsvFieldValue(DateUtils.convertXmlGregorianToString(o)));
     }
 
     private File createCsvFile(String fileName) throws IOException {

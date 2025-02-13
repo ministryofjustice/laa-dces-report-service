@@ -1,6 +1,5 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -34,7 +33,7 @@ public class FailuresReportService {
             return null;
         } else {
             log.info("{} repeat failures found, generating the failure report", failures.size());
-            return csvFileService.writeFailuresToCsv(failures, getFileName(reportDate), reportDate);
+            return csvFileService.writeFailuresToCsv(failures, getFileName(reportDate));
         }
     }
 
