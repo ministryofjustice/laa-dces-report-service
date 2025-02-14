@@ -33,7 +33,11 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *
  * @param runDailyReport   initialize the `feature.run-daily-report` (`FEATURE_RUNDAILYREPORT`) feature flag.
  *                           This enables the daily reports.
+ * @param sendEmptyFailuresReport  initialize the `feature.send-empty-failures-report` (`FEATURE_SENDEMPTYFAILURESREPORT`) feature flag.
+ *                           This enables the daily failures report to be sent even if there are no failures to report (just as an is-alive check).
  */
 @ConfigurationProperties(prefix = "feature")
-public record FeatureProperties(boolean runDailyReport   /* feature.run-daily-report */) {
-}
+public record FeatureProperties(
+    boolean runDailyReport,   /* feature.run-daily-report */
+    boolean sendEmptyFailuresReport /* feature.send-empty-failures-report */
+) {}

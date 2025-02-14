@@ -15,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
+import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionRepository;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
@@ -46,6 +47,12 @@ class DcesReportServiceTest {
 
     @MockBean
     NotificationClient notifyClient;
+
+    @MockBean
+    CaseSubmissionRepository caseSubmissionRepository;
+
+    @MockBean
+    FailuresReportService failuresReportService;
 
     @AfterEach
     void postTest() {
@@ -102,4 +109,19 @@ class DcesReportServiceTest {
         // execute
         assertDoesNotThrow(() -> dcesReportService.sendContributionsReport(ReportType.CONTRIBUTION.getDescription(), testDate, testDate));
     }
+
+    @Test
+    void givenValidDate_whenSendFailuresReport_thenReportIsRun() throws IOException, NotificationClientException {
+        // setup
+        setupMockitoForTest();
+        LocalDate dateParam = LocalDate.of(2023, 7, 10);
+
+        // execute
+        dcesReportService.sendFailuresReport("Test", dateParam);
+
+        // assert
+        Mockito.verify(failuresReportService, times(1)).generateReport("Test", dateParam);
+    }
+
+
 }

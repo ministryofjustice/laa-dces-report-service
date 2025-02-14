@@ -31,6 +31,7 @@ public final class NotifyEmailClient implements EmailClient {
             throw new EmailClientException(message, e);
         }
         log.info("email sent successfully");
+
     }
 
     // As notify does not support sending to multiple recipients in a single api call

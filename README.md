@@ -91,7 +91,19 @@ curl -G localhost:8089/api/internal/v1/dces/report/contributions/<<reportTitle>>
 or
 
 ```sh
-curl -G localhost:8089/api/internal/v1/dces/report/fdc/<<reportTitle>>/01.01.2021/26.01.2021
+curl -G localhost:8089/api/internal/v1/dces/report/fdc/<<reportTitle>>/01.01.2021
+```
+
+#### For failures:
+
+```sh
+./failuresReportAdHoc.sh <<reportTitle>> 01.01.2021
+```
+
+or
+
+```sh
+curl -G localhost:8089/api/internal/v1/dces/report/failures/<<reportTitle>>/01.01.2021
 ```
 
 ### How to access the pods:

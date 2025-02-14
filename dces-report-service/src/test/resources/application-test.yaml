@@ -22,12 +22,25 @@ spring:
       fdc:
         monthly: "31-45/10 */5 * * * ?"
         daily: "46-59/10 */5 * * * ?"
-
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
 emailClient:
   notify:
     key: notify_test_key
     template-id: notify-template-id
-    recipient: "vidyanand.vartak@digital.justice.gov.uk"
+    recipient:
+      default: ${NOTIFY_RECIPIENT:test@example.com}
+      failures: ${NOTIFY_RECIPIENT_FAILURES:test@example.com}
 
 sentry:
   environment: development

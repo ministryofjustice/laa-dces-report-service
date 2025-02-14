@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
-    id 'org.springframework.boot' version '3.3.5'
+    id 'org.springframework.boot' version '3.3.7'
     id 'io.spring.dependency-management' version '1.1.0'
     id "org.sonarqube" version "4.0.0.2929"
     id 'info.solidsoft.pitest' version '1.9.11'
@@ -9,7 +9,7 @@ plugins {
 
 def versions = [
         pitestVersion          : '1.4.10',
-        sentryVersion          : '7.13.0',
+        sentryVersion          : '8.1.0',
         springdocVersion       : '1.8.0',
         jakartaActivation      : '2.0.1',
         resilience4jVersion    : '2.0.2',
@@ -48,6 +48,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-aop'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     // oAuth
     implementation "org.springframework.security:spring-security-config"
@@ -68,14 +69,20 @@ dependencies {
 
     runtimeOnly "io.micrometer:micrometer-tracing-bridge-brave"
     runtimeOnly "io.micrometer:micrometer-registry-prometheus"
+    runtimeOnly "org.postgresql:postgresql"
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
 
     testImplementation "org.pitest:pitest:$versions.pitestVersion"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    testImplementation 'com.h2database:h2'
     testImplementation "com.squareup.okhttp3:okhttp"
     testImplementation "com.squareup.okhttp3:mockwebserver"
     testImplementation "org.wiremock:wiremock-standalone:$versions.wiremockVersion"
@@ -155,7 +162,7 @@ sonar {
     }
 }
 
-task xsd2java() {
+tasks.register('xsd2java') {
     doLast {
         jaxbTargetDir.mkdirs()
 

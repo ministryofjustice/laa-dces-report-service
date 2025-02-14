@@ -36,9 +36,9 @@ class ContributionsFileMapperTest {
     private final DateTimeFormatter dateFormatterCsv = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("dd-MM-yyyy");
     private static final String filename = "this_is_a_test.xml";
-    private static final String EXPECTED_HEADER = "MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date";
-    private static final String NO_DATA_MESSAGE = "\n### There is no data to report for the specified date range. ####";
-    private static final String EXPECTED_TITLE = "Test Contributions Report REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s\n";
+    private static final String EXPECTED_HEADER = "MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date,Transmission Date" + System.lineSeparator();
+    private static final String NO_DATA_MESSAGE = "### There is no data to report for the specified date range. ####";
+    private static final String EXPECTED_TITLE = "Test Contributions Report REPORTING DATE FROM: %s | REPORTING DATE TO: %s | REPORTING PRODUCED ON: %s" + System.lineSeparator();
 
 
     @InjectSoftAssertions
@@ -61,7 +61,7 @@ class ContributionsFileMapperTest {
         }
 
         // Reset service reference
-        contributionsFileMapper.csvFileService = new CSVFileService();
+        contributionsFileMapper.csvFileService = new CSVFileService(null);
     }
 
     private void closeFile(File f) {
@@ -72,7 +72,9 @@ class ContributionsFileMapperTest {
 
     @Test
     void testXMLValid() {
-        File f = new File(getClass().getClassLoader().getResource("contributions/CONTRIBUTIONS_202102122031.xml").getFile());
+        File f = new File(Objects.requireNonNull(
+                getClass().getClassLoader().getResource("contributions/CONTRIBUTIONS_202102122031.xml"))
+            .getFile());
         ContributionFile contributionsFile = null;
         try {
             contributionsFile = contributionsFileMapper.mapContributionsXMLFileToObject(f);
@@ -87,7 +89,8 @@ class ContributionsFileMapperTest {
 
     @Test
     void testMultipleContributions() {
-        File f = new File(getClass().getClassLoader().getResource("contributions/multiple_contributions.xml").getFile());
+        File f = new File(Objects.requireNonNull(
+            getClass().getClassLoader().getResource("contributions/multiple_contributions.xml")).getFile());
         ContributionFile contributionsFile = null;
         try {
             contributionsFile = contributionsFileMapper.mapContributionsXMLFileToObject(f);
@@ -100,7 +103,8 @@ class ContributionsFileMapperTest {
     @Test
     void testFieldMappingForCSV() {
         //MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date
-        File f = new File(getClass().getClassLoader().getResource("contributions/report_values_filled.xml").getFile());
+        File f = new File(Objects.requireNonNull(
+            getClass().getClassLoader().getResource("contributions/report_values_filled.xml")).getFile());
         ContributionFile contributionsFile = null;
         try {
             contributionsFile = contributionsFileMapper.mapContributionsXMLFileToObject(f);
@@ -122,7 +126,8 @@ class ContributionsFileMapperTest {
 
     @Test
     void testInvalidXML() {
-        File f = new File(getClass().getClassLoader().getResource("contributions/invalid.XML").getFile());
+        File f = new File(Objects.requireNonNull(
+            getClass().getClassLoader().getResource("contributions/invalid.XML")).getFile());
         assertThrows(UnmarshalException.class, () -> contributionsFileMapper.mapContributionsXMLFileToObject(f));
     }
 
@@ -243,8 +248,8 @@ class ContributionsFileMapperTest {
             softly.assertThat(csvOutput).contains("5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,");
 
             String expectedTitle = String.format(EXPECTED_TITLE, startDate, endDate, LocalDate.now());
-            softly.assertThat(csvOutput).isEqualTo(expectedTitle + EXPECTED_HEADER + "\n" +
-                    "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021\n" +
+            softly.assertThat(csvOutput).isEqualTo(expectedTitle + EXPECTED_HEADER  +
+                    "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021" + System.lineSeparator() +
                     "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021");
             softly.assertAll();
         } catch (JAXBException | IOException e) {
@@ -941,63 +946,4 @@ class ContributionsFileMapperTest {
                 tagSuffix);
     }
 
-    private String getXmlDataValidNull() {
-        return "<?xml version=\"1.0\"?>\n" +
-                "<contribution_file>\n" +
-                "    <header id=\"222772044\">\n" +
-                "        <filename>CONTRIBUTIONS_202102122031.xml</filename>\n" +
-                "        <dateGenerated>2021-02-12</dateGenerated>\n" +
-                "        <recordCount>1</recordCount>\n" +
-                "        <formatVersion>format version 1.7 - xsd=contribution_file.xsd version 1.16</formatVersion>\n" +
-                "    </header>\n" +
-                "    <CONTRIBUTIONS_LIST>\n" +
-                "        <CONTRIBUTIONS id=\"222769650\" flag=\"update\">\n" +
-                "            <maat_id>5635978</maat_id>\n" +
-                "            <applicant id=\"222767510\">\n" +
-                "                <firstName>F Name</firstName>\n" +
-                "                <lastName>L Name</lastName>\n" +
-                "                <dob>1990-04-07</dob>\n" +
-                "                <preferredPaymentDay>1</preferredPaymentDay>\n" +
-                "            </applicant>\n" +
-                "            <application>\n" +
-                "                <ccHardship>\n" +
-                "                    <reviewDate>2021-01-25</reviewDate>\n" +
-                "                </ccHardship>\n" +
-                "                <repStatusDate>2021-01-25</repStatusDate>\n" +
-                "                <repOrderWithdrawalDate>2021-01-29</repOrderWithdrawalDate>\n" +
-                "                <committalDate>2020-09-15</committalDate>\n" +
-                "            </application>\n" +
-                "            <assessment>\n" +
-                "                <effectiveDate>2021-01-30</effectiveDate>\n" +
-                "                <assessmentDate>2021-02-12</assessmentDate>\n" +
-                "            </assessment>\n" +
-                "            <ccOutcomes>\n" +
-                "                <ccOutcome>\n" +
-                "                    <date>2021-01-25</date>\n" +
-                "                </ccOutcome>\n" +
-                "            </ccOutcomes>\n" +
-                "            <passported>\n" +
-                "                <dateCompleted>2021-01-30</dateCompleted>\n" +
-                "            </passported>\n" +
-                "            <correspondence>\n" +
-                "                <letter>\n" +
-                "                    <Ref>W1</Ref>\n" +
-                "                    <id>222771991</id>\n" +
-                "                    <type>CONTRIBUTION_NOTICE</type>\n" +
-                "                    <created>2021-02-12</created>\n" +
-                "                    <printed/>\n" +
-                "                </letter>\n" +
-                "                <letter>\n" +
-                "                    <Ref>W1</Ref>\n" +
-                "                    <id>222771938</id>\n" +
-                "                    <type>CONTRIBUTION_NOTICE</type>\n" +
-                "                    <created>2021-02-12</created>\n" +
-                "                    <printed/>\n" +
-                "                </letter>\n" +
-                "            </correspondence>\n" +
-                "            <breathingSpaceInfo/>\n" +
-                "        </CONTRIBUTIONS>\n" +
-                "    </CONTRIBUTIONS_LIST>\n" +
-                "</contribution_file>\n";
-    }
 }

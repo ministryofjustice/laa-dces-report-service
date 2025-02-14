@@ -31,7 +31,9 @@ emailClient:
   notify:
     key: ${NOTIFY_KEY}
     template-id: ${NOTIFY_TEMPLATEID}
-    recipient: ${NOTIFY_RECIPIENT}
+    recipient:
+      default: ${NOTIFY_RECIPIENT:test@example.com}
+      failures: ${NOTIFY_RECIPIENT_FAILURES:test@example.com}
     environment: ${HOST_ENV}
 
 spring:
@@ -51,6 +53,16 @@ spring:
             authorization-grant-type: client_credentials
             scope:
               - ${MAATCDAPI_OAUTH2_SCOPE}
+  datasource:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    generate-ddl: false
+    properties:
+      hibernate:
+        format_sql: true
+
   # Cron template: second   minute  hour  day-of-month  month  day-of-week
   # default is disabled: "-"
   # * is used to indicate include all; ? is used to ignore
@@ -63,6 +75,8 @@ spring:
       fdc:
         monthly: ${DCES_CRON_FDC_MONTHLY:-} # "0 20 5 5 * ?" # (5th of every month at 05:20am)
         daily: ${DCES_CRON_FDC_DAILY:-} # "46-59/10 */5 * * * ?"
+      failures:
+        daily: ${DCES_CRON_FAILURES_DAILY:-} # "0 6 * * * ?"
 
 sentry:
   debug: off

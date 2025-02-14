@@ -31,7 +31,9 @@ emailClient:
   notify:
     key: notify_test_key
     template-id: notify-template-id
-    recipient: "tariq.hossain@digital.justice.gov.uk"
+    recipient:
+      default: ${NOTIFY_RECIPIENT:test@example.com}
+      failures: ${NOTIFY_RECIPIENT_FAILURES:test@example.com}
 
 spring:
   mvc:
@@ -60,6 +62,15 @@ spring:
       fdc:
         monthly: "31-45/10 */5 * * * ?"
         daily: "46-59/10 */5 * * * ?"
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
 
 sentry:
   environment: development
