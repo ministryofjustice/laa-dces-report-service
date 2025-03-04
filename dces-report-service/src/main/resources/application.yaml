@@ -80,7 +80,7 @@ spring:
 
 sentry:
   debug: off
-  dsn: https://cda1d7406f2ac58d5484fbbcea12d22c@o345774.ingest.sentry.io/4505674155753472
+  dsn: ${SENTRY_DSN:}
   # With a sample rate of 1, all traffic will be sent to Sentry. Note, this is only possible because this project will have very low traffic (2 calls  month)
   traces-sample-rate: 1.0
   environment: ${HOST_ENV}
