@@ -14,15 +14,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-@HttpExchange("/debt-collection-enforcement")
+@HttpExchange("/debt-collection-enforcement/contribution-file")
 public interface ContributionFilesClient extends MaatApiClient {
 
-    @GetExchange("/contributions?fromDate={startDate}&toDate={finishDate}")
+    @GetExchange("/concorFiles?fromDate={startDate}&toDate={finishDate}")
     List<String> getContributions(
             @PathVariable @DateTimeFormat(pattern = DEFAULT_DATE_FORMAT) LocalDate startDate,
             @PathVariable @DateTimeFormat(pattern = DEFAULT_DATE_FORMAT) LocalDate finishDate);
-
-
+    
     @Configuration
     class ContributionFilesClientFactory {
 

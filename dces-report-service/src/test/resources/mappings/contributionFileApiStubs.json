@@ -3,7 +3,7 @@
     {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
             "matches": "[\\d]{1,2}.01.2023"
@@ -28,7 +28,7 @@
     {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
             "matches": "[\\d]{1,2}.01.2021"
@@ -53,7 +53,7 @@
     {
       "scenarioName": "successNoDataRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
             "matches": "03.10.2474"
@@ -75,7 +75,7 @@
     {
       "scenarioName": "error500BasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
             "equalTo": "05.05.5500"
@@ -99,7 +99,7 @@
     {
       "scenarioName": "error400BasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
             "equalTo": "04.04.4400"
@@ -123,7 +123,7 @@
     {
       "scenarioName": "error404BasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
             "equalTo": "04.04.4404"
@@ -147,7 +147,7 @@
     {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
             "matches": "[\\d]{1,2}.01.2020"
