@@ -34,7 +34,7 @@ emailClient:
     recipient:
       default: ${NOTIFY_RECIPIENT:test@example.com}
       failures: ${NOTIFY_RECIPIENT_FAILURES:test@example.com}
-    environment: ${HOST_ENV}
+    environment: ${HOST_ENV:development}
 
 spring:
   mvc:
