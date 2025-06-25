@@ -5,31 +5,10 @@
 
 version: 2
 updates:
-  - package-ecosystem: "bundler"
-    directory: "/"
+  - package-ecosystem: "gradle"
+    directory: "/laa-dces-report-service"
     schedule:
-      interval: "daily"
-  - package-ecosystem: "terraform"
-    directory: "/terraform"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "pip"
-    directory: "/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "gomod"
-    directory: "/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "docker"
-    directory: "/"
-    schedule:
-      interval: "daily"
+      interval: "weekly"
+    commit-message:
+      prefix: "Gradle"
+      include: "scope"
