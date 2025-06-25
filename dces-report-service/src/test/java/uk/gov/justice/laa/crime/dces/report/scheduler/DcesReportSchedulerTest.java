@@ -4,8 +4,8 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @WireMockTest(httpPort = 1111)
 class DcesReportSchedulerTest {
 
-    @MockBean
+    @MockitoBean
     DcesReportService dcesReportService;
 
     @Autowired

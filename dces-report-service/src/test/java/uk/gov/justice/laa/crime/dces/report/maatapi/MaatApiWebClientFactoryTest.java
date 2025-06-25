@@ -10,10 +10,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.reactive.function.client.WebClient;
 import uk.gov.justice.laa.crime.dces.report.maatapi.config.ServicesProperties;
 import uk.gov.justice.laa.crime.dces.report.maatapi.model.MaatApiResponseModel;
@@ -36,7 +36,7 @@ class MaatApiWebClientFactoryTest {
     @Autowired
     private ServicesProperties services;
 
-    @MockBean
+    @MockitoBean
     OAuth2AuthorizedClientManager authorizedClientManager;
 
 
