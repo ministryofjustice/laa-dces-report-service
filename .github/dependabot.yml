@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: "gradle"
-    directory: "/laa-dces-report-service"
+    directory: "/dces-report-service"
     schedule:
       interval: "weekly"
     commit-message:
