@@ -10,8 +10,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
 import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailClientException;
@@ -39,10 +39,10 @@ class NotifyEmailClientSendExceptionTest {
     @Mock
     NotifyEmailObject mockEmailObject;
 
-    @MockBean
+    @MockitoBean
     NotificationClient mockNotifyClient;
 
-    @MockBean
+    @MockitoBean
     NotificationClientException mock403Exception;
 
     @BeforeEach
