@@ -12,8 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailObject;
 import uk.gov.justice.laa.crime.dces.report.utils.email.config.NotifyConfiguration;
@@ -50,7 +50,7 @@ class NotifyEmailClientTest {
     @Mock
     NotifyEmailObject mockEmailObject;
 
-    @MockBean
+    @MockitoBean
     NotificationClient mockNotifyClient;
 
     @Value("${sentry.environment}")

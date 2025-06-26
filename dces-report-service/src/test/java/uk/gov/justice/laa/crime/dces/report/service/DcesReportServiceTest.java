@@ -10,8 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
@@ -39,19 +39,19 @@ class DcesReportServiceTest {
     @Autowired
     DcesReportService dcesReportService;
 
-    @MockBean
+    @MockitoBean
     FdcFilesClient fdcFilesClient;
 
-    @MockBean
+    @MockitoBean
     ContributionFilesClient contributionFilesClient;
 
-    @MockBean
+    @MockitoBean
     NotificationClient notifyClient;
 
-    @MockBean
+    @MockitoBean
     CaseSubmissionRepository caseSubmissionRepository;
 
-    @MockBean
+    @MockitoBean
     FailuresReportService failuresReportService;
 
     @AfterEach

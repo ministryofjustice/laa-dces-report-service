@@ -10,8 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import uk.gov.justice.laa.crime.dces.report.DcesReportServiceApplication;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
@@ -47,19 +47,19 @@ final class DcesReportingServiceTest {
     @InjectSoftAssertions
     private SoftAssertions softly;
 
-    @SpyBean
+    @MockitoSpyBean
     private DcesReportService spyReporting;
 
-    @SpyBean
+    @MockitoSpyBean
     private ContributionFilesClient spyContributionsClient;
 
-    @SpyBean
+    @MockitoSpyBean
     private FdcFilesClient spyFdcFilesClient;
 
-    @SpyBean
+    @MockitoSpyBean
     private FailuresReportService spyFailuresReportService;
 
-    @SpyBean
+    @MockitoSpyBean
     private NotifyEmailClient spyEmailClient;
 
     @Autowired

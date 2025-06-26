@@ -25,6 +25,7 @@ public class TestDataUtil {
     batchId = 100;
     traceId = 200;
     caseSubmissionRepository.deleteAll();
+    eventTypeRepository.deleteAll();
     createEventTypeData();
   }
 
@@ -33,13 +34,14 @@ public class TestDataUtil {
      eventTypeRepository.save(new EventTypeEntity(1, "FetchedFromMAAT"));
      eventTypeRepository.save(new EventTypeEntity(2, "SyncRequestResponseToDrc"));
      eventTypeRepository.save(new EventTypeEntity(3, "SyncResponseLoggedToMAAT"));
+     eventTypeRepository.flush();
   }
 
-  private void saveCaseSubmission(Integer maatId, Integer contrId, Integer eventType, int httpStatus, LocalDateTime processedDate, String payload) {
-    CaseSubmissionEntity caseSubmission = new CaseSubmissionEntity(0, batchId, traceId, maatId,
-        recordType.equals("Fdc")?null:contrId, recordType.equals("Fdc")?contrId:null,
+  private void saveCaseSubmission(Integer maatId, Integer messageId, Integer eventType, int httpStatus, LocalDateTime processedDate, String payload) {
+    CaseSubmissionEntity caseSubmission = new CaseSubmissionEntity(null, batchId, traceId, maatId,
+        recordType.equals("Fdc")?null:messageId, recordType.equals("Fdc")?messageId:null,
         recordType, processedDate, eventType, httpStatus, payload);
-    caseSubmissionRepository.save(caseSubmission);
+    caseSubmissionRepository.saveAndFlush(caseSubmission);
   }
 
   public void createTestDataWithFailures() {
@@ -49,6 +51,7 @@ public class TestDataUtil {
 
     //Older batches
     batchId = 95;
+
     // Insert case submission that fails in DRC
     saveCaseSubmission(95, 95, 1, 200, LocalDateTime.of(2024, 12, 1, 11, 10, 0), null);
     saveCaseSubmission(95, 95, 2, 500, LocalDateTime.of(2024, 12, 1, 11, 10, 1), null);
@@ -153,10 +156,9 @@ public class TestDataUtil {
     saveCaseSubmission(107, 207, 1, 200, LocalDateTime.of(2025, 1, 2, 11, 10, 0), null);
 
     // Insert header case submission with null maatId and concorId
-    CaseSubmissionEntity caseSubmission = new CaseSubmissionEntity(0, batchId, traceId, null, null, null, "Contribution",
+    CaseSubmissionEntity caseSubmission = new CaseSubmissionEntity(null, batchId, traceId, null, null, null, "Contribution",
         LocalDateTime.of(2025, 1, 2, 11, 10, 0), 1, 200, "Fetched:3");
-    caseSubmissionRepository.save(caseSubmission);
-
+    caseSubmissionRepository.saveAndFlush(caseSubmission);
   }
 
   public void createTestDataWithNoRepeatFailures() {
