@@ -3,17 +3,17 @@ plugins {
     id 'jacoco'
     id 'org.springframework.boot' version '3.5.3'
     id 'io.spring.dependency-management' version '1.1.7'
-    id "org.sonarqube" version "6.0.1.5171"
-    id 'info.solidsoft.pitest' version '1.9.11'
+    id "org.sonarqube" version "6.2.0.5505"
+    id 'info.solidsoft.pitest' version '1.15.0'
 }
 
 def versions = [
-        pitestVersion          : '1.4.10',
-        sentryVersion          : '8.1.0',
+        pitestVersion          : '1.20.0',
+        sentryVersion          : '8.16.0',
         springdocVersion       : '1.8.0',
         jakartaActivation      : '2.0.1',
-        resilience4jVersion    : '2.0.2',
-        wiremockVersion        : '3.9.1',
+        resilience4jVersion    : '2.3.0',
+        wiremockVersion        : '3.13.1',
         notifyVersion          : '5.2.1-RELEASE',
         okhttpVersion          : '4.12.0'
 ]
@@ -87,11 +87,11 @@ dependencies {
     testImplementation "com.squareup.okhttp3:okhttp"
     testImplementation "com.squareup.okhttp3:mockwebserver:$versions.okhttpVersion"
     testImplementation "org.wiremock:wiremock-standalone:$versions.wiremockVersion"
-    testImplementation "io.rest-assured:rest-assured:5.3.1"
-    testImplementation "io.rest-assured:json-path:5.3.1"
-    testImplementation "io.rest-assured:xml-path:5.3.1"
-    testImplementation "io.rest-assured:json-schema-validator:5.3.1"
-    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.9.2'
+    testImplementation "io.rest-assured:rest-assured:5.5.5"
+    testImplementation "io.rest-assured:json-path:5.5.5"
+    testImplementation "io.rest-assured:xml-path:5.5.5"
+    testImplementation "io.rest-assured:json-schema-validator:5.5.5"
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.13.2'
 
     xsd2java "com.sun.xml.bind:jaxb-xjc"
     xsd2java "com.sun.xml.bind:jaxb-impl"
