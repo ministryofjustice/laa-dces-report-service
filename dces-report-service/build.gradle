@@ -15,7 +15,7 @@ def versions = [
         resilience4jVersion    : '2.3.0',
         wiremockVersion        : '3.13.1',
         notifyVersion          : '5.2.1-RELEASE',
-        okhttpVersion          : '4.12.0'
+        okhttpVersion          : '5.0.0'
 ]
 group = 'uk.gov.justice.laa.crime'
 
