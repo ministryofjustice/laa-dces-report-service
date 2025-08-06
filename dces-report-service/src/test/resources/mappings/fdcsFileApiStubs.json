@@ -3,13 +3,13 @@
     {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/final-defence-cost",
+        "urlPath": "/debt-collection-enforcement/contribution-file/fdcFiles",
         "queryParameters": {
           "fromDate": {
-            "equalTo": "10.06.2023"
+            "equalTo": "2023-06-10"
           },
           "toDate": {
-            "equalTo": "10.06.2023"
+            "equalTo": "2023-06-10"
           }
         },
         "method": "GET"
@@ -28,13 +28,13 @@
     {
       "scenarioName": "successNoDataRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/final-defence-cost",
+        "urlPath": "/debt-collection-enforcement/contribution-file/fdcFiles",
         "queryParameters": {
           "fromDate": {
-            "matches": "03.10.2474"
+            "matches": "2474-10-03"
           },
           "toDate": {
-            "matches": "03.10.2474"
+            "matches": "2474-10-03"
           }
         },
         "method": "GET"
