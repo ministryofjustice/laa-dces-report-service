@@ -6,7 +6,7 @@ services:
 spring:
   mvc:
     format:
-      date: dd.MM.yyyy
+      date: yyyy-MM-dd
   web:
     locale: en_GB
     locale-resolver: fixed

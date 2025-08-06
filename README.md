@@ -67,7 +67,7 @@ To trigger the report manually follow these simple instructions:
 1. get access to the container where the app is running
 2. Use the command to launch the corresponding report (see examples below)
 3. In the command, replace <<reportTitle>> with the desired report title, e.g. Monthly, Daily, AdHoc etc.
-4. Make sure to specify the start and end date in the correct format (dd.MM.yyyy), both values are inclusive.
+4. Make sure to specify the start and end date in the correct format (yyyy-MM-dd), both values are inclusive.
 
 There are 2 ways of doing this, you can either use the script provided for ease or type the full CURL command.
 
@@ -76,7 +76,7 @@ Check the following examples:
 #### For contributions:
 
 ```sh
-./contributionsReportAdHoc.sh <<reportTitle>> 01.01.2021 26.01.2021
+./contributionsReportAdHoc.sh <<reportTitle>> 2021-01-01 2021-01-26
 ```
 
 or
@@ -88,25 +88,25 @@ curl -G localhost:8089/api/internal/v1/dces/report/contributions/<<reportTitle>>
 #### For FDCs:
 
 ```sh
-./fdcReportAdHoc.sh <<reportTitle>> 01.01.2021 26.01.2021
+./fdcReportAdHoc.sh <<reportTitle>> 2021-01-01 2021-26-01
 ```
 
 or
 
 ```sh
-curl -G localhost:8089/api/internal/v1/dces/report/fdc/<<reportTitle>>/01.01.2021
+curl -G localhost:8089/api/internal/v1/dces/report/fdc/<<reportTitle>>/2021-01-01
 ```
 
 #### For failures:
 
 ```sh
-./failuresReportAdHoc.sh <<reportTitle>> 01.01.2021
+./failuresReportAdHoc.sh <<reportTitle>> 2021-01-01
 ```
 
 or
 
 ```sh
-curl -G localhost:8089/api/internal/v1/dces/report/failures/<<reportTitle>>/01.01.2021
+curl -G localhost:8089/api/internal/v1/dces/report/failures/<<reportTitle>>/2021-01-01
 ```
 
 ### How to access the pods:
