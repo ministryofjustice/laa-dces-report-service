@@ -20,8 +20,8 @@ def versions = [
 group = 'uk.gov.justice.laa.crime'
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 project.ext {
@@ -108,7 +108,7 @@ test {
 
 
 jacoco {
-    toolVersion = "0.8.8"
+    toolVersion = "0.8.13"
 }
 
 tasks.named('test') {

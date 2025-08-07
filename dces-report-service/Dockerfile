@@ -1,4 +1,4 @@
-FROM amazoncorretto:17-alpine
+FROM amazoncorretto:21-alpine
 RUN apk update \
 && apk add curl
 RUN mkdir -p /opt/laa-dces-report-service/

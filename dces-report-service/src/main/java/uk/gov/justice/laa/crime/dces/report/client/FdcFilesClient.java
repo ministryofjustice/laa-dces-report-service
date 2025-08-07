@@ -13,13 +13,13 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-@HttpExchange("/debt-collection-enforcement")
+@HttpExchange("/debt-collection-enforcement/contribution-file")
 public interface FdcFilesClient extends MaatApiClient {
 
-    @GetExchange(url = "/final-defence-cost?fromDate={startDate}&toDate={endDate}")
+    @GetExchange(url = "/fdcFiles?fromDate={startDate}&toDate={endDate}")
     List<String> getContributions(
-            @PathVariable @DateTimeFormat(pattern = DEFAULT_DATE_FORMAT) LocalDate startDate,
-            @PathVariable @DateTimeFormat(pattern = DEFAULT_DATE_FORMAT) LocalDate endDate);
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate);
 
     @Configuration
     class FdcFilesClientFactory {

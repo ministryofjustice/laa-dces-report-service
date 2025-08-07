@@ -39,7 +39,7 @@ emailClient:
 spring:
   mvc:
     format:
-      date: dd.MM.yyyy
+      date: yyyy-MM-dd
   security:
     oauth2:
       client:

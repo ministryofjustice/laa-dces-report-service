@@ -14,7 +14,7 @@ import uk.gov.justice.laa.crime.dces.report.enums.ReportPeriod;
 @UtilityClass
 @ConfigurationPropertiesScan
 public class DateUtils {
-    public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    public static final DateTimeFormatter dateFormatter = DateTimeFormatter.ISO_DATE;
 
     private final DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 
