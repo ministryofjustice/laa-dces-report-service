@@ -38,7 +38,7 @@ emailClient:
 spring:
   mvc:
     format:
-      date: dd.MM.yyyy
+      date: yyyy-MM-dd
   security:
     oauth2:
       # Interactive/Web user authentication
