@@ -73,7 +73,7 @@ jobs:
       _JAVA_OPTIONS: "-Xmx3g"
       GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.workers.max=2"
     docker:
-      - image: cimg/openjdk:17.0.4
+      - image: cimg/openjdk:21.0.6
     working_directory: ~/laa-dces-report-service/dces-report-service
     steps:
       - checkout:
@@ -103,7 +103,7 @@ jobs:
 
   scan_app:
     docker:
-      - image: cimg/openjdk:17.0.4
+      - image: cimg/openjdk:21.0.6
     working_directory: ~/laa-dces-report-service/dces-report-service
     steps:
       - checkout:
@@ -118,7 +118,7 @@ jobs:
       _JAVA_OPTIONS: "-Xmx3g"
       GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.workers.max=2"
     docker:
-      - image: cimg/openjdk:17.0.4
+      - image: cimg/openjdk:21.0.6
     working_directory: ~/laa-dces-report-service/dces-report-service
     steps:
       - checkout:
@@ -149,7 +149,7 @@ jobs:
 
   build_and_scan_image:
     docker:
-      - image: cimg/openjdk:17.0.4
+      - image: cimg/openjdk:21.0.6
     working_directory: ~/laa-dces-report-service/dces-report-service
     steps:
       - checkout:
@@ -174,7 +174,7 @@ jobs:
 
   build_and_push_image:
     docker:
-      - image: cimg/openjdk:17.0.4
+      - image: cimg/openjdk:21.0.6
     working_directory: ~/laa-dces-report-service/dces-report-service
     steps:
       - checkout:
