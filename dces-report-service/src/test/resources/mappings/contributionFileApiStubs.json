@@ -3,13 +3,13 @@
     {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
-            "matches": "[\\d]{1,2}.01.2023"
+            "matches": "2023-01-[\\d]{1,2}"
           },
           "toDate": {
-            "matches": "[\\d]{1,2}.01.2023"
+            "matches": "2023-01-[\\d]{1,2}"
           }
         },
         "method": "GET"
@@ -28,13 +28,13 @@
     {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
-            "matches": "[\\d]{1,2}.01.2021"
+            "matches": "2021-01-[\\d]{1,2}"
           },
           "toDate": {
-            "matches": "[\\d]{1,2}.01.2021"
+            "matches": "2021-01-[\\d]{1,2}"
           }
         },
         "method": "GET"
@@ -53,13 +53,13 @@
     {
       "scenarioName": "successNoDataRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
-            "matches": "03.10.2474"
+            "matches": "2474-10-03"
           },
           "toDate": {
-            "matches": "03.10.2474"
+            "matches": "2474-10-03"
           }
         },
         "method": "GET"
@@ -75,13 +75,13 @@
     {
       "scenarioName": "error500BasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
-            "equalTo": "05.05.5500"
+            "equalTo": "5500-05-05"
           },
           "toDate": {
-            "equalTo": "05.05.5500"
+            "equalTo": "5500-05-05"
           }
         },
         "method": "GET"
@@ -99,13 +99,13 @@
     {
       "scenarioName": "error400BasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
-            "equalTo": "04.04.4400"
+            "equalTo": "4400-04-04"
           },
           "toDate": {
-            "equalTo": "04.04.4400"
+            "equalTo": "4400-04-04"
           }
         },
         "method": "GET"
@@ -123,13 +123,13 @@
     {
       "scenarioName": "error404BasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
-            "equalTo": "04.04.4404"
+            "equalTo": "4404-04-04"
           },
           "toDate": {
-            "equalTo": "04.04.4404"
+            "equalTo": "4404-04-04"
           }
         },
         "method": "GET"
@@ -147,13 +147,13 @@
     {
       "scenarioName": "successBasicRequest",
       "request": {
-        "urlPath": "/debt-collection-enforcement/contributions",
+        "urlPath": "/debt-collection-enforcement/contribution-file/concorFiles",
         "queryParameters": {
           "fromDate": {
-            "matches": "[\\d]{1,2}.01.2020"
+            "matches": "2020-01-[\\d]{1,2}"
           },
           "toDate": {
-            "matches": "[\\d]{1,2}.01.2020"
+            "matches": "2020-01-[\\d]{1,2}"
           }
         },
         "method": "GET"
