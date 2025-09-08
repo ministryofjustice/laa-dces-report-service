@@ -8,7 +8,7 @@ plugins {
 }
 
 def versions = [
-        pitestVersion          : '1.20.1',
+        pitestVersion          : '1.20.2',
         sentryVersion          : '8.20.0',
         springdocVersion       : '1.8.0',
         jakartaActivation      : '2.0.1',
