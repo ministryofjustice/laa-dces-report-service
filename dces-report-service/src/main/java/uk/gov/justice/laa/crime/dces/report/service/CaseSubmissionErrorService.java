@@ -1,5 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,45 +18,29 @@ public class CaseSubmissionErrorService {
 
   public CaseSubmissionErrorDto getCaseSubmissionErrorEntity(Integer caseSubmissionErrorId) {
     Optional<CaseSubmissionErrorEntity> optionalEntity = caseSubmissionErrorRepository.findById(caseSubmissionErrorId);
-    CaseSubmissionErrorDto dto = null;
     
     if (optionalEntity.isPresent()) {
       CaseSubmissionErrorEntity entity = optionalEntity.get();
-      dto = CaseSubmissionErrorDto.builder()
-          .id(entity.getId())
-          .maatId(entity.getMaatId())
-          .concorContributionId(entity.getConcorContributionId())
-          .fdcId(entity.getFdcId())
-          .title(entity.getTitle())
-          .status(entity.getStatus())
-          .detail(entity.getDetail())
-          .creationDate(entity.getCreationDate())
-          .build();
+      return mapEntityToDto(entity);
     }
     
-    return dto;
+    return null;
   }
 
   public List<CaseSubmissionErrorDto> getCaseSubmissionErrors() {
     List<CaseSubmissionErrorEntity> entities = caseSubmissionErrorRepository.findAll();
-    List<CaseSubmissionErrorDto> dtos = new ArrayList<>();
-    
-    for (CaseSubmissionErrorEntity entity : entities) {
-      dtos.add(
-          CaseSubmissionErrorDto.builder()
-              .id(entity.getId())
-              .maatId(entity.getMaatId())
-              .concorContributionId(entity.getConcorContributionId())
-              .fdcId(entity.getFdcId())
-              .title(entity.getTitle())
-              .status(entity.getStatus())
-              .detail(entity.getDetail())
-              .creationDate(entity.getCreationDate())
-              .build()
-      );
-    }
-    
-    return dtos;
+
+    return entities.stream().map(this::mapEntityToDto).toList();
+  }
+
+  public List<CaseSubmissionErrorDto> getCaseSubmissionErrorsForDate(LocalDateTime date) {
+
+    LocalDateTime startDate = date.toLocalDate().atStartOfDay();
+    LocalDateTime endDate = date.toLocalDate().plusDays(1).atStartOfDay();
+
+    List<CaseSubmissionErrorEntity> entities = caseSubmissionErrorRepository.findByCreationDateBetween(startDate, endDate);
+
+    return entities.stream().map(this::mapEntityToDto).toList();
   }
 
   public CaseSubmissionErrorDto saveCaseSubmissionError(CaseSubmissionErrorDto dto) {
@@ -75,13 +60,7 @@ public class CaseSubmissionErrorService {
 
     List<CaseSubmissionErrorEntity> returnedEntities = caseSubmissionErrorRepository.saveAll(entities);
 
-    List<CaseSubmissionErrorDto> returnDtos = new ArrayList<>();
-    for (CaseSubmissionErrorEntity entity : returnedEntities) {
-      CaseSubmissionErrorDto dto = mapEntityToDto(entity);
-      returnDtos.add(dto);
-    }
-
-    return returnDtos;
+    return returnedEntities.stream().map(this::mapEntityToDto).toList();
   }
 
   private CaseSubmissionErrorEntity mapDtoToEntity(CaseSubmissionErrorDto dto) {
