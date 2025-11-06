@@ -33,17 +33,9 @@ public class CaseSubmissionErrorServiceTest {
   private SoftAssertions softly;
 
   private List<CaseSubmissionErrorEntity> entityList;
-  private List<CaseSubmissionErrorDto> dtoList;
 
   @BeforeEach
   void setUp() {
-    dtoList = List.of(
-        CaseSubmissionErrorDto.builder().maatId(1).concorContributionId(1).fdcId(1).title("error title 1").status(1).detail("error detail 1").creationDate(LocalDateTime.of(2025, 1, 1, 11, 10, 0)).build(),
-        CaseSubmissionErrorDto.builder().maatId(2).concorContributionId(2).fdcId(2).title("error title 2").status(2).detail("error detail 2").creationDate(LocalDateTime.of(2025, 1, 1, 11, 10, 0)).build(),
-        CaseSubmissionErrorDto.builder().maatId(3).concorContributionId(3).fdcId(3).title("error title 3").status(3).detail("error detail 3").creationDate(LocalDateTime.of(2025, 3, 3, 11, 10, 0)).build(),
-        CaseSubmissionErrorDto.builder().maatId(4).concorContributionId(4).fdcId(4).title("error title 4").status(4).detail("error detail 4").creationDate(LocalDateTime.of(2025, 4, 4, 11, 10, 0)).build(),
-        CaseSubmissionErrorDto.builder().maatId(5).concorContributionId(5).fdcId(5).title("error title 5").status(5).detail("error detail 5").creationDate(LocalDateTime.of(2025, 5, 5, 11, 10, 0)).build()
-    );
 
     entityList = List.of(
         new CaseSubmissionErrorEntity(1, 1, 1, 1, "error title 1", 1, "error detail 1", LocalDateTime.of(2025, 1, 1, 11, 10, 0)),
