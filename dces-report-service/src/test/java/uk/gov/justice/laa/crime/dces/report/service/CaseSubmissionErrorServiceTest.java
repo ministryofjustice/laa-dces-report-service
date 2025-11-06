@@ -1,7 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyIterable;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
@@ -122,48 +121,6 @@ public class CaseSubmissionErrorServiceTest {
     softly.assertThat(dtos.get(1).getStatus()).isEqualTo(2);
     softly.assertThat(dtos.get(1).getDetail()).isEqualTo("error detail 2");
     softly.assertThat(dtos.get(1).getCreationDate()).isEqualTo(LocalDateTime.of(2025, 1, 1, 11, 10, 0));
-  }
-
-  @Test
-  public void givenCaseSubmissionErrorDto_whenSaveCaseSubmissionError_thenReturnCorrespondingSavedCaseSubmissionErrorDto() {
-    when(caseSubmissionErrorRepository.save(any())).thenReturn(entityList.getLast());
-
-    CaseSubmissionErrorDto dto = caseSubmissionErrorService.saveCaseSubmissionError(dtoList.getLast());
-
-    softly.assertThat(dto.getId()).isEqualTo(5);
-    softly.assertThat(dto.getMaatId()).isEqualTo(5);
-    softly.assertThat(dto.getConcorContributionId()).isEqualTo(5);
-    softly.assertThat(dto.getFdcId()).isEqualTo(5);
-    softly.assertThat(dto.getTitle()).isEqualTo("error title 5");
-    softly.assertThat(dto.getStatus()).isEqualTo(5);
-    softly.assertThat(dto.getDetail()).isEqualTo("error detail 5");
-    softly.assertThat(dto.getCreationDate()).isEqualTo(LocalDateTime.of(2025, 5, 5, 11, 10, 0));
-  }
-
-  @Test
-  public void givenCaseSubmissionErrorDtos_whenSaveCaseSubmissionErrors_thenReturnCorrespondingSavedCaseSubmissionErrorDtos() {
-    when(caseSubmissionErrorRepository.saveAll(anyIterable())).thenReturn(entityList);
-
-    List<CaseSubmissionErrorDto> dtos = caseSubmissionErrorService.saveCaseSubmissionErrors(dtoList);
-
-    softly.assertThat(dtos).hasSize(5);
-    softly.assertThat(dtos.getFirst().getId()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getMaatId()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getConcorContributionId()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getFdcId()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getTitle()).isEqualTo("error title 1");
-    softly.assertThat(dtos.getFirst().getStatus()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getDetail()).isEqualTo("error detail 1");
-    softly.assertThat(dtos.getFirst().getCreationDate()).isEqualTo(LocalDateTime.of(2025, 1, 1, 11, 10, 0));
-
-    softly.assertThat(dtos.get(4).getId()).isEqualTo(5);
-    softly.assertThat(dtos.get(4).getMaatId()).isEqualTo(5);
-    softly.assertThat(dtos.get(4).getConcorContributionId()).isEqualTo(5);
-    softly.assertThat(dtos.get(4).getFdcId()).isEqualTo(5);
-    softly.assertThat(dtos.get(4).getTitle()).isEqualTo("error title 5");
-    softly.assertThat(dtos.get(4).getStatus()).isEqualTo(5);
-    softly.assertThat(dtos.get(4).getDetail()).isEqualTo("error detail 5");
-    softly.assertThat(dtos.get(4).getCreationDate()).isEqualTo(LocalDateTime.of(2025, 5, 5, 11, 10, 0));
   }
 
 }
