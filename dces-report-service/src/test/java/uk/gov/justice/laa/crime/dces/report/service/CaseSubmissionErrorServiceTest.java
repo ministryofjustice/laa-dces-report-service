@@ -1,101 +1,44 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.ContextConfiguration;
+import uk.gov.justice.laa.crime.dces.report.config.TestConfig;
 import uk.gov.justice.laa.crime.dces.report.dto.CaseSubmissionErrorDto;
-import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionErrorEntity;
-import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionErrorRepository;
+import uk.gov.justice.laa.crime.dces.report.utils.TestDataUtil;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
+@ActiveProfiles("test")
+@ContextConfiguration(classes = TestConfig.class)
 public class CaseSubmissionErrorServiceTest {
 
-  @Mock
-  private CaseSubmissionErrorRepository caseSubmissionErrorRepository;
-
-  @InjectMocks
+  @Autowired
   private CaseSubmissionErrorService caseSubmissionErrorService;
 
   @InjectSoftAssertions
   private SoftAssertions softly;
 
-  private List<CaseSubmissionErrorEntity> entityList;
-
-  @BeforeEach
-  void setUp() {
-
-    entityList = List.of(
-        new CaseSubmissionErrorEntity(1, 1, 1, 1, "error title 1", 1, "error detail 1", LocalDateTime.of(2025, 1, 1, 11, 10, 0)),
-        new CaseSubmissionErrorEntity(2, 2, 2, 2, "error title 2", 2, "error detail 2", LocalDateTime.of(2025, 1, 1, 11, 10, 0)),
-        new CaseSubmissionErrorEntity(3, 3, 3, 3, "error title 3", 3, "error detail 3", LocalDateTime.of(2025, 3, 3, 11, 10, 0)),
-        new CaseSubmissionErrorEntity(4, 4, 4, 4, "error title 4", 4, "error detail 4", LocalDateTime.of(2025, 4, 4, 11, 10, 0)),
-        new CaseSubmissionErrorEntity(5, 5, 5, 5, "error title 5", 5, "error detail 5", LocalDateTime.of(2025, 5, 5, 11, 10, 0))
-    );
-  }
-
-  @Test
-  public void givenValidEntityId_whenGetCaseSubmissionErrorEntity_thenReturnCorrectCaseSubmissionErrorDto() {
-    when(caseSubmissionErrorRepository.findById(1)).thenReturn(Optional.of(entityList.getFirst()));
-
-    CaseSubmissionErrorDto dto = caseSubmissionErrorService.getCaseSubmissionErrorEntity(1);
-
-    softly.assertThat(dto.getId()).isEqualTo(1);
-    softly.assertThat(dto.getMaatId()).isEqualTo(1);
-    softly.assertThat(dto.getConcorContributionId()).isEqualTo(1);
-    softly.assertThat(dto.getFdcId()).isEqualTo(1);
-    softly.assertThat(dto.getTitle()).isEqualTo("error title 1");
-    softly.assertThat(dto.getStatus()).isEqualTo(1);
-    softly.assertThat(dto.getDetail()).isEqualTo("error detail 1");
-    softly.assertThat(dto.getCreationDate()).isEqualTo(LocalDateTime.of(2025, 1, 1, 11, 10, 0));
-  }
-
-  @Test
-  public void whenGetCaseSubmissionErrors_thenReturnAllCaseSubmissionErrorDtos() {
-    when(caseSubmissionErrorRepository.findAll()).thenReturn(entityList);
-
-    List<CaseSubmissionErrorDto> dtos = caseSubmissionErrorService.getCaseSubmissionErrors();
-
-    softly.assertThat(dtos).hasSize(5);
-    softly.assertThat(dtos.getFirst().getId()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getMaatId()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getConcorContributionId()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getFdcId()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getTitle()).isEqualTo("error title 1");
-    softly.assertThat(dtos.getFirst().getStatus()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getDetail()).isEqualTo("error detail 1");
-    softly.assertThat(dtos.getFirst().getCreationDate()).isEqualTo(LocalDateTime.of(2025, 1, 1, 11, 10, 0));
-
-    softly.assertThat(dtos.get(2).getId()).isEqualTo(3);
-    softly.assertThat(dtos.get(2).getMaatId()).isEqualTo(3);
-    softly.assertThat(dtos.get(2).getConcorContributionId()).isEqualTo(3);
-    softly.assertThat(dtos.get(2).getFdcId()).isEqualTo(3);
-    softly.assertThat(dtos.get(2).getTitle()).isEqualTo("error title 3");
-    softly.assertThat(dtos.get(2).getStatus()).isEqualTo(3);
-    softly.assertThat(dtos.get(2).getDetail()).isEqualTo("error detail 3");
-    softly.assertThat(dtos.get(2).getCreationDate()).isEqualTo(LocalDateTime.of(2025, 3, 3, 11, 10, 0));
-  }
+  @Autowired
+  private TestDataUtil testDataUtil;
 
   @Test
   public void givenCreationDate_whenGetCaseSubmissionErrors_thenReturnAllCaseSubmissionErrorDtosForGivenDate() {
-    LocalDateTime creationDate = LocalDateTime.of(2025, 1, 1, 11, 10, 0);
-    when(caseSubmissionErrorRepository.findByCreationDateBetween(any(), any())).thenReturn(entityList.subList(0, 2));
+    testDataUtil.createTestCaseSubmissionErrorData();
+    LocalDateTime startDate = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
+    LocalDateTime endDate = LocalDateTime.of(2025, 1, 2, 0, 0, 0);
 
-    List<CaseSubmissionErrorDto> dtos = caseSubmissionErrorService.getCaseSubmissionErrorsForDate(creationDate);
+    List<CaseSubmissionErrorDto> dtos = caseSubmissionErrorService.getCaseSubmissionErrorsForDate(startDate, endDate);
 
-    softly.assertThat(dtos).hasSize(2);
+    softly.assertThat(dtos).hasSize(3);
     softly.assertThat(dtos.getFirst().getId()).isEqualTo(1);
     softly.assertThat(dtos.getFirst().getMaatId()).isEqualTo(1);
     softly.assertThat(dtos.getFirst().getConcorContributionId()).isEqualTo(1);
