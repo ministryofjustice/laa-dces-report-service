@@ -56,6 +56,8 @@ public class CaseSubmissionErrorServiceTest {
     softly.assertThat(dtos.get(1).getStatus()).isEqualTo(2);
     softly.assertThat(dtos.get(1).getDetail()).isEqualTo("error detail 2");
     softly.assertThat(dtos.get(1).getCreationDate()).isEqualTo(LocalDateTime.of(2025, 1, 1, 11, 10, 0));
+
+    softly.assertAll();
   }
 
 }
