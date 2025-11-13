@@ -55,6 +55,8 @@ public class TestDataUtil {
   }
 
   public void createTestCaseSubmissionErrorData() {
+    resetTestData();
+
     saveCaseSubmissionError( 1, 1, 1, "error title 1", 1, "error detail 1", LocalDateTime.of(2025, 1, 1, 11, 10, 0));
     saveCaseSubmissionError( 2, 2, 2, "error title 2", 2, "error detail 2", LocalDateTime.of(2025, 1, 1, 11, 10, 0));
     saveCaseSubmissionError( 3, 3, 3, "error title 3", 3, "error detail 3", LocalDateTime.of(2025, 1, 1, 14, 20, 0));
