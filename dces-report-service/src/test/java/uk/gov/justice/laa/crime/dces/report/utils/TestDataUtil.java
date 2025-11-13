@@ -4,7 +4,9 @@ import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionEntity;
+import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionErrorEntity;
 import uk.gov.justice.laa.crime.dces.report.model.EventTypeEntity;
+import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionErrorRepository;
 import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionRepository;
 import uk.gov.justice.laa.crime.dces.report.repository.EventTypeRepository;
 
@@ -17,6 +19,9 @@ public class TestDataUtil {
   @Autowired
   private EventTypeRepository eventTypeRepository;
 
+  @Autowired
+  private CaseSubmissionErrorRepository caseSubmissionErrorRepository;
+
   private Integer batchId = 100;
   private Integer traceId = 200;
   private String recordType = "Contribution";
@@ -26,6 +31,7 @@ public class TestDataUtil {
     traceId = 200;
     caseSubmissionRepository.deleteAll();
     eventTypeRepository.deleteAll();
+    caseSubmissionErrorRepository.deleteAll();
     createEventTypeData();
   }
 
@@ -42,6 +48,20 @@ public class TestDataUtil {
         recordType.equals("Fdc")?null:messageId, recordType.equals("Fdc")?messageId:null,
         recordType, processedDate, eventType, httpStatus, payload);
     caseSubmissionRepository.saveAndFlush(caseSubmission);
+  }
+
+  private void saveCaseSubmissionError(Integer maatId, Integer concorContributionId, Integer fdcId, String title, Integer status, String detail, LocalDateTime creationDate) {
+    caseSubmissionErrorRepository.saveAndFlush(new CaseSubmissionErrorEntity(null, maatId, concorContributionId, fdcId, title, status, detail, creationDate));
+  }
+
+  public void createTestCaseSubmissionErrorData() {
+    resetTestData();
+
+    saveCaseSubmissionError( 1, 1, 1, "error title 1", 1, "error detail 1", LocalDateTime.of(2025, 1, 1, 11, 10, 0));
+    saveCaseSubmissionError( 2, 2, 2, "error title 2", 2, "error detail 2", LocalDateTime.of(2025, 1, 1, 11, 10, 0));
+    saveCaseSubmissionError( 3, 3, 3, "error title 3", 3, "error detail 3", LocalDateTime.of(2025, 1, 1, 14, 20, 0));
+    saveCaseSubmissionError( 4, 4, 4, "error title 4", 4, "error detail 4", LocalDateTime.of(2025, 4, 4, 11, 10, 0));
+    saveCaseSubmissionError( 5, 5, 5, "error title 5", 5, "error detail 5", LocalDateTime.of(2025, 5, 5, 11, 10, 0));
   }
 
   public void createTestDataWithFailures() {
