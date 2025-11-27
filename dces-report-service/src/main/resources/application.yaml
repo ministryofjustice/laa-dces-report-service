@@ -80,7 +80,6 @@ spring:
       caseSubmissionError:
         daily: ${DCES_CRON_CASE_SUBMISSION_ERROR_DAILY:-}
 
-
 sentry:
   debug: off
   dsn: ${SENTRY_DSN:}
