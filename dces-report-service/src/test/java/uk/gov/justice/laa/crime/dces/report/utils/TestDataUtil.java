@@ -235,4 +235,8 @@ public class TestDataUtil {
     saveCaseSubmission(100, 200, 2, 418, LocalDateTime.of(2025, 1, 1, 11, 10, 1), null);
   }
 
+  public void createCaseSubmissionErrorData(LocalDateTime createdDate) {
+    resetTestData();
+    saveCaseSubmissionError( 1234, 1, 1, "Title", 500, "Case submission failed", createdDate);
+  }
 }
