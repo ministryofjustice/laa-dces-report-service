@@ -44,7 +44,7 @@ public class CSVFileService {
 
     private static final String FAILURES_COLUMNS_HEADER = "MAAT Id,Contribution Type,Contribution Id,Batch No,Trace Id,Case Submission Id,Processed Date,Event Type Id,Event Type Desc,HTTP Status,Payload" + System.lineSeparator();
 
-    private static final String CASE_SUBMISSION_ERROR_COLUMNS_HEADER = "MAAT Id,Concor Contribution Id,Fdc Id,Title,Status,detail,Created date " + System.lineSeparator();
+    private static final String CASE_SUBMISSION_ERROR_COLUMNS_HEADER = "MAAT Id,Concor Contribution Id,Fdc Id,Title,Status,detail" + System.lineSeparator();
 
     private static final String NO_DATA_MESSAGE = "### There is no data to report for the specified date range. ####";
 
@@ -230,7 +230,6 @@ public class CSVFileService {
                 getCsvFieldValue(failure.getTitle()) +
                 getCsvFieldValue(failure.getStatus()) +
                 getCsvFieldValue(failure.getDetail()) +
-                getCsvFieldValue(failure.getCreationDate()) +
                 System.lineSeparator();
     }
 }

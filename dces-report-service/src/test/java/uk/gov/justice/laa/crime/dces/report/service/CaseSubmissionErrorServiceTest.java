@@ -36,7 +36,7 @@ public class CaseSubmissionErrorServiceTest {
   @Autowired
   private CSVFileService csvFileService;
 
-  private static final String CASE_SUBMISSION_ERROR_COLUMNS_HEADER = "MAAT Id,Concor Contribution Id,Fdc Id,Title,Status,detail,Created date " + System.lineSeparator();
+  private static final String CASE_SUBMISSION_ERROR_COLUMNS_HEADER = "MAAT Id,Concor Contribution Id,Fdc Id,Title,Status,detail" + System.lineSeparator();
 
 
   @Test
@@ -75,7 +75,7 @@ public class CaseSubmissionErrorServiceTest {
 
     LocalDateTime createdDate = LocalDateTime.now().minusHours(5);
 
-    String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,Title,500,Case submission failed,"+ createdDate;
+    String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,Title,500,Case submission failed";
 
     testDataUtil.createCaseSubmissionErrorData(createdDate);
     try {

@@ -7,9 +7,6 @@ import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,7 +25,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Stream;
 
 
 @SpringBootTest
@@ -39,7 +35,7 @@ class CSVFileServiceTest {
     private static final String CONTRIBUTIONS_HEADER = "MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date";
     private static final String FDC_HEADER = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date";
 
-    private static final String CASE_SUBMISSION_ERROR_COLUMNS_HEADER = "MAAT Id,Concor Contribution Id,Fdc Id,Title,Status,detail,Created date " + System.lineSeparator();
+    private static final String CASE_SUBMISSION_ERROR_COLUMNS_HEADER = "MAAT Id,Concor Contribution Id,Fdc Id,Title,Status,detail" + System.lineSeparator();
 
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -130,7 +126,7 @@ class CSVFileServiceTest {
                 .creationDate(LocalDateTime.of(2025, 1, 1, 0, 0, 0))
                 .build();
 
-        String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,Testing,500,Error,2025-01-01T00:00";
+        String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,Testing,500,Error";
 
         try {
             FailureReportDto f = csvFileService.writeCaseSubmissionErrorToCsv(List.of(caseSubmissionErrorDto), "Test");
