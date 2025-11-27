@@ -9,7 +9,7 @@ public enum ReportType {
   CONTRIBUTION("Contribution"),
   FDC("FDC"),
   FAILURES("Failures"),
-
   CASE_SUBMISSION_ERROR("caseSubmissionError");
+  
   private final String description;
 }
