@@ -77,6 +77,8 @@ spring:
         daily: ${DCES_CRON_FDC_DAILY:-} # "46-59/10 */5 * * * ?"
       failures:
         daily: ${DCES_CRON_FAILURES_DAILY:-} # "0 6 * * * ?"
+      caseSubmissionError:
+        daily: ${DCES_CRON_CASE_SUBMISSION_ERROR_DAILY:-}
 
 sentry:
   debug: off

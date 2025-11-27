@@ -16,6 +16,7 @@ import uk.gov.service.notify.NotificationClientException;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Configuration
 @Slf4j
@@ -26,6 +27,7 @@ public class DcesReportScheduler {
     private final DcesReportService reportService;
 
     private final FeatureProperties feature;
+
 
     @Timed("laa_dces_report_service_scheduled_contributions_monthly")
     @Scheduled(cron = "${spring.scheduling.cron.contributions.monthly:-}")
@@ -74,9 +76,16 @@ public class DcesReportScheduler {
             case CONTRIBUTION -> reportService.sendContributionsReport(reportPeriod.getDescription(), fromDate, toDate);
             case FDC -> reportService.sendFdcReport(reportPeriod.getDescription(), fromDate, toDate);
             case FAILURES -> reportService.sendFailuresReport(reportPeriod.getDescription(), toDate);
+            case CASE_SUBMISSION_ERROR -> reportService.sendCaseSubmissionErrorReport(reportPeriod.getDescription(), LocalDateTime.now().minusDays(1));
         }
 
         log.info("Successfully finished {} {} Report", reportType, reportPeriod);
+    }
+
+    @Timed("laa_dces_report_service_scheduled_case_submission_error_daily")
+    @Scheduled(cron = "${spring.scheduling.cron.caseSubmissionError.daily:-}")
+    public void caseSubmissionErrorReportDaily() throws JAXBException, IOException, NotificationClientException {
+        sendRequestedReport(ReportPeriod.DAILY, ReportType.CASE_SUBMISSION_ERROR);
     }
 
 }

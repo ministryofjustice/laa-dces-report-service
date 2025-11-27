@@ -15,18 +15,26 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
+import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionErrorEntity;
+import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionErrorRepository;
 import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionRepository;
+import uk.gov.justice.laa.crime.dces.report.utils.email.EmailClient;
+import uk.gov.justice.laa.crime.dces.report.utils.email.config.NotifyConfiguration;
 import uk.gov.service.notify.NotificationClient;
 import uk.gov.service.notify.NotificationClientException;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
@@ -53,6 +61,15 @@ class DcesReportServiceTest {
 
     @MockitoBean
     FailuresReportService failuresReportService;
+
+    @MockitoBean
+    CaseSubmissionErrorRepository errorRepository;
+
+    @MockitoBean
+    NotifyConfiguration notifyConfiguration;
+
+    @MockitoBean
+    EmailClient emailClient;
 
     @AfterEach
     void postTest() {
@@ -123,5 +140,30 @@ class DcesReportServiceTest {
         Mockito.verify(failuresReportService, times(1)).generateReport("Test", dateParam);
     }
 
+    @Test
+    void givenAValidCaseSubmissionError_whenSendCaseSubmissionErrorReportIsInvoked_thenShouldSendMail() throws IOException, NotificationClientException {
 
+        given(errorRepository.findByCreationDateBetween(any(), any())).willReturn(List.of(new CaseSubmissionErrorEntity()));
+        doNothing().when(emailClient).send(any());
+
+        // execute
+        dcesReportService.sendCaseSubmissionErrorReport("Test", LocalDateTime.now());
+
+        // assert
+        Mockito.verify(notifyConfiguration).createEmail(any(File.class), anyString(), anyString(), any(LocalDate.class),any(LocalDate.class),anyString(),any(List.class));
+        Mockito.verify(emailClient).send(any());
+    }
+
+    @Test
+    void givenAEmptyCaseSubmissionError_whenSendCaseSubmissionErrorReportIsInvoked_thenShouldNotSendMail() throws IOException, NotificationClientException {
+
+        given(errorRepository.findByCreationDateBetween(any(), any())).willReturn(Collections.emptyList());
+
+        // execute
+        dcesReportService.sendCaseSubmissionErrorReport("Test", LocalDateTime.now());
+
+        // assert
+        Mockito.verify(notifyConfiguration,never()).createEmail(any(File.class), anyString(), anyString(), any(LocalDate.class),any(LocalDate.class),anyString(),any(List.class));
+        Mockito.verify(emailClient,never()).send(any());
+    }
 }
