@@ -35,7 +35,7 @@ class CSVFileServiceTest {
     private static final String CONTRIBUTIONS_HEADER = "MAAT ID,Data Feed Type,Assessment Date,CC OutCome Date,Correspondence Sent Date,Rep Order Status Date,Hardship Review Date,Passported Date";
     private static final String FDC_HEADER = "MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date";
 
-    private static final String CASE_SUBMISSION_ERROR_COLUMNS_HEADER = "MAAT Id,Concor Contribution Id,Fdc Id,Title,Status,detail" + System.lineSeparator();
+    private static final String CASE_SUBMISSION_ERROR_COLUMNS_HEADER = "MAAT Id,Concor Contribution Id,Fdc Id,Error Type,Processed Date" + System.lineSeparator();
 
     @InjectSoftAssertions
     private SoftAssertions softly;
@@ -120,13 +120,12 @@ class CSVFileServiceTest {
                 .maatId(1234)
                 .concorContributionId(1)
                 .fdcId(1)
-                .title("Testing")
-                .status(500)
-                .detail("Error")
+                .title("MAATID invalid")
+                .detail(LocalDateTime.of(2025, 1, 1, 0, 0, 0).toString())
                 .creationDate(LocalDateTime.of(2025, 1, 1, 0, 0, 0))
                 .build();
 
-        String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,Testing,500,Error";
+        String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,MAATID invalid,"+LocalDateTime.of(2025, 1, 1, 0, 0, 0).toString();
 
         try {
             FailureReportDto f = csvFileService.writeCaseSubmissionErrorToCsv(List.of(caseSubmissionErrorDto), "Test");

@@ -237,6 +237,7 @@ public class TestDataUtil {
 
   public void createCaseSubmissionErrorData(LocalDateTime createdDate) {
     resetTestData();
-    saveCaseSubmissionError( 1234, 1, 1, "Title", 500, "Case submission failed", createdDate);
+    saveCaseSubmissionError( 1234, 1, 1, "Invalid Outcome", null, createdDate.toString(), createdDate);
+    saveCaseSubmissionError( 1235, 2, 2, "Success", null, createdDate.toString(), createdDate);
   }
 }

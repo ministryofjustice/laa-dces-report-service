@@ -10,6 +10,6 @@ public enum ReportType {
   FDC("FDC"),
   FAILURES("Failures"),
   CASE_SUBMISSION_ERROR("caseSubmissionError");
-  
+
   private final String description;
 }

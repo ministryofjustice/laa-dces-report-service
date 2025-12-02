@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.dces.report.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.config.FeatureProperties;
 import uk.gov.justice.laa.crime.dces.report.dto.CaseSubmissionErrorDto;
@@ -12,7 +13,10 @@ import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionErrorReposi
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,6 +26,8 @@ public class CaseSubmissionErrorService {
   private static final String FILE_NAME_TEMPLATE = "DCES-DRC_case_submission_error_%s";
 
   private static final String REPORT_TYPE = "DCES-DRC Case Submission error";
+
+  private static final String SUCCESS = "Success";
 
   private final CSVFileService csvFileService;
   private final CaseSubmissionErrorRepository caseSubmissionErrorRepository;
@@ -52,6 +58,14 @@ public class CaseSubmissionErrorService {
   public FailureReportDto generateReport(LocalDateTime reportDate) throws IOException {
 
     List<CaseSubmissionErrorDto> caseSubmissionErrors = getCaseSubmissionErrorsForDate(reportDate, LocalDateTime.now());
+
+    caseSubmissionErrors = Optional.ofNullable(caseSubmissionErrors)
+            .orElse(Collections.emptyList())
+            .stream()
+            .filter(Objects::nonNull)
+            .filter(error -> StringUtils.isNotBlank(error.getTitle()))
+            .filter(error -> !SUCCESS.equals(error.getTitle())).toList();
+
 
     if (caseSubmissionErrors.isEmpty() && !feature.sendEmptyFailuresReport()) {
       log.info("No case submission error found and feature flag to send empty reports is absent/set to false, so not generating the report");

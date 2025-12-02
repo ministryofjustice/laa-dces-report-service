@@ -143,7 +143,10 @@ class DcesReportServiceTest {
     @Test
     void givenAValidCaseSubmissionError_whenSendCaseSubmissionErrorReportIsInvoked_thenShouldSendMail() throws IOException, NotificationClientException {
 
-        given(errorRepository.findByCreationDateBetween(any(), any())).willReturn(List.of(new CaseSubmissionErrorEntity()));
+        CaseSubmissionErrorEntity entity = new CaseSubmissionErrorEntity();
+        entity.setId(1);
+        entity.setTitle("Invalid Case Type");
+        given(errorRepository.findByCreationDateBetween(any(), any())).willReturn(List.of(entity));
         doNothing().when(emailClient).send(any());
 
         // execute
