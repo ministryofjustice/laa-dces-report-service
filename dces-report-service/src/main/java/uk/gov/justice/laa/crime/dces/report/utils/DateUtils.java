@@ -1,5 +1,9 @@
 package uk.gov.justice.laa.crime.dces.report.utils;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import lombok.experimental.UtilityClass;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
@@ -49,4 +53,9 @@ public class DateUtils {
             case DAILY -> LocalDate.now().minusDays(1);
         };
     }
+
+  public static String convertInstantToString(Instant instant) {
+      LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+      return localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+  }
 }

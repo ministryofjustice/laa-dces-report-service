@@ -15,8 +15,8 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import uk.gov.justice.laa.crime.dces.report.client.ContributionFilesClient;
 import uk.gov.justice.laa.crime.dces.report.client.FdcFilesClient;
 import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
-import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionErrorEntity;
-import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionErrorRepository;
+import uk.gov.justice.laa.crime.dces.report.model.DrcProcessingStatusEntity;
+import uk.gov.justice.laa.crime.dces.report.repository.DrcProcessingStatusRepository;
 import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionRepository;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.config.NotifyConfiguration;
@@ -63,7 +63,7 @@ class DcesReportServiceTest {
     FailuresReportService failuresReportService;
 
     @MockitoBean
-    CaseSubmissionErrorRepository errorRepository;
+    DrcProcessingStatusRepository drcProcessingStatusRepository;
 
     @MockitoBean
     NotifyConfiguration notifyConfiguration;
@@ -143,10 +143,10 @@ class DcesReportServiceTest {
     @Test
     void givenAValidCaseSubmissionError_whenSendCaseSubmissionErrorReportIsInvoked_thenShouldSendMail() throws IOException, NotificationClientException {
 
-        CaseSubmissionErrorEntity entity = new CaseSubmissionErrorEntity();
-        entity.setId(1);
-        entity.setTitle("Invalid Case Type");
-        given(errorRepository.findByCreationDateBetween(any(), any())).willReturn(List.of(entity));
+        DrcProcessingStatusEntity entity = new DrcProcessingStatusEntity();
+        entity.setId(1L);
+        entity.setStatusMessage("Invalid Case Type");
+        given(drcProcessingStatusRepository.findByCreationTimestampBetween(any(), any())).willReturn(List.of(entity));
         doNothing().when(emailClient).send(any());
 
         // execute
@@ -160,7 +160,7 @@ class DcesReportServiceTest {
     @Test
     void givenAEmptyCaseSubmissionError_whenSendCaseSubmissionErrorReportIsInvoked_thenShouldNotSendMail() throws IOException, NotificationClientException {
 
-        given(errorRepository.findByCreationDateBetween(any(), any())).willReturn(Collections.emptyList());
+        given(drcProcessingStatusRepository.findByCreationTimestampBetween(any(), any())).willReturn(Collections.emptyList());
 
         // execute
         dcesReportService.sendCaseSubmissionErrorReport("Test", LocalDateTime.now());

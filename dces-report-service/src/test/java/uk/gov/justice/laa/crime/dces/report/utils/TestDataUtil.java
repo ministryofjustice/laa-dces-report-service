@@ -1,12 +1,14 @@
 package uk.gov.justice.laa.crime.dces.report.utils;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionEntity;
-import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionErrorEntity;
+import uk.gov.justice.laa.crime.dces.report.model.DrcProcessingStatusEntity;
 import uk.gov.justice.laa.crime.dces.report.model.EventTypeEntity;
-import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionErrorRepository;
+import uk.gov.justice.laa.crime.dces.report.repository.DrcProcessingStatusRepository;
 import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionRepository;
 import uk.gov.justice.laa.crime.dces.report.repository.EventTypeRepository;
 
@@ -20,7 +22,7 @@ public class TestDataUtil {
   private EventTypeRepository eventTypeRepository;
 
   @Autowired
-  private CaseSubmissionErrorRepository caseSubmissionErrorRepository;
+  private DrcProcessingStatusRepository drcProcessingStatusRepository;
 
   private Integer batchId = 100;
   private Integer traceId = 200;
@@ -31,7 +33,7 @@ public class TestDataUtil {
     traceId = 200;
     caseSubmissionRepository.deleteAll();
     eventTypeRepository.deleteAll();
-    caseSubmissionErrorRepository.deleteAll();
+    drcProcessingStatusRepository.deleteAll();
     createEventTypeData();
   }
 
@@ -50,18 +52,25 @@ public class TestDataUtil {
     caseSubmissionRepository.saveAndFlush(caseSubmission);
   }
 
-  private void saveCaseSubmissionError(Integer maatId, Integer concorContributionId, Integer fdcId, String title, Integer status, String detail, LocalDateTime creationDate) {
-    caseSubmissionErrorRepository.saveAndFlush(new CaseSubmissionErrorEntity(null, maatId, concorContributionId, fdcId, title, status, detail, creationDate));
+  private void saveDrcProcessingStatus(Long maatId, Long concorContributionId, Long fdcId, String statusMessage, Instant creationTimestamp) {
+    // subtract a few seconds from the creationTimestamp to indicate it was processed by DRC before being saved by DCES
+    Instant drcProcessingTimestamp = creationTimestamp.minusSeconds(5);
+    drcProcessingStatusRepository.saveAndFlush(new DrcProcessingStatusEntity(null, maatId, concorContributionId, fdcId, statusMessage, drcProcessingTimestamp, creationTimestamp));
   }
 
   public void createTestCaseSubmissionErrorData() {
     resetTestData();
 
-    saveCaseSubmissionError( 1, 1, 1, "error title 1", 1, "error detail 1", LocalDateTime.of(2025, 1, 1, 11, 10, 0));
-    saveCaseSubmissionError( 2, 2, 2, "error title 2", 2, "error detail 2", LocalDateTime.of(2025, 1, 1, 11, 10, 0));
-    saveCaseSubmissionError( 3, 3, 3, "error title 3", 3, "error detail 3", LocalDateTime.of(2025, 1, 1, 14, 20, 0));
-    saveCaseSubmissionError( 4, 4, 4, "error title 4", 4, "error detail 4", LocalDateTime.of(2025, 4, 4, 11, 10, 0));
-    saveCaseSubmissionError( 5, 5, 5, "error title 5", 5, "error detail 5", LocalDateTime.of(2025, 5, 5, 11, 10, 0));
+    saveDrcProcessingStatus( 1L, 1L, 1L, "error title 1", toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
+    saveDrcProcessingStatus( 2L, 2L, 2L, "error title 2", toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
+    saveDrcProcessingStatus( 3L, 3L, 3L, "error title 3", toInstant(2025, 1, 1, 14, 20, 0, ZoneOffset.UTC));
+    saveDrcProcessingStatus( 4L, 4L, 4L, "error title 4", toInstant(2025, 4, 4, 11, 10, 0, ZoneOffset.UTC));
+    saveDrcProcessingStatus( 5L, 5L, 5L, "error title 5", toInstant(2025, 5, 5, 11, 10, 0, ZoneOffset.UTC));
+  }
+
+  public static Instant toInstant(int year, int month, int dayOfMonth, int hour, int minute, int second, ZoneOffset timezone) {
+    LocalDateTime dateTime = LocalDateTime.of(year, month, dayOfMonth, hour, minute, second);
+    return dateTime.atZone(timezone).toInstant();
   }
 
   public void createTestDataWithFailures() {
@@ -235,9 +244,9 @@ public class TestDataUtil {
     saveCaseSubmission(100, 200, 2, 418, LocalDateTime.of(2025, 1, 1, 11, 10, 1), null);
   }
 
-  public void createCaseSubmissionErrorData(LocalDateTime createdDate) {
+  public void createDrcProcessingStatusData(Instant createdTimestamp) {
     resetTestData();
-    saveCaseSubmissionError( 1234, 1, 1, "Invalid Outcome", null, createdDate.toString(), createdDate);
-    saveCaseSubmissionError( 1235, 2, 2, "Success", null, createdDate.toString(), createdDate);
+    saveDrcProcessingStatus( 1234L, 1L, 1L, "Invalid Outcome", createdTimestamp);
+    saveDrcProcessingStatus( 1235L, 2L, 2L, "Success", createdTimestamp);
   }
 }

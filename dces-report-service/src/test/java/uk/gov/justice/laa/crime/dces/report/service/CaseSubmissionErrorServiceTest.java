@@ -1,6 +1,8 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import io.sentry.util.FileUtils;
+import java.time.Instant;
+import java.time.ZoneOffset;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -11,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import uk.gov.justice.laa.crime.dces.report.config.TestConfig;
-import uk.gov.justice.laa.crime.dces.report.dto.CaseSubmissionErrorDto;
+import uk.gov.justice.laa.crime.dces.report.dto.DrcProcessingStatusDto;
 import uk.gov.justice.laa.crime.dces.report.dto.FailureReportDto;
 import uk.gov.justice.laa.crime.dces.report.utils.TestDataUtil;
 
@@ -47,37 +49,35 @@ public class CaseSubmissionErrorServiceTest {
     LocalDateTime startDate = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
     LocalDateTime endDate = LocalDateTime.of(2025, 1, 2, 0, 0, 0);
 
-    List<CaseSubmissionErrorDto> dtos = caseSubmissionErrorService.getCaseSubmissionErrorsForDate(startDate, endDate);
+    List<DrcProcessingStatusDto> dtos = caseSubmissionErrorService.getCaseSubmissionErrorsForDate(startDate, endDate);
 
     softly.assertThat(dtos).hasSize(3);
     softly.assertThat(dtos.getFirst().getMaatId()).isEqualTo(1);
     softly.assertThat(dtos.getFirst().getConcorContributionId()).isEqualTo(1);
     softly.assertThat(dtos.getFirst().getFdcId()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getTitle()).isEqualTo("error title 1");
-    softly.assertThat(dtos.getFirst().getStatus()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getDetail()).isEqualTo("error detail 1");
-    softly.assertThat(dtos.getFirst().getCreationDate()).isEqualTo(LocalDateTime.of(2025, 1, 1, 11, 10, 0));
+    softly.assertThat(dtos.getFirst().getStatusMessage()).isEqualTo("error title 1");
+    softly.assertThat(dtos.getFirst().getDrcProcessingTimestamp()).isBefore(dtos.getFirst().getCreationTimestamp());
+    softly.assertThat(dtos.getFirst().getCreationTimestamp()).isEqualTo(TestDataUtil.toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
 
     softly.assertThat(dtos.get(1).getMaatId()).isEqualTo(2);
     softly.assertThat(dtos.get(1).getConcorContributionId()).isEqualTo(2);
     softly.assertThat(dtos.get(1).getFdcId()).isEqualTo(2);
-    softly.assertThat(dtos.get(1).getTitle()).isEqualTo("error title 2");
-    softly.assertThat(dtos.get(1).getStatus()).isEqualTo(2);
-    softly.assertThat(dtos.get(1).getDetail()).isEqualTo("error detail 2");
-    softly.assertThat(dtos.get(1).getCreationDate()).isEqualTo(LocalDateTime.of(2025, 1, 1, 11, 10, 0));
+    softly.assertThat(dtos.get(1).getStatusMessage()).isEqualTo("error title 2");
+    softly.assertThat(dtos.get(1).getDrcProcessingTimestamp()).isBefore(dtos.get(1).getCreationTimestamp());
+    softly.assertThat(dtos.get(1).getCreationTimestamp()).isEqualTo(TestDataUtil.toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
 
     softly.assertAll();
   }
 
 
   @Test
-  void givenACaseSubmissionData_whenWriteCaseSubmissionErrorToCsvIsInvoked_shouldGenerateReport() {
+  void givenDrcProcessingStatusData_whenGenerateReportIsInvoked_shouldGenerateReportSuccessfully() {
 
     LocalDateTime createdDate = LocalDateTime.now().minusHours(5);
 
     String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,Invalid Outcome,"+ createdDate;
 
-    testDataUtil.createCaseSubmissionErrorData(createdDate);
+    testDataUtil.createDrcProcessingStatusData(createdDate.toInstant(ZoneOffset.UTC));
     try {
       FailureReportDto faulureReport = caseSubmissionErrorService.generateReport(LocalDateTime.now().minusDays(1));
       String output = FileUtils.readText(faulureReport.getReportFile());
@@ -91,8 +91,8 @@ public class CaseSubmissionErrorServiceTest {
   @Test
   void givenAEmptyCaseSubmissionError_whenWriteCaseSubmissionErrorToCsvIsInvoked_shouldGenerateFileWithHeader() {
 
-    LocalDateTime createdDate = LocalDateTime.now().minusDays(5);
-    testDataUtil.createCaseSubmissionErrorData(createdDate);
+    Instant createdTimestamp = LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC);
+    testDataUtil.createDrcProcessingStatusData(createdTimestamp);
 
     try {
       FailureReportDto failureReportDto = caseSubmissionErrorService.generateReport(LocalDateTime.now().minusDays(1));

@@ -1,6 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import io.sentry.util.FileUtils;
+import java.time.ZoneOffset;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -11,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-import uk.gov.justice.laa.crime.dces.report.dto.CaseSubmissionErrorDto;
+import uk.gov.justice.laa.crime.dces.report.dto.DrcProcessingStatusDto;
 import uk.gov.justice.laa.crime.dces.report.dto.FailureReportDto;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import uk.gov.justice.laa.crime.dces.report.utils.TestDataUtil;
 
 
 @SpringBootTest
@@ -114,21 +116,21 @@ class CSVFileServiceTest {
     }
 
     @Test
-    void givenACaseSubmissionData_whenWriteCaseSubmissionErrorToCsvIsInvoked_shouldGenerateReport() {
-        CaseSubmissionErrorDto caseSubmissionErrorDto = CaseSubmissionErrorDto.builder()
-                .id(1)
-                .maatId(1234)
-                .concorContributionId(1)
-                .fdcId(1)
-                .title("MAATID invalid")
-                .detail(LocalDateTime.of(2025, 1, 1, 0, 0, 0).toString())
-                .creationDate(LocalDateTime.of(2025, 1, 1, 0, 0, 0))
+    void givenACaseSubmissionData_whenWriteDrcProcessingErrorToCsvIsInvoked_shouldGenerateReport() {
+        DrcProcessingStatusDto drcProcessingStatusDto = DrcProcessingStatusDto.builder()
+                .id(1L)
+                .maatId(1234L)
+                .concorContributionId(1L)
+                .fdcId(1L)
+                .statusMessage("MAATID invalid")
+                .drcProcessingTimestamp(TestDataUtil.toInstant(2025, 1, 1, 0, 0, 0, ZoneOffset.UTC))
+                .creationTimestamp(TestDataUtil.toInstant(2025, 1, 1, 0, 0, 5, ZoneOffset.UTC))
                 .build();
 
         String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,MAATID invalid,"+LocalDateTime.of(2025, 1, 1, 0, 0, 0).toString();
 
         try {
-            FailureReportDto f = csvFileService.writeCaseSubmissionErrorToCsv(List.of(caseSubmissionErrorDto), "Test");
+            FailureReportDto f = csvFileService.writeDrcProcessingErrorToCsv(List.of(drcProcessingStatusDto), "Test");
             String output = FileUtils.readText(f.getReportFile());
             softly.assertThat(output).contains(expectedData);
 
@@ -138,12 +140,12 @@ class CSVFileServiceTest {
     }
 
     @Test
-    void givenAEmptyCaseSubmissionError_whenWriteCaseSubmissionErrorToCsvIsInvoked_shouldGenerateFileWithHeader() {
+    void givenAEmptyCaseSubmissionError_whenWriteDrcProcessingErrorToCsvIsInvoked_shouldGenerateFileWithHeader() {
 
         String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "### There is no data to report for the specified date range. ####";
 
         try {
-            FailureReportDto f = csvFileService.writeCaseSubmissionErrorToCsv(Collections.emptyList(), "Test");
+            FailureReportDto f = csvFileService.writeDrcProcessingErrorToCsv(Collections.emptyList(), "Test");
             String output = FileUtils.readText(f.getReportFile());
             softly.assertThat(output).contains(expectedData);
 
