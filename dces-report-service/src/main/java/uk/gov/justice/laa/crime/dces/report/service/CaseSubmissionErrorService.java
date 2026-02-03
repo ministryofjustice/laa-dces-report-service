@@ -75,7 +75,7 @@ public class CaseSubmissionErrorService {
       return null;
     } else {
       log.info("{} repeat case submission error and generating the case submission report", caseSubmissionErrors.size());
-      return csvFileService.writeDrcProcessingErrorToCsv(caseSubmissionErrors, String.format(FILE_NAME_TEMPLATE, LocalDate.now()));
+      return csvFileService.writeCaseSubmissionErrorsToCsv(caseSubmissionErrors, String.format(FILE_NAME_TEMPLATE, LocalDate.now()));
     }
   }
 

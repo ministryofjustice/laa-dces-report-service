@@ -207,7 +207,7 @@ public class CSVFileService {
         return Files.createTempFile(fileName, ".csv", attr).toFile();
     }
 
-    public FailureReportDto writeDrcProcessingErrorToCsv(List<DrcProcessingStatusDto> drcProcessingStatusList, String fileName) throws IOException {
+    public FailureReportDto writeCaseSubmissionErrorsToCsv(List<DrcProcessingStatusDto> drcProcessingStatusList, String fileName) throws IOException {
         File targetFile = createCsvFile(fileName);
 
         try (FileWriter fw = new FileWriter(targetFile, true)) {

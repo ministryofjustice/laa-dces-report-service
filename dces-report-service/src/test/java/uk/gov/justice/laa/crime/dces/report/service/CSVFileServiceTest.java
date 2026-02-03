@@ -116,7 +116,7 @@ class CSVFileServiceTest {
     }
 
     @Test
-    void givenACaseSubmissionData_whenWriteDrcProcessingErrorToCsvIsInvoked_shouldGenerateReport() {
+    void givenACaseSubmissionData_whenWriteCaseSubmissionErrorsToCsvIsInvoked_shouldGenerateReport() {
         DrcProcessingStatusDto drcProcessingStatusDto = DrcProcessingStatusDto.builder()
                 .id(1L)
                 .maatId(1234L)
@@ -130,7 +130,7 @@ class CSVFileServiceTest {
         String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,MAATID invalid,"+LocalDateTime.of(2025, 1, 1, 0, 0, 0).toString();
 
         try {
-            FailureReportDto f = csvFileService.writeDrcProcessingErrorToCsv(List.of(drcProcessingStatusDto), "Test");
+            FailureReportDto f = csvFileService.writeCaseSubmissionErrorsToCsv(List.of(drcProcessingStatusDto), "Test");
             String output = FileUtils.readText(f.getReportFile());
             softly.assertThat(output).contains(expectedData);
 
@@ -140,12 +140,12 @@ class CSVFileServiceTest {
     }
 
     @Test
-    void givenAEmptyCaseSubmissionError_whenWriteDrcProcessingErrorToCsvIsInvoked_shouldGenerateFileWithHeader() {
+    void givenAEmptyCaseSubmissionError_whenWriteCaseSubmissionErrorsToCsvIsInvoked_shouldGenerateFileWithHeader() {
 
         String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "### There is no data to report for the specified date range. ####";
 
         try {
-            FailureReportDto f = csvFileService.writeDrcProcessingErrorToCsv(Collections.emptyList(), "Test");
+            FailureReportDto f = csvFileService.writeCaseSubmissionErrorsToCsv(Collections.emptyList(), "Test");
             String output = FileUtils.readText(f.getReportFile());
             softly.assertThat(output).contains(expectedData);
 
