@@ -36,11 +36,9 @@ public class CaseSubmissionErrorService {
 
   private final FeatureProperties feature;
 
-  public List<DrcProcessingStatusDto> getCaseSubmissionErrorsForDate(LocalDateTime startDate, LocalDateTime endDate) {
+  public List<DrcProcessingStatusDto> getCaseSubmissionErrorsForDate(Instant startTimestamp, Instant endTimestamp) {
 
-    Instant startDateInstant = startDate.atZone(ZoneId.systemDefault()).toInstant();
-    Instant endDateInstant = endDate.atZone(ZoneId.systemDefault()).toInstant();
-    List<DrcProcessingStatusEntity> entities = drcProcessingStatusRepository.findByCreationTimestampBetween(startDateInstant, endDateInstant);
+    List<DrcProcessingStatusEntity> entities = drcProcessingStatusRepository.findByCreationTimestampGreaterThanEqualAndCreationTimestampLessThan(startTimestamp, endTimestamp);
 
     return entities.stream().map(this::mapEntityToDto).toList();
   }
@@ -58,9 +56,12 @@ public class CaseSubmissionErrorService {
         .build();
   }
 
-  public FailureReportDto generateReport(LocalDateTime reportDate) throws IOException {
-
-    List<DrcProcessingStatusDto> caseSubmissionErrors = getCaseSubmissionErrorsForDate(reportDate, LocalDateTime.now());
+  public FailureReportDto generateReport(LocalDate reportDate) throws IOException {
+    // Convert the reportDate into start and end timestamps
+    // records will be selected where created >= startTimestamp and < endTimestamp
+    Instant startTimestamp = reportDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+    Instant endTimestamp = reportDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
+    List<DrcProcessingStatusDto> caseSubmissionErrors = getCaseSubmissionErrorsForDate(startTimestamp, endTimestamp);
 
     caseSubmissionErrors = Optional.ofNullable(caseSubmissionErrors)
             .orElse(Collections.emptyList())

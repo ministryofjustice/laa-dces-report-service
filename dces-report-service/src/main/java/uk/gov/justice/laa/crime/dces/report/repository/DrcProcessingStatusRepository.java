@@ -10,5 +10,5 @@ import uk.gov.justice.laa.crime.dces.report.model.DrcProcessingStatusEntity;
 public interface DrcProcessingStatusRepository extends
     JpaRepository<DrcProcessingStatusEntity, Long> {
 
-  List<DrcProcessingStatusEntity> findByCreationTimestampBetween(Instant start, Instant end);
+  List<DrcProcessingStatusEntity> findByCreationTimestampGreaterThanEqualAndCreationTimestampLessThan(Instant start, Instant end);
 }

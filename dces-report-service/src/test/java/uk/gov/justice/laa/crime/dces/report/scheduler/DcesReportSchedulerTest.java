@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.dces.report.scheduler;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import jakarta.xml.bind.JAXBException;
+import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -59,7 +60,7 @@ class DcesReportSchedulerTest {
     void givenAValidCronJob_whenCaseSubmissionErrorReportDailyIsInvoked_shouldReportGenerated()
             throws NotificationClientException, JAXBException, IOException {
         scheduler.caseSubmissionErrorReportDaily();
-        verify(dcesReportService).sendCaseSubmissionErrorReport(anyString(),any(LocalDateTime.class));
+        verify(dcesReportService).sendCaseSubmissionErrorReport(anyString(),any(LocalDate.class));
     }
 
 }

@@ -146,11 +146,11 @@ class DcesReportServiceTest {
         DrcProcessingStatusEntity entity = new DrcProcessingStatusEntity();
         entity.setId(1L);
         entity.setStatusMessage("Invalid Case Type");
-        given(drcProcessingStatusRepository.findByCreationTimestampBetween(any(), any())).willReturn(List.of(entity));
+        given(drcProcessingStatusRepository.findByCreationTimestampGreaterThanEqualAndCreationTimestampLessThan(any(), any())).willReturn(List.of(entity));
         doNothing().when(emailClient).send(any());
 
         // execute
-        dcesReportService.sendCaseSubmissionErrorReport("Test", LocalDateTime.now());
+        dcesReportService.sendCaseSubmissionErrorReport("Test", LocalDate.now());
 
         // assert
         Mockito.verify(notifyConfiguration).createEmail(any(File.class), anyString(), anyString(), any(LocalDate.class),any(LocalDate.class),anyString(),any(List.class));
@@ -160,10 +160,10 @@ class DcesReportServiceTest {
     @Test
     void givenAEmptyCaseSubmissionError_whenSendCaseSubmissionErrorReportIsInvoked_thenShouldNotSendMail() throws IOException, NotificationClientException {
 
-        given(drcProcessingStatusRepository.findByCreationTimestampBetween(any(), any())).willReturn(Collections.emptyList());
+        given(drcProcessingStatusRepository.findByCreationTimestampGreaterThanEqualAndCreationTimestampLessThan(any(), any())).willReturn(Collections.emptyList());
 
         // execute
-        dcesReportService.sendCaseSubmissionErrorReport("Test", LocalDateTime.now());
+        dcesReportService.sendCaseSubmissionErrorReport("Test", LocalDate.now());
 
         // assert
         Mockito.verify(notifyConfiguration,never()).createEmail(any(File.class), anyString(), anyString(), any(LocalDate.class),any(LocalDate.class),anyString(),any(List.class));

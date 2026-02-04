@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.dces.report.service;
 
 import io.sentry.util.FileUtils;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
@@ -46,8 +47,8 @@ public class CaseSubmissionErrorServiceTest {
 
 
     testDataUtil.createTestCaseSubmissionErrorData();
-    LocalDateTime startDate = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
-    LocalDateTime endDate = LocalDateTime.of(2025, 1, 2, 0, 0, 0);
+    Instant startDate = LocalDateTime.of(2025, 1, 1, 0, 0, 0).toInstant(ZoneOffset.UTC);
+    Instant endDate = LocalDateTime.of(2025, 1, 2, 0, 0, 0).toInstant(ZoneOffset.UTC);
 
     List<DrcProcessingStatusDto> dtos = caseSubmissionErrorService.getCaseSubmissionErrorsForDate(startDate, endDate);
 
@@ -73,14 +74,15 @@ public class CaseSubmissionErrorServiceTest {
   @Test
   void givenDrcProcessingStatusData_whenGenerateReportIsInvoked_shouldGenerateReportSuccessfully() {
 
-    LocalDateTime createdDate = LocalDateTime.now().minusHours(5);
+    Instant createdTimestamp = TestDataUtil.toInstant(2025, 1, 1, 11, 10, 5, ZoneOffset.UTC).plusMillis(123);
+    LocalDate reportDate = LocalDate.of(2025, 1, 1);
 
-    String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,Invalid Outcome,"+ createdDate;
+    String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,Invalid Outcome,2025-01-01T11:10:05Z";
 
-    testDataUtil.createDrcProcessingStatusData(createdDate.toInstant(ZoneOffset.UTC));
+    testDataUtil.createDrcProcessingStatusData(createdTimestamp);
     try {
-      FailureReportDto faulureReport = caseSubmissionErrorService.generateReport(LocalDateTime.now().minusDays(1));
-      String output = FileUtils.readText(faulureReport.getReportFile());
+      FailureReportDto failureReport = caseSubmissionErrorService.generateReport(reportDate);
+      String output = FileUtils.readText(failureReport.getReportFile());
       softly.assertThat(output).contains(expectedData);
 
     } catch (Exception e) {
@@ -95,7 +97,7 @@ public class CaseSubmissionErrorServiceTest {
     testDataUtil.createDrcProcessingStatusData(createdTimestamp);
 
     try {
-      FailureReportDto failureReportDto = caseSubmissionErrorService.generateReport(LocalDateTime.now().minusDays(1));
+      FailureReportDto failureReportDto = caseSubmissionErrorService.generateReport(LocalDate.now().minusDays(1));
       softly.assertThat(failureReportDto).isNull();
 
     } catch (Exception e) {
