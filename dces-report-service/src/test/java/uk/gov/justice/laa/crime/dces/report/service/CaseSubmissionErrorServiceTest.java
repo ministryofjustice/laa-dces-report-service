@@ -1,25 +1,29 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
+import java.io.File;
 import java.nio.file.Files;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import uk.gov.justice.laa.crime.dces.report.config.FeatureProperties;
 import uk.gov.justice.laa.crime.dces.report.config.TestConfig;
 import uk.gov.justice.laa.crime.dces.report.dto.DrcProcessingStatusDto;
 import uk.gov.justice.laa.crime.dces.report.dto.FailureReportDto;
+import uk.gov.justice.laa.crime.dces.report.repository.DrcProcessingStatusRepository;
 import uk.gov.justice.laa.crime.dces.report.utils.TestDataUtil;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
@@ -36,8 +40,10 @@ public class CaseSubmissionErrorServiceTest {
   @Autowired
   private TestDataUtil testDataUtil;
 
-  @Autowired
+  @Mock
   private CSVFileService csvFileService;
+  @Autowired
+  private DrcProcessingStatusRepository drcProcessingStatusRepository;
 
   private static final String CASE_SUBMISSION_ERROR_COLUMNS_HEADER = "MAAT Id,Concor Contribution Id,Fdc Id,Error Type,Processed Date" + System.lineSeparator();
 
@@ -79,7 +85,7 @@ public class CaseSubmissionErrorServiceTest {
 
 
   @Test
-  void givenDrcProcessingStatusData_whenGenerateReportIsInvoked_shouldGenerateReportSuccessfully() {
+  void givenErrorRecordsMatchingTheReportDate_whenGenerateReportIsInvoked_shouldGenerateReportSuccessfully() {
 
     Instant createdTimestamp = TestDataUtil.toInstant(2025, 1, 1, 11, 10, 5, ZoneOffset.UTC).plusMillis(123);
     LocalDate reportDate = LocalDate.of(2025, 1, 1);
@@ -98,18 +104,44 @@ public class CaseSubmissionErrorServiceTest {
   }
 
   @Test
-  void givenAEmptyCaseSubmissionError_whenWriteCaseSubmissionErrorToCsvIsInvoked_shouldGenerateFileWithHeader() {
+  void givenNoErrorRecordsMatchTheReportDateAndSendEmptyFileFeatureFlagIsFalse_whenGenerateReportIsInvoked_shouldNotGenerateAReport()
+      throws Exception {
 
+    // Given - records that don't match the report date
     Instant createdTimestamp = LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC);
     testDataUtil.createDrcProcessingStatusData(createdTimestamp);
+    // Given - feature flag to send an empty report is false
+    FeatureProperties features = new FeatureProperties(false, false);
 
-    try {
-      FailureReportDto failureReportDto = caseSubmissionErrorService.generateReport(LocalDate.now().minusDays(1));
-      softly.assertThat(failureReportDto).isNull();
+    // When the report is generated
+    CaseSubmissionErrorService service = new CaseSubmissionErrorService(csvFileService, drcProcessingStatusRepository, features);
+    FailureReportDto failureReportDto = service.generateReport(LocalDate.now().minusDays(1));
 
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    // Then - no file is created
+    softly.assertThat(failureReportDto).isNull();
+    Mockito.verify(csvFileService, Mockito.never()).writeCaseSubmissionErrorsToCsv(Mockito.any(),  Mockito.any());
+  }
+
+  @Test
+  void givenNoErrorRecordsMatchTheReportDateAndSendEmptyFileFeatureFlagIsTrue_whenGenerateReportIsInvoked_shouldGenerateAReport()
+      throws Exception {
+
+    // Given - records that don't match the report date
+    Instant createdTimestamp = LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC);
+    testDataUtil.createDrcProcessingStatusData(createdTimestamp);
+    // Given - feature flag to send an empty report is false
+    FeatureProperties features = new FeatureProperties(false, true);
+
+    // Expect the CsvFileService to be called to write the file
+    Mockito.when(csvFileService.writeCaseSubmissionErrorsToCsv(Mockito.any(),  Mockito.any()))
+        .thenReturn(new FailureReportDto(new File("results.csv"), 1));
+
+    // When the report is generated
+    CaseSubmissionErrorService service = new CaseSubmissionErrorService(csvFileService, drcProcessingStatusRepository, features);
+    service.generateReport(LocalDate.now().minusDays(1));
+
+    // Then - verify the file would have been generated
+    Mockito.verify(csvFileService).writeCaseSubmissionErrorsToCsv(Mockito.any(),  Mockito.any());
   }
 
 }

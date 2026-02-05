@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.config.FeatureProperties;
 import uk.gov.justice.laa.crime.dces.report.dto.DrcProcessingStatusDto;
@@ -14,11 +13,7 @@ import uk.gov.justice.laa.crime.dces.report.repository.DrcProcessingStatusReposi
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,8 +23,6 @@ public class CaseSubmissionErrorService {
   private static final String FILE_NAME_TEMPLATE = "DCES-DRC_case_submission_error_%s";
 
   private static final String REPORT_TYPE = "DCES-DRC Case Submission error";
-
-  private static final String SUCCESS = "Success";
 
   private final CSVFileService csvFileService;
   private final DrcProcessingStatusRepository drcProcessingStatusRepository;
