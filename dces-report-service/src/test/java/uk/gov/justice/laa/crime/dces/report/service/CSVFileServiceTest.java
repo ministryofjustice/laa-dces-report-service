@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
-import io.sentry.util.FileUtils;
+import java.nio.file.Files;
 import java.time.ZoneOffset;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
@@ -66,7 +66,7 @@ class CSVFileServiceTest {
             LocalDate date = LocalDate.now();
             testFile = csvFileService.writeContributionToCsv(contFile, "Test", date.minusDays(30),
                 date, "test");
-            String output = FileUtils.readText(testFile);
+            String output = Files.readString(testFile.toPath());
 
             softly.assertThat(output).contains(CONTRIBUTIONS_HEADER);
             softly.assertThat(output).contains(contFile.get(0).getMaatId());
@@ -89,7 +89,7 @@ class CSVFileServiceTest {
             List<FdcFile> fdcFiles = buildTestFdcFiles();
             LocalDate date = LocalDate.now();
             testFile = csvFileService.writeFdcFileListToCsv(fdcFiles, "Test", "Test", date.minusDays(30), date);
-            String output = FileUtils.readText(testFile);
+            String output = Files.readString(testFile.toPath());
 
             softly.assertThat(output).contains(FDC_HEADER);
         } catch (Exception e) {
@@ -131,7 +131,7 @@ class CSVFileServiceTest {
 
         try {
             FailureReportDto f = csvFileService.writeCaseSubmissionErrorsToCsv(List.of(drcProcessingStatusDto), "Test");
-            String output = FileUtils.readText(f.getReportFile());
+            String output = Files.readString(f.getReportFile().toPath());
             softly.assertThat(output).contains(expectedData);
 
         } catch (Exception e) {
@@ -146,7 +146,7 @@ class CSVFileServiceTest {
 
         try {
             FailureReportDto f = csvFileService.writeCaseSubmissionErrorsToCsv(Collections.emptyList(), "Test");
-            String output = FileUtils.readText(f.getReportFile());
+            String output = Files.readString(f.getReportFile().toPath());
             softly.assertThat(output).contains(expectedData);
 
         } catch (Exception e) {

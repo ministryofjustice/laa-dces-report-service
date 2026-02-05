@@ -1,6 +1,6 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
-import io.sentry.util.FileUtils;
+import java.nio.file.Files;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
@@ -82,7 +82,7 @@ public class CaseSubmissionErrorServiceTest {
     testDataUtil.createDrcProcessingStatusData(createdTimestamp);
     try {
       FailureReportDto failureReport = caseSubmissionErrorService.generateReport(reportDate);
-      String output = FileUtils.readText(failureReport.getReportFile());
+      String output = Files.readString(failureReport.getReportFile().toPath());
       softly.assertThat(output).contains(expectedData);
 
     } catch (Exception e) {
