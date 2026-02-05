@@ -146,7 +146,7 @@ class DcesReportServiceTest {
         DrcProcessingStatusEntity entity = new DrcProcessingStatusEntity();
         entity.setId(1L);
         entity.setStatusMessage("Invalid Case Type");
-        given(drcProcessingStatusRepository.findByCreationTimestampGreaterThanEqualAndCreationTimestampLessThan(any(), any())).willReturn(List.of(entity));
+        given(drcProcessingStatusRepository.findErrorsCreatedWithinRange(any(), any())).willReturn(List.of(entity));
         doNothing().when(emailClient).send(any());
 
         // execute
@@ -160,7 +160,7 @@ class DcesReportServiceTest {
     @Test
     void givenAEmptyCaseSubmissionError_whenSendCaseSubmissionErrorReportIsInvoked_thenShouldNotSendMail() throws IOException, NotificationClientException {
 
-        given(drcProcessingStatusRepository.findByCreationTimestampGreaterThanEqualAndCreationTimestampLessThan(any(), any())).willReturn(Collections.emptyList());
+        given(drcProcessingStatusRepository.findErrorsCreatedWithinRange(any(), any())).willReturn(Collections.emptyList());
 
         // execute
         dcesReportService.sendCaseSubmissionErrorReport("Test", LocalDate.now());

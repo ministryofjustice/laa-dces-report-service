@@ -63,7 +63,7 @@ public class TestDataUtil {
 
     saveDrcProcessingStatus( 1L, 1L, 1L, "error title 1", toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
     saveDrcProcessingStatus( 2L, 2L, 2L, "error title 2", toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
-    saveDrcProcessingStatus( 3L, 3L, 3L, "error title 3", toInstant(2025, 1, 1, 14, 20, 0, ZoneOffset.UTC));
+    saveDrcProcessingStatus( 3L, 3L, 3L, "error title 3", toInstant(2025, 1, 1, 23, 59, 59, ZoneOffset.UTC).plusMillis(999));
     saveDrcProcessingStatus( 3L, 3L, 3L, "error title 3", toInstant(2025, 1, 2, 0, 0, 0, ZoneOffset.UTC));
     saveDrcProcessingStatus( 4L, 4L, 4L, "error title 4", toInstant(2025, 4, 4, 11, 10, 0, ZoneOffset.UTC));
     saveDrcProcessingStatus( 5L, 5L, 5L, "error title 5", toInstant(2025, 5, 5, 11, 10, 0, ZoneOffset.UTC));

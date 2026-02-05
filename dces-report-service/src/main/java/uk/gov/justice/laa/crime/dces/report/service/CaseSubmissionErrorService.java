@@ -38,7 +38,7 @@ public class CaseSubmissionErrorService {
 
   public List<DrcProcessingStatusDto> getCaseSubmissionErrorsForDate(Instant startTimestamp, Instant endTimestamp) {
 
-    List<DrcProcessingStatusEntity> entities = drcProcessingStatusRepository.findByCreationTimestampGreaterThanEqualAndCreationTimestampLessThan(startTimestamp, endTimestamp);
+    List<DrcProcessingStatusEntity> entities = drcProcessingStatusRepository.findErrorsCreatedWithinRange(startTimestamp, endTimestamp);
 
     return entities.stream().map(this::mapEntityToDto).toList();
   }
@@ -62,14 +62,6 @@ public class CaseSubmissionErrorService {
     Instant startTimestamp = reportDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
     Instant endTimestamp = reportDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
     List<DrcProcessingStatusDto> caseSubmissionErrors = getCaseSubmissionErrorsForDate(startTimestamp, endTimestamp);
-
-    caseSubmissionErrors = Optional.ofNullable(caseSubmissionErrors)
-            .orElse(Collections.emptyList())
-            .stream()
-            .filter(Objects::nonNull)
-            .filter(error -> StringUtils.isNotBlank(error.getStatusMessage()))
-            .filter(error -> !SUCCESS.equals(error.getStatusMessage())).toList();
-
 
     if (caseSubmissionErrors.isEmpty() && !feature.sendEmptyFailuresReport()) {
       log.info("No case submission error found and feature flag to send empty reports is absent/set to false, so not generating the report");

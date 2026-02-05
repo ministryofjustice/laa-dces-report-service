@@ -67,6 +67,13 @@ public class CaseSubmissionErrorServiceTest {
     softly.assertThat(dtos.get(1).getDrcProcessingTimestamp()).isBefore(dtos.get(1).getCreationTimestamp());
     softly.assertThat(dtos.get(1).getCreationTimestamp()).isEqualTo(TestDataUtil.toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
 
+    softly.assertThat(dtos.get(2).getMaatId()).isEqualTo(3);
+    softly.assertThat(dtos.get(2).getConcorContributionId()).isEqualTo(3);
+    softly.assertThat(dtos.get(2).getFdcId()).isEqualTo(3);
+    softly.assertThat(dtos.get(2).getStatusMessage()).isEqualTo("error title 3");
+    softly.assertThat(dtos.get(2).getDrcProcessingTimestamp()).isBefore(dtos.get(2).getCreationTimestamp());
+    softly.assertThat(dtos.get(2).getCreationTimestamp()).isEqualTo(TestDataUtil.toInstant(2025, 1, 1, 23, 59, 59, ZoneOffset.UTC).plusMillis(999));
+
     softly.assertAll();
   }
 
