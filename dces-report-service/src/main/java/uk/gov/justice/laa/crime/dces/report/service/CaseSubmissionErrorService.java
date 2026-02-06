@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import java.time.Instant;
-import java.time.ZoneId;
+import java.time.ZoneOffset;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -52,8 +52,8 @@ public class CaseSubmissionErrorService {
   public FailureReportDto generateReport(LocalDate reportDate) throws IOException {
     // Convert the reportDate into start and end timestamps
     // records will be selected where created >= startTimestamp and < endTimestamp
-    Instant startTimestamp = reportDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
-    Instant endTimestamp = reportDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
+    Instant startTimestamp = reportDate.atStartOfDay(ZoneOffset.UTC).toInstant();
+    Instant endTimestamp = reportDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant();
     List<DrcProcessingStatusDto> caseSubmissionErrors = getCaseSubmissionErrorsForDate(startTimestamp, endTimestamp);
 
     if (caseSubmissionErrors.isEmpty() && !feature.sendEmptyFailuresReport()) {
