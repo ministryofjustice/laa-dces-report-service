@@ -51,14 +51,13 @@ public class CaseSubmissionErrorServiceTest {
   @Test
   public void givenCreationDate_whenGetCaseSubmissionErrors_thenReturnAllCaseSubmissionErrorDtosForGivenDate() {
 
-
     testDataUtil.createTestCaseSubmissionErrorData();
     Instant startDate = LocalDateTime.of(2025, 1, 1, 0, 0, 0).toInstant(ZoneOffset.UTC);
     Instant endDate = LocalDateTime.of(2025, 1, 2, 0, 0, 0).toInstant(ZoneOffset.UTC);
 
     List<DrcProcessingStatusDto> dtos = caseSubmissionErrorService.getCaseSubmissionErrorsForDate(startDate, endDate);
 
-    softly.assertThat(dtos).hasSize(3);
+    softly.assertThat(dtos).hasSize(2);
     softly.assertThat(dtos.getFirst().getMaatId()).isEqualTo(1);
     softly.assertThat(dtos.getFirst().getConcorContributionId()).isEqualTo(1);
     softly.assertThat(dtos.getFirst().getFdcId()).isEqualTo(1);
@@ -66,19 +65,12 @@ public class CaseSubmissionErrorServiceTest {
     softly.assertThat(dtos.getFirst().getDrcProcessingTimestamp()).isBefore(dtos.getFirst().getCreationTimestamp());
     softly.assertThat(dtos.getFirst().getCreationTimestamp()).isEqualTo(TestDataUtil.toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
 
-    softly.assertThat(dtos.get(1).getMaatId()).isEqualTo(2);
-    softly.assertThat(dtos.get(1).getConcorContributionId()).isEqualTo(2);
-    softly.assertThat(dtos.get(1).getFdcId()).isEqualTo(2);
-    softly.assertThat(dtos.get(1).getStatusMessage()).isEqualTo("error title 2");
+    softly.assertThat(dtos.get(1).getMaatId()).isEqualTo(3);
+    softly.assertThat(dtos.get(1).getConcorContributionId()).isEqualTo(3);
+    softly.assertThat(dtos.get(1).getFdcId()).isEqualTo(3);
+    softly.assertThat(dtos.get(1).getStatusMessage()).isEqualTo("error title 3");
     softly.assertThat(dtos.get(1).getDrcProcessingTimestamp()).isBefore(dtos.get(1).getCreationTimestamp());
-    softly.assertThat(dtos.get(1).getCreationTimestamp()).isEqualTo(TestDataUtil.toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
-
-    softly.assertThat(dtos.get(2).getMaatId()).isEqualTo(3);
-    softly.assertThat(dtos.get(2).getConcorContributionId()).isEqualTo(3);
-    softly.assertThat(dtos.get(2).getFdcId()).isEqualTo(3);
-    softly.assertThat(dtos.get(2).getStatusMessage()).isEqualTo("error title 3");
-    softly.assertThat(dtos.get(2).getDrcProcessingTimestamp()).isBefore(dtos.get(2).getCreationTimestamp());
-    softly.assertThat(dtos.get(2).getCreationTimestamp()).isEqualTo(TestDataUtil.toInstant(2025, 1, 1, 23, 59, 59, ZoneOffset.UTC).plusMillis(999));
+    softly.assertThat(dtos.get(1).getCreationTimestamp()).isEqualTo(TestDataUtil.toInstant(2025, 1, 1, 23, 59, 59, ZoneOffset.UTC).plusMillis(999));
 
     softly.assertAll();
   }

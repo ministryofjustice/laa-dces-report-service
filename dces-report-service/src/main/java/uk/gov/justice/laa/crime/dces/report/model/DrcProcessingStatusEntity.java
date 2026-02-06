@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
 
@@ -27,6 +26,7 @@ public class DrcProcessingStatusEntity {
   private Long maatId;
   private Long concorContributionId;
   private Long fdcId;
+  private Integer ackResponseStatus;
   private String statusMessage;
   private Instant drcProcessingTimestamp;
   private Instant creationTimestamp;

@@ -52,21 +52,21 @@ public class TestDataUtil {
     caseSubmissionRepository.saveAndFlush(caseSubmission);
   }
 
-  private void saveDrcProcessingStatus(Long maatId, Long concorContributionId, Long fdcId, String statusMessage, Instant creationTimestamp) {
+  private void saveDrcProcessingStatus(Long maatId, Long concorContributionId, Long fdcId, int ackResponseStatus, String statusMessage, Instant creationTimestamp) {
     // subtract a few seconds from the creationTimestamp to indicate it was processed by DRC before being saved by DCES
     Instant drcProcessingTimestamp = creationTimestamp.minusSeconds(5);
-    drcProcessingStatusRepository.saveAndFlush(new DrcProcessingStatusEntity(null, maatId, concorContributionId, fdcId, statusMessage, drcProcessingTimestamp, creationTimestamp));
+    drcProcessingStatusRepository.saveAndFlush(new DrcProcessingStatusEntity(null, maatId, concorContributionId, fdcId, ackResponseStatus, statusMessage, drcProcessingTimestamp, creationTimestamp));
   }
 
   public void createTestCaseSubmissionErrorData() {
     resetTestData();
 
-    saveDrcProcessingStatus( 1L, 1L, 1L, "error title 1", toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
-    saveDrcProcessingStatus( 2L, 2L, 2L, "error title 2", toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
-    saveDrcProcessingStatus( 3L, 3L, 3L, "error title 3", toInstant(2025, 1, 1, 23, 59, 59, ZoneOffset.UTC).plusMillis(999));
-    saveDrcProcessingStatus( 3L, 3L, 3L, "error title 3", toInstant(2025, 1, 2, 0, 0, 0, ZoneOffset.UTC));
-    saveDrcProcessingStatus( 4L, 4L, 4L, "error title 4", toInstant(2025, 4, 4, 11, 10, 0, ZoneOffset.UTC));
-    saveDrcProcessingStatus( 5L, 5L, 5L, "error title 5", toInstant(2025, 5, 5, 11, 10, 0, ZoneOffset.UTC));
+    saveDrcProcessingStatus( 1L, 1L, 1L, 200, "error title 1", toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
+    saveDrcProcessingStatus( 2L, 2L, 2L, 404, "error title 2", toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
+    saveDrcProcessingStatus( 3L, 3L, 3L, 200, "error title 3", toInstant(2025, 1, 1, 23, 59, 59, ZoneOffset.UTC).plusMillis(999));
+    saveDrcProcessingStatus( 3L, 3L, 3L, 200, "error title 3", toInstant(2025, 1, 2, 0, 0, 0, ZoneOffset.UTC));
+    saveDrcProcessingStatus( 4L, 4L, 4L, 200, "error title 4", toInstant(2025, 4, 4, 11, 10, 0, ZoneOffset.UTC));
+    saveDrcProcessingStatus( 5L, 5L, 5L, 200, "error title 5", toInstant(2025, 5, 5, 11, 10, 0, ZoneOffset.UTC));
   }
 
   public static Instant toInstant(int year, int month, int dayOfMonth, int hour, int minute, int second, ZoneOffset timezone) {
@@ -247,7 +247,7 @@ public class TestDataUtil {
 
   public void createDrcProcessingStatusData(Instant createdTimestamp) {
     resetTestData();
-    saveDrcProcessingStatus( 1234L, 1L, 1L, "Invalid Outcome", createdTimestamp);
-    saveDrcProcessingStatus( 1235L, 2L, 2L, "Success", createdTimestamp);
+    saveDrcProcessingStatus( 1234L, 1L, 1L, 200, "Invalid Outcome", createdTimestamp);
+    saveDrcProcessingStatus( 1235L, 2L, 2L, 200, "Success", createdTimestamp);
   }
 }

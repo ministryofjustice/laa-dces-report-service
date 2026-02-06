@@ -226,11 +226,15 @@ public class CSVFileService {
     }
 
     private String buildDrcProcessingStatusRow(DrcProcessingStatusDto status) {
-        return  getCsvFieldValue(status.getMaatId()) +
-                getCsvFieldValue(status.getConcorContributionId()) +
-                getCsvFieldValue(status.getFdcId()) +
-                getCsvFieldValue(status.getStatusMessage()) +
-                getCsvFieldValue(status.getCreationTimestamp()) +
-                System.lineSeparator();
+      StringBuilder builder = new StringBuilder();
+      builder.append(getCsvFieldValue(status.getMaatId()));
+      builder.append(getCsvFieldValue(status.getConcorContributionId()));
+      builder.append(getCsvFieldValue(status.getFdcId()));
+      builder.append(getCsvFieldValue(status.getStatusMessage()));
+      builder.append(getCsvFieldValue(status.getCreationTimestamp()));
+      // a trailing comma is added by the last field which needs to be removed
+      builder.deleteCharAt(builder.length() - 1);
+      builder.append(System.lineSeparator());
+      return builder.toString();
     }
 }

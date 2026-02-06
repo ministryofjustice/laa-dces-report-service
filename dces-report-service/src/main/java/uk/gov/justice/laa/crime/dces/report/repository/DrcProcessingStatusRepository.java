@@ -13,7 +13,8 @@ public interface DrcProcessingStatusRepository extends
     JpaRepository<DrcProcessingStatusEntity, Long> {
 
   /**
-   * Find error records created with the given range.
+   * Find records created within the given range that the DRC failed to process (e.statusMessage <> 'Success').
+   * Only acknowledgments successfully processed by DCES are considered (ackResponseStatus = 200).
    * @param start include records equal to or after this timestamp
    * @param end include records before but not including this timestamp
    */
@@ -23,6 +24,7 @@ public interface DrcProcessingStatusRepository extends
     WHERE e.creationTimestamp >= :start
       AND e.creationTimestamp < :end
       AND e.statusMessage <> 'Success'
+      AND e.ackResponseStatus = 200
   """)
   List<DrcProcessingStatusEntity> findErrorsCreatedWithinRange(
       @Param("start") Instant start,

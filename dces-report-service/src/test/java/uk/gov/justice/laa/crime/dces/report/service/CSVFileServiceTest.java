@@ -24,7 +24,6 @@ import javax.xml.datatype.DatatypeFactory;
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 import uk.gov.justice.laa.crime.dces.report.utils.TestDataUtil;
 
@@ -121,18 +120,18 @@ class CSVFileServiceTest {
                 .id(1L)
                 .maatId(1234L)
                 .concorContributionId(1L)
-                .fdcId(1L)
+                .fdcId(null)
                 .statusMessage("MAATID invalid")
                 .drcProcessingTimestamp(TestDataUtil.toInstant(2025, 1, 1, 0, 0, 0, ZoneOffset.UTC))
                 .creationTimestamp(TestDataUtil.toInstant(2025, 1, 1, 0, 0, 5, ZoneOffset.UTC))
                 .build();
 
-        String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,MAATID invalid,"+LocalDateTime.of(2025, 1, 1, 0, 0, 0).toString();
+        String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,,MAATID invalid,2025-01-01T00:00:05Z" +  System.lineSeparator();
 
         try {
             FailureReportDto f = csvFileService.writeCaseSubmissionErrorsToCsv(List.of(drcProcessingStatusDto), "Test");
             String output = Files.readString(f.getReportFile().toPath());
-            softly.assertThat(output).contains(expectedData);
+            softly.assertThat(output).isEqualTo(expectedData);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
