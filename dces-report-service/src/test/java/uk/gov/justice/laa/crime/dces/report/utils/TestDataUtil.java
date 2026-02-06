@@ -52,7 +52,7 @@ public class TestDataUtil {
     caseSubmissionRepository.saveAndFlush(caseSubmission);
   }
 
-  private void saveDrcProcessingStatus(Long maatId, Long concorContributionId, Long fdcId, int ackResponseStatus, String statusMessage, Instant creationTimestamp) {
+  public void saveDrcProcessingStatus(Long maatId, Long concorContributionId, Long fdcId, int ackResponseStatus, String statusMessage, Instant creationTimestamp) {
     // subtract a few seconds from the creationTimestamp to indicate it was processed by DRC before being saved by DCES
     Instant drcProcessingTimestamp = creationTimestamp.minusSeconds(5);
     drcProcessingStatusRepository.saveAndFlush(new DrcProcessingStatusEntity(null, maatId, concorContributionId, fdcId, ackResponseStatus, statusMessage, drcProcessingTimestamp, creationTimestamp));
