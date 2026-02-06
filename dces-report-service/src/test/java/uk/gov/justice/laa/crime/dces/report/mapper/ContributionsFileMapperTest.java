@@ -242,7 +242,7 @@ class ContributionsFileMapperTest {
 
             softly.assertThat(csvFile).isNotNull();
             String csvOutput = Files.readString(csvFile.toPath());
-            //String csvOutput = io.sentry.util.FileUtils.readText(csvFile);
+
             // check header present
             softly.assertThat(csvOutput).contains(EXPECTED_HEADER);
             // verify content has been mapped
