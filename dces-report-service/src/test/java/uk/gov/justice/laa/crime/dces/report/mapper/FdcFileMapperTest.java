@@ -1,8 +1,8 @@
 package uk.gov.justice.laa.crime.dces.report.mapper;
 
-import io.sentry.util.FileUtils;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.UnmarshalException;
+import java.nio.file.Files;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -131,7 +131,7 @@ class FdcFileMapperTest {
     String getXMLString(boolean wantsSingle) throws IOException {
         File f = new File(Objects.requireNonNull(getClass().getClassLoader()
             .getResource(wantsSingle ? "fdc/single_fdc.xml" : "fdc/multiple_fdc.xml")).getFile());
-        return FileUtils.readText(f);
+        return Files.readString(f.toPath());
     }
 
     @Test
@@ -159,10 +159,10 @@ class FdcFileMapperTest {
         File f = null;
         try {
             LocalDate date = LocalDate.now();
-            f = fdcFileMapper.processRequest(new String[]{FileUtils.readText(input)}, filename, "Test", date, date);
+            f = fdcFileMapper.processRequest(new String[]{Files.readString(input.toPath())}, filename, "Test", date, date);
 
             softly.assertThat(f).isNotNull();
-            String csvOutput = FileUtils.readText(f);
+            String csvOutput = Files.readString(f.toPath());
             // check header present
             softly.assertThat(csvOutput).contains("MAAT ID, Sentence Date, Calculation Date, Final Cost, LGFS Cost, AGFS COST, Transmission Date");
             // verify content has been mapped
@@ -174,7 +174,7 @@ class FdcFileMapperTest {
                     "5275089,19/08/2016,02/09/2016,2849.95,1497.60,1352.35,25/07/2018" + System.lineSeparator() +
                     "5427879,23/08/2016,06/09/2016,2252.60,937.86,1314.74,25/07/2018" + System.lineSeparator() +
                     "5438043,25/08/2016,19/12/2016,1969.47,1085.50,883.97,25/07/2018" + System.lineSeparator() +
-                    "4971278,14/10/2016,11/01/2017,3226.01,1327.99,1898.02,25/07/2018");
+                    "4971278,14/10/2016,11/01/2017,3226.01,1327.99,1898.02,25/07/2018" + System.lineSeparator());
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:" + e.getMessage());
         } finally {

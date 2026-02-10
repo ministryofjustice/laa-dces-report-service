@@ -1,14 +1,15 @@
 package uk.gov.justice.laa.crime.dces.report.utils;
 
-import lombok.experimental.UtilityClass;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Objects;
+import javax.xml.datatype.XMLGregorianCalendar;
+import lombok.experimental.UtilityClass;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import uk.gov.justice.laa.crime.dces.report.enums.ReportPeriod;
 
 @UtilityClass
@@ -49,4 +50,9 @@ public class DateUtils {
             case DAILY -> LocalDate.now().minusDays(1);
         };
     }
+
+  public static String convertInstantToString(Instant instant) {
+      // Should return something like 2025-01-01T10:46:22
+      return DateTimeFormatter.ISO_INSTANT.format(instant.truncatedTo(ChronoUnit.SECONDS));
+  }
 }

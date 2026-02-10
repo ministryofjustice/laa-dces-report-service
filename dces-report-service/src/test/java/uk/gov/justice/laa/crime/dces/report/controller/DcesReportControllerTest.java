@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.controller;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import io.sentry.util.FileUtils;
+import java.nio.file.Files;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -129,8 +129,8 @@ class DcesReportControllerTest {
     }
 
     private boolean searchInFile(File file, String toSearchFor) throws IOException {
-        System.out.println(FileUtils.readText(file));
-        return Optional.ofNullable(FileUtils.readText(file))
+        System.out.println(Files.readString(file.toPath()));
+        return Optional.of(Files.readString(file.toPath()))
                 .orElse("")
                 .contains(toSearchFor);
     }

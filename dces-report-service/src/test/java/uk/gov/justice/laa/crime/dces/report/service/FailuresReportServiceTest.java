@@ -2,8 +2,8 @@ package uk.gov.justice.laa.crime.dces.report.service;
 
 import static org.mockito.Mockito.when;
 
-import io.sentry.util.FileUtils;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
@@ -55,7 +55,8 @@ class FailuresReportServiceTest {
         107,Contribution,207,100,200,72,2025-01-01T11:10,1,FetchedFromMAAT,200,,
         107,Contribution,207,102,200,87,2025-01-02T11:10,1,FetchedFromMAAT,200,,
         198,Fdc,198,97,200,46,2025-01-01T11:10,2,SyncRequestResponseToDrc,504,,
-        198,Fdc,198,99,200,54,2025-01-02T11:10,2,SyncRequestResponseToDrc,504,,""");
+        198,Fdc,198,99,200,54,2025-01-02T11:10,2,SyncRequestResponseToDrc,504,,
+        """);
   }
 
   @Test
@@ -82,7 +83,7 @@ class FailuresReportServiceTest {
     if (expectedOutput == null) {
       softly.assertThat(failureReport).isNull();
     } else {
-      String csvOutput = FileUtils.readText(failureReport.getReportFile());
+      String csvOutput = Files.readString(failureReport.getReportFile().toPath());
       softly.assertThat(csvOutput).isEqualTo(expectedCount + title + header + expectedOutput);
     }
   }

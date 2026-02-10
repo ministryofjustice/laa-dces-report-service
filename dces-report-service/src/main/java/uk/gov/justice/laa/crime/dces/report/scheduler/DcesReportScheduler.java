@@ -76,7 +76,7 @@ public class DcesReportScheduler {
             case CONTRIBUTION -> reportService.sendContributionsReport(reportPeriod.getDescription(), fromDate, toDate);
             case FDC -> reportService.sendFdcReport(reportPeriod.getDescription(), fromDate, toDate);
             case FAILURES -> reportService.sendFailuresReport(reportPeriod.getDescription(), toDate);
-            case CASE_SUBMISSION_ERROR -> reportService.sendCaseSubmissionErrorReport(reportPeriod.getDescription(), LocalDateTime.now().minusDays(1));
+            case CASE_SUBMISSION_ERROR -> reportService.sendCaseSubmissionErrorReport(reportPeriod.getDescription(), fromDate);
         }
 
         log.info("Successfully finished {} {} Report", reportType, reportPeriod);

@@ -1,35 +1,33 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
-import java.io.OutputStreamWriter;
-
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-import uk.gov.justice.laa.crime.dces.report.dto.CaseSubmissionErrorDto;
-import uk.gov.justice.laa.crime.dces.report.dto.FailureReportDto;
-import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionEntity;
-import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionErrorEntity;
-import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
-import uk.gov.justice.laa.crime.dces.report.model.EventTypeEntity;
-import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
-import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList.Fdc;
-import uk.gov.justice.laa.crime.dces.report.repository.EventTypeRepository;
-import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
-
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.nio.file.attribute.FileAttribute;
 import java.nio.file.attribute.PosixFilePermission;
 import java.nio.file.attribute.PosixFilePermissions;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import javax.xml.datatype.XMLGregorianCalendar;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import uk.gov.justice.laa.crime.dces.report.dto.DrcProcessingStatusDto;
+import uk.gov.justice.laa.crime.dces.report.dto.FailureReportDto;
+import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionEntity;
+import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
+import uk.gov.justice.laa.crime.dces.report.model.EventTypeEntity;
+import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
+import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile.FdcList.Fdc;
+import uk.gov.justice.laa.crime.dces.report.repository.EventTypeRepository;
+import uk.gov.justice.laa.crime.dces.report.utils.DateUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -200,19 +198,23 @@ public class CSVFileService {
         return (getCsvFieldValue(DateUtils.convertXmlGregorianToString(o)));
     }
 
+    private String getCsvFieldValue(Instant instant) {
+      return getCsvFieldValue(Objects.nonNull(instant) ? DateUtils.convertInstantToString(instant) : null);
+    }
+
     private File createCsvFile(String fileName) throws IOException {
         FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(FILE_PERMISSIONS));
         return Files.createTempFile(fileName, ".csv", attr).toFile();
     }
 
-    public FailureReportDto writeCaseSubmissionErrorToCsv(List<CaseSubmissionErrorDto> caseSubmissionErrors, String fileName) throws IOException {
+    public FailureReportDto writeCaseSubmissionErrorsToCsv(List<DrcProcessingStatusDto> drcProcessingStatusList, String fileName) throws IOException {
         File targetFile = createCsvFile(fileName);
 
         try (FileWriter fw = new FileWriter(targetFile, true)) {
             fw.append(CASE_SUBMISSION_ERROR_COLUMNS_HEADER);
-            if (!CollectionUtils.isEmpty(caseSubmissionErrors)) {
-                for (CaseSubmissionErrorDto caseSubmissionError : caseSubmissionErrors) {
-                    fw.append(buildCaseSubmissionError(caseSubmissionError));
+            if (!CollectionUtils.isEmpty(drcProcessingStatusList)) {
+                for (DrcProcessingStatusDto drcProcessingStatus : drcProcessingStatusList) {
+                    fw.append(buildDrcProcessingStatusRow(drcProcessingStatus));
                 }
             } else {
                 fw.append(NO_DATA_MESSAGE);
@@ -220,15 +222,19 @@ public class CSVFileService {
         } catch (IOException e) {
             throw new IOException(e);
         }
-        return new FailureReportDto(targetFile, caseSubmissionErrors.size());
+        return new FailureReportDto(targetFile, drcProcessingStatusList.size());
     }
 
-    private String buildCaseSubmissionError(CaseSubmissionErrorDto failure) {
-        return  getCsvFieldValue(failure.getMaatId()) +
-                getCsvFieldValue(failure.getConcorContributionId()) +
-                getCsvFieldValue(failure.getFdcId()) +
-                getCsvFieldValue(failure.getTitle()) +
-                getCsvFieldValue(failure.getDetail()) +
-                System.lineSeparator();
+    private String buildDrcProcessingStatusRow(DrcProcessingStatusDto status) {
+      StringBuilder builder = new StringBuilder();
+      builder.append(getCsvFieldValue(status.getMaatId()));
+      builder.append(getCsvFieldValue(status.getConcorContributionId()));
+      builder.append(getCsvFieldValue(status.getFdcId()));
+      builder.append(getCsvFieldValue(status.getStatusMessage()));
+      builder.append(getCsvFieldValue(status.getCreationTimestamp()));
+      // a trailing comma is added by the last field which needs to be removed
+      builder.deleteCharAt(builder.length() - 1);
+      builder.append(System.lineSeparator());
+      return builder.toString();
     }
 }
