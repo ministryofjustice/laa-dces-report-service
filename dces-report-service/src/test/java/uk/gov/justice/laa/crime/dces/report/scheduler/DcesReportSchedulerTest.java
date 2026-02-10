@@ -12,7 +12,6 @@ import uk.gov.justice.laa.crime.dces.report.service.DcesReportService;
 import uk.gov.service.notify.NotificationClientException;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
