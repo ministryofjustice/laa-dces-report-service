@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static uk.gov.justice.laa.crime.dces.report.service.MailerService.sendEmail;
@@ -38,6 +39,8 @@ public class DcesReportService {
     private final EmailClient emailClient;
 
     private final NotifyConfiguration notifyConfiguration;
+
+    private final CaseSubmissionErrorService caseSubmissionErrorService;
 
     @Value("${emailClient.notify.template-id}")
     private String templateId;
@@ -95,6 +98,19 @@ public class DcesReportService {
         timer.record(() -> sendEmail(emailObject, emailClient));
         timer.close();
         Files.delete(attachment.toPath());
+    }
+
+    public void sendCaseSubmissionErrorReport(String reportTitle, LocalDateTime reportDate) throws IOException, NotificationClientException {
+        log.info("{} Case Submission error report generation requested", reportTitle);
+        FailureReportDto failureReportDto = caseSubmissionErrorService.generateReport(reportDate);
+
+        if (failureReportDto != null) {
+            sendEmailReport(failureReportDto.getReportFile(), caseSubmissionErrorService.getType(), failureReportDto.getFailuresCount() + " case submission error found for " + reportTitle, reportDate.toLocalDate(),
+                    LocalDate.now());
+            log.info("{} Report generated and sent successfully", reportTitle);
+        } else {
+            log.info("No Case Submission Error report found and feature flag to send empty reports is absent/set to false, so not sending the case submission error report email");
+        }
     }
 
 }

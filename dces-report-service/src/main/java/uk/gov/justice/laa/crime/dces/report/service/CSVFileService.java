@@ -1,10 +1,14 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
 import java.io.OutputStreamWriter;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import uk.gov.justice.laa.crime.dces.report.dto.CaseSubmissionErrorDto;
 import uk.gov.justice.laa.crime.dces.report.dto.FailureReportDto;
 import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionEntity;
+import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionErrorEntity;
 import uk.gov.justice.laa.crime.dces.report.model.ContributionCSVDataLine;
 import uk.gov.justice.laa.crime.dces.report.model.EventTypeEntity;
 import uk.gov.justice.laa.crime.dces.report.model.generated.FdcFile;
@@ -39,6 +43,8 @@ public class CSVFileService {
     private static final String FDC_HEADING = "Final Defence Cost Report";
 
     private static final String FAILURES_COLUMNS_HEADER = "MAAT Id,Contribution Type,Contribution Id,Batch No,Trace Id,Case Submission Id,Processed Date,Event Type Id,Event Type Desc,HTTP Status,Payload" + System.lineSeparator();
+
+    private static final String CASE_SUBMISSION_ERROR_COLUMNS_HEADER = "MAAT Id,Concor Contribution Id,Fdc Id,Error Type,Processed Date" + System.lineSeparator();
 
     private static final String NO_DATA_MESSAGE = "### There is no data to report for the specified date range. ####";
 
@@ -197,5 +203,32 @@ public class CSVFileService {
     private File createCsvFile(String fileName) throws IOException {
         FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(FILE_PERMISSIONS));
         return Files.createTempFile(fileName, ".csv", attr).toFile();
+    }
+
+    public FailureReportDto writeCaseSubmissionErrorToCsv(List<CaseSubmissionErrorDto> caseSubmissionErrors, String fileName) throws IOException {
+        File targetFile = createCsvFile(fileName);
+
+        try (FileWriter fw = new FileWriter(targetFile, true)) {
+            fw.append(CASE_SUBMISSION_ERROR_COLUMNS_HEADER);
+            if (!CollectionUtils.isEmpty(caseSubmissionErrors)) {
+                for (CaseSubmissionErrorDto caseSubmissionError : caseSubmissionErrors) {
+                    fw.append(buildCaseSubmissionError(caseSubmissionError));
+                }
+            } else {
+                fw.append(NO_DATA_MESSAGE);
+            }
+        } catch (IOException e) {
+            throw new IOException(e);
+        }
+        return new FailureReportDto(targetFile, caseSubmissionErrors.size());
+    }
+
+    private String buildCaseSubmissionError(CaseSubmissionErrorDto failure) {
+        return  getCsvFieldValue(failure.getMaatId()) +
+                getCsvFieldValue(failure.getConcorContributionId()) +
+                getCsvFieldValue(failure.getFdcId()) +
+                getCsvFieldValue(failure.getTitle()) +
+                getCsvFieldValue(failure.getDetail()) +
+                System.lineSeparator();
     }
 }
