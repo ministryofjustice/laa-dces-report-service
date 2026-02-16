@@ -91,4 +91,24 @@ public class DcesReportController {
         reportService.sendFailuresReport(reportTitle, reportDate);
     }
 
+    @GetMapping(value = "/submission-error/{reportTitle}/{reportDate}")
+    @Operation(description = "Generate Case Submission Error report and send it by email")
+    @ApiResponse(responseCode = "200")
+    @ApiResponse(responseCode = "400",
+        description = "Bad request.",
+        content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+            schema = @Schema(implementation = ProblemDetail.class)
+        )
+    )
+    @ApiResponse(responseCode = "500",
+        description = "Server Error.",
+        content = @Content(mediaType = MediaType.APPLICATION_PROBLEM_JSON_VALUE,
+            schema = @Schema(implementation = ProblemDetail.class)
+        )
+    )
+    public void getCaseSubmissionErrorReport(@PathVariable String reportTitle, @PathVariable LocalDate reportDate) throws IOException, NotificationClientException {
+        log.info("Case Submission Error Report entry point called with title {}, date: {}", reportTitle, reportDate);
+        reportService.sendCaseSubmissionErrorReport(reportTitle, reportDate);
+    }
+
 }
