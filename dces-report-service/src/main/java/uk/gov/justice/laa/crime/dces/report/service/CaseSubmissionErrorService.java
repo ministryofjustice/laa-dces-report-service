@@ -1,22 +1,19 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
+import java.time.Instant;
+import java.time.ZoneOffset;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.config.FeatureProperties;
-import uk.gov.justice.laa.crime.dces.report.dto.CaseSubmissionErrorDto;
+import uk.gov.justice.laa.crime.dces.report.dto.DrcProcessingStatusDto;
 import uk.gov.justice.laa.crime.dces.report.dto.FailureReportDto;
-import uk.gov.justice.laa.crime.dces.report.model.CaseSubmissionErrorEntity;
-import uk.gov.justice.laa.crime.dces.report.repository.CaseSubmissionErrorRepository;
+import uk.gov.justice.laa.crime.dces.report.model.DrcProcessingStatusEntity;
+import uk.gov.justice.laa.crime.dces.report.repository.DrcProcessingStatusRepository;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,52 +24,44 @@ public class CaseSubmissionErrorService {
 
   private static final String REPORT_TYPE = "DCES-DRC Case Submission error";
 
-  private static final String SUCCESS = "Success";
-
   private final CSVFileService csvFileService;
-  private final CaseSubmissionErrorRepository caseSubmissionErrorRepository;
+  private final DrcProcessingStatusRepository drcProcessingStatusRepository;
 
   private final FeatureProperties feature;
 
-  public List<CaseSubmissionErrorDto> getCaseSubmissionErrorsForDate(LocalDateTime startDate, LocalDateTime endDate) {
+  public List<DrcProcessingStatusDto> getCaseSubmissionErrorsForDate(Instant startTimestamp, Instant endTimestamp) {
 
-    List<CaseSubmissionErrorEntity> entities = caseSubmissionErrorRepository.findByCreationDateBetween(startDate, endDate);
+    List<DrcProcessingStatusEntity> entities = drcProcessingStatusRepository.findErrorsCreatedWithinRange(startTimestamp, endTimestamp);
 
     return entities.stream().map(this::mapEntityToDto).toList();
   }
 
-  private CaseSubmissionErrorDto mapEntityToDto(CaseSubmissionErrorEntity entity) {
+  private DrcProcessingStatusDto mapEntityToDto(DrcProcessingStatusEntity entity) {
 
-    return CaseSubmissionErrorDto.builder()
+    return DrcProcessingStatusDto.builder()
         .id(entity.getId())
         .maatId(entity.getMaatId())
         .concorContributionId(entity.getConcorContributionId())
         .fdcId(entity.getFdcId())
-        .title(entity.getTitle())
-        .status(entity.getStatus())
-        .detail(entity.getDetail())
-        .creationDate(entity.getCreationDate())
+        .statusMessage(entity.getStatusMessage())
+        .drcProcessingTimestamp(entity.getDrcProcessingTimestamp())
+        .creationTimestamp(entity.getCreationTimestamp())
         .build();
   }
 
-  public FailureReportDto generateReport(LocalDateTime reportDate) throws IOException {
-
-    List<CaseSubmissionErrorDto> caseSubmissionErrors = getCaseSubmissionErrorsForDate(reportDate, LocalDateTime.now());
-
-    caseSubmissionErrors = Optional.ofNullable(caseSubmissionErrors)
-            .orElse(Collections.emptyList())
-            .stream()
-            .filter(Objects::nonNull)
-            .filter(error -> StringUtils.isNotBlank(error.getTitle()))
-            .filter(error -> !SUCCESS.equals(error.getTitle())).toList();
-
+  public FailureReportDto generateReport(LocalDate reportDate) throws IOException {
+    // Convert the reportDate into start and end timestamps
+    // records will be selected where created >= startTimestamp and < endTimestamp
+    Instant startTimestamp = reportDate.atStartOfDay(ZoneOffset.UTC).toInstant();
+    Instant endTimestamp = reportDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant();
+    List<DrcProcessingStatusDto> caseSubmissionErrors = getCaseSubmissionErrorsForDate(startTimestamp, endTimestamp);
 
     if (caseSubmissionErrors.isEmpty() && !feature.sendEmptyFailuresReport()) {
       log.info("No case submission error found and feature flag to send empty reports is absent/set to false, so not generating the report");
       return null;
     } else {
       log.info("{} repeat case submission error and generating the case submission report", caseSubmissionErrors.size());
-      return csvFileService.writeCaseSubmissionErrorToCsv(caseSubmissionErrors, String.format(FILE_NAME_TEMPLATE, LocalDate.now()));
+      return csvFileService.writeCaseSubmissionErrorsToCsv(caseSubmissionErrors, String.format(FILE_NAME_TEMPLATE, LocalDate.now()));
     }
   }
 

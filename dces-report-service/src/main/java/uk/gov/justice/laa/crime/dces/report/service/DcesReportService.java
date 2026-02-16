@@ -100,12 +100,12 @@ public class DcesReportService {
         Files.delete(attachment.toPath());
     }
 
-    public void sendCaseSubmissionErrorReport(String reportTitle, LocalDateTime reportDate) throws IOException, NotificationClientException {
+    public void sendCaseSubmissionErrorReport(String reportTitle, LocalDate reportDate) throws IOException, NotificationClientException {
         log.info("{} Case Submission error report generation requested", reportTitle);
         FailureReportDto failureReportDto = caseSubmissionErrorService.generateReport(reportDate);
 
         if (failureReportDto != null) {
-            sendEmailReport(failureReportDto.getReportFile(), caseSubmissionErrorService.getType(), failureReportDto.getFailuresCount() + " case submission error found for " + reportTitle, reportDate.toLocalDate(),
+            sendEmailReport(failureReportDto.getReportFile(), caseSubmissionErrorService.getType(), failureReportDto.getFailuresCount() + " case submission error found for " + reportTitle, reportDate,
                     LocalDate.now());
             log.info("{} Report generated and sent successfully", reportTitle);
         } else {

@@ -1,8 +1,8 @@
 package uk.gov.justice.laa.crime.dces.report.mapper;
 
-import io.sentry.util.FileUtils;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.UnmarshalException;
+import java.nio.file.Files;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -205,7 +205,7 @@ class ContributionsFileMapperTest {
             csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()}, "Test", startDate, endDate, filename);
 
             softly.assertThat(csvFile).isNotNull();
-            String csvOutput = FileUtils.readText(csvFile);
+            String csvOutput = Files.readString(csvFile.toPath());
             // check header present
             softly.assertThat(csvOutput).contains(EXPECTED_HEADER);
             // verify content has been mapped
@@ -223,7 +223,7 @@ class ContributionsFileMapperTest {
             csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString()},"Test", startDate, endDate, filename);
 
             softly.assertThat(csvFile).isNotNull();
-            String csvOutput = FileUtils.readText(csvFile);
+            String csvOutput = Files.readString(csvFile.toPath());
             // check header present
             softly.assertThat(csvOutput).contains(EXPECTED_HEADER);
             // verify content has been mapped
@@ -241,7 +241,8 @@ class ContributionsFileMapperTest {
             csvFile = contributionsFileMapper.processRequest(new String[]{getXMLString(),getXMLString()},"Test", startDate, endDate, filename);
 
             softly.assertThat(csvFile).isNotNull();
-            String csvOutput = FileUtils.readText(csvFile);
+            String csvOutput = Files.readString(csvFile.toPath());
+
             // check header present
             softly.assertThat(csvOutput).contains(EXPECTED_HEADER);
             // verify content has been mapped
@@ -250,7 +251,7 @@ class ContributionsFileMapperTest {
             String expectedTitle = String.format(EXPECTED_TITLE, startDate, endDate, LocalDate.now());
             softly.assertThat(csvOutput).isEqualTo(expectedTitle + EXPECTED_HEADER  +
                     "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021" + System.lineSeparator() +
-                    "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021");
+                    "5635978,update,30/01/2021,25/01/2021,31/01/2021,25/01/2021,,,12/02/2021" + System.lineSeparator());
             softly.assertAll();
         } catch (JAXBException | IOException e) {
             fail("Exception occurred in mapping test:" + e.getMessage());
@@ -279,7 +280,7 @@ class ContributionsFileMapperTest {
                 filename
         );
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify only title and header are present
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).isEqualTo(expectedTitle + EXPECTED_HEADER + NO_DATA_MESSAGE);
@@ -305,7 +306,7 @@ class ContributionsFileMapperTest {
                 filename
         );
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify only title and header are present
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).isEqualTo(expectedTitle + EXPECTED_HEADER + NO_DATA_MESSAGE);
@@ -338,7 +339,7 @@ class ContributionsFileMapperTest {
 
         String expectedCsvLine = String.format("5635978,update,,,,,,,%s", testDate.format(dateFormatterCsv));
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify title, header and content
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
@@ -370,7 +371,7 @@ class ContributionsFileMapperTest {
 
         String expectedCsvLine = String.format("5635978,update,,,,,,,%s", testDate.format(dateFormatterCsv));
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify file content
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
@@ -395,7 +396,7 @@ class ContributionsFileMapperTest {
                 testDate.format(dateFormatterCsv),
                 testDate.format(dateFormatterCsv));
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify file content
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
@@ -429,7 +430,7 @@ class ContributionsFileMapperTest {
 
         String expectedCsvLine = String.format("5635978,update,,,,,,,%s", testDate.format(dateFormatterCsv));
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify file content
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
@@ -461,7 +462,7 @@ class ContributionsFileMapperTest {
 
         String expectedCsvLine = String.format("5635978,update,,,,,,,%s", testDate.format(dateFormatterCsv));
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify file content
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
@@ -486,7 +487,7 @@ class ContributionsFileMapperTest {
                 testDate.format(dateFormatterCsv),
                 testDate.format(dateFormatterCsv));
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify file content
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
@@ -517,7 +518,7 @@ class ContributionsFileMapperTest {
                 testDate,
                 filename
         );
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
 
 
         String expectedCsvLine = String.format("5635978,update,,,,,,,%s", testDate.format(dateFormatterCsv));
@@ -547,7 +548,7 @@ class ContributionsFileMapperTest {
                 testDate,
                 filename
         );
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
 
         String expectedCsvLine = String.format("5635978,update,,,,,,,%s", testDate.format(dateFormatterCsv));
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
@@ -575,7 +576,7 @@ class ContributionsFileMapperTest {
                 testDate,
                 filename
         );
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
 
         String expectedCsvLine = String.format("5635978,update,,,,%s,,,%s", testDate.format(dateFormatterCsv), testDate.format(dateFormatterCsv));
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
@@ -606,7 +607,7 @@ class ContributionsFileMapperTest {
 
         String expectedCsvLine = String.format("5635978,update,,,,,,,%s", testDate.format(dateFormatterCsv));
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify file content
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
@@ -637,7 +638,7 @@ class ContributionsFileMapperTest {
 
         String expectedCsvLine = String.format("5635978,update,,,,,,,%s", LocalDate.now().format(dateFormatterCsv));
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify file content
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
@@ -665,7 +666,7 @@ class ContributionsFileMapperTest {
                 testDate,
                 filename
         );
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
 
         String expectedCsvLine = String.format("5635978,update,,,,,%s,,%s", testDate.format(dateFormatterCsv), testDate.format(dateFormatterCsv));
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
@@ -700,7 +701,7 @@ class ContributionsFileMapperTest {
 
         String expectedCsvLine = String.format("5635978,update,,,,,,,%s", testDate.format(dateFormatterCsv));
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify file content
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
@@ -732,7 +733,7 @@ class ContributionsFileMapperTest {
 
         String expectedCsvLine = String.format("5635978,update,,,,,,,%s", testDate.format(dateFormatterCsv));
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify file content
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);
@@ -757,7 +758,7 @@ class ContributionsFileMapperTest {
                 testDate.format(dateFormatterCsv),
                 testDate.format(dateFormatterCsv));
 
-        String csvOutput = FileUtils.readText(csvFile);
+        String csvOutput = Files.readString(csvFile.toPath());
         // verify file content
         String expectedTitle = String.format(EXPECTED_TITLE, testDate, testDate, LocalDate.now());
         softly.assertThat(csvOutput).startsWith(expectedTitle + EXPECTED_HEADER);

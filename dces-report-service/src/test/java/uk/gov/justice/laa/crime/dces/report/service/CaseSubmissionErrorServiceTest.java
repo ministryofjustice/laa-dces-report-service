@@ -1,22 +1,29 @@
 package uk.gov.justice.laa.crime.dces.report.service;
 
-import io.sentry.util.FileUtils;
+import java.io.File;
+import java.nio.file.Files;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.List;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
+import uk.gov.justice.laa.crime.dces.report.config.FeatureProperties;
 import uk.gov.justice.laa.crime.dces.report.config.TestConfig;
-import uk.gov.justice.laa.crime.dces.report.dto.CaseSubmissionErrorDto;
+import uk.gov.justice.laa.crime.dces.report.dto.DrcProcessingStatusDto;
 import uk.gov.justice.laa.crime.dces.report.dto.FailureReportDto;
+import uk.gov.justice.laa.crime.dces.report.repository.DrcProcessingStatusRepository;
 import uk.gov.justice.laa.crime.dces.report.utils.TestDataUtil;
-
-import java.time.LocalDateTime;
-import java.util.List;
 
 @SpringBootTest
 @ExtendWith(SoftAssertionsExtension.class)
@@ -33,8 +40,10 @@ public class CaseSubmissionErrorServiceTest {
   @Autowired
   private TestDataUtil testDataUtil;
 
-  @Autowired
+  @Mock
   private CSVFileService csvFileService;
+  @Autowired
+  private DrcProcessingStatusRepository drcProcessingStatusRepository;
 
   private static final String CASE_SUBMISSION_ERROR_COLUMNS_HEADER = "MAAT Id,Concor Contribution Id,Fdc Id,Error Type,Processed Date" + System.lineSeparator();
 
@@ -42,45 +51,43 @@ public class CaseSubmissionErrorServiceTest {
   @Test
   public void givenCreationDate_whenGetCaseSubmissionErrors_thenReturnAllCaseSubmissionErrorDtosForGivenDate() {
 
-
     testDataUtil.createTestCaseSubmissionErrorData();
-    LocalDateTime startDate = LocalDateTime.of(2025, 1, 1, 0, 0, 0);
-    LocalDateTime endDate = LocalDateTime.of(2025, 1, 2, 0, 0, 0);
+    Instant startDate = LocalDateTime.of(2025, 1, 1, 0, 0, 0).toInstant(ZoneOffset.UTC);
+    Instant endDate = LocalDateTime.of(2025, 1, 2, 0, 0, 0).toInstant(ZoneOffset.UTC);
 
-    List<CaseSubmissionErrorDto> dtos = caseSubmissionErrorService.getCaseSubmissionErrorsForDate(startDate, endDate);
+    List<DrcProcessingStatusDto> dtos = caseSubmissionErrorService.getCaseSubmissionErrorsForDate(startDate, endDate);
 
-    softly.assertThat(dtos).hasSize(3);
+    softly.assertThat(dtos).hasSize(2);
     softly.assertThat(dtos.getFirst().getMaatId()).isEqualTo(1);
     softly.assertThat(dtos.getFirst().getConcorContributionId()).isEqualTo(1);
     softly.assertThat(dtos.getFirst().getFdcId()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getTitle()).isEqualTo("error title 1");
-    softly.assertThat(dtos.getFirst().getStatus()).isEqualTo(1);
-    softly.assertThat(dtos.getFirst().getDetail()).isEqualTo("error detail 1");
-    softly.assertThat(dtos.getFirst().getCreationDate()).isEqualTo(LocalDateTime.of(2025, 1, 1, 11, 10, 0));
+    softly.assertThat(dtos.getFirst().getStatusMessage()).isEqualTo("error title 1");
+    softly.assertThat(dtos.getFirst().getDrcProcessingTimestamp()).isBefore(dtos.getFirst().getCreationTimestamp());
+    softly.assertThat(dtos.getFirst().getCreationTimestamp()).isEqualTo(TestDataUtil.toInstant(2025, 1, 1, 11, 10, 0, ZoneOffset.UTC));
 
-    softly.assertThat(dtos.get(1).getMaatId()).isEqualTo(2);
-    softly.assertThat(dtos.get(1).getConcorContributionId()).isEqualTo(2);
-    softly.assertThat(dtos.get(1).getFdcId()).isEqualTo(2);
-    softly.assertThat(dtos.get(1).getTitle()).isEqualTo("error title 2");
-    softly.assertThat(dtos.get(1).getStatus()).isEqualTo(2);
-    softly.assertThat(dtos.get(1).getDetail()).isEqualTo("error detail 2");
-    softly.assertThat(dtos.get(1).getCreationDate()).isEqualTo(LocalDateTime.of(2025, 1, 1, 11, 10, 0));
+    softly.assertThat(dtos.get(1).getMaatId()).isEqualTo(3);
+    softly.assertThat(dtos.get(1).getConcorContributionId()).isEqualTo(3);
+    softly.assertThat(dtos.get(1).getFdcId()).isEqualTo(3);
+    softly.assertThat(dtos.get(1).getStatusMessage()).isEqualTo("error title 3");
+    softly.assertThat(dtos.get(1).getDrcProcessingTimestamp()).isBefore(dtos.get(1).getCreationTimestamp());
+    softly.assertThat(dtos.get(1).getCreationTimestamp()).isEqualTo(TestDataUtil.toInstant(2025, 1, 1, 23, 59, 59, ZoneOffset.UTC).plusMillis(999));
 
     softly.assertAll();
   }
 
 
   @Test
-  void givenACaseSubmissionData_whenWriteCaseSubmissionErrorToCsvIsInvoked_shouldGenerateReport() {
+  void givenErrorRecordsMatchingTheReportDate_whenGenerateReportIsInvoked_shouldGenerateReportSuccessfully() {
 
-    LocalDateTime createdDate = LocalDateTime.now().minusHours(5);
+    Instant createdTimestamp = TestDataUtil.toInstant(2025, 1, 1, 11, 10, 5, ZoneOffset.UTC).plusMillis(123);
+    LocalDate reportDate = LocalDate.of(2025, 1, 1);
 
-    String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,Invalid Outcome,"+ createdDate;
+    String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,Invalid Outcome,2025-01-01T11:10:05Z";
 
-    testDataUtil.createCaseSubmissionErrorData(createdDate);
+    testDataUtil.createDrcProcessingStatusData(createdTimestamp);
     try {
-      FailureReportDto faulureReport = caseSubmissionErrorService.generateReport(LocalDateTime.now().minusDays(1));
-      String output = FileUtils.readText(faulureReport.getReportFile());
+      FailureReportDto failureReport = caseSubmissionErrorService.generateReport(reportDate);
+      String output = Files.readString(failureReport.getReportFile().toPath());
       softly.assertThat(output).contains(expectedData);
 
     } catch (Exception e) {
@@ -89,18 +96,44 @@ public class CaseSubmissionErrorServiceTest {
   }
 
   @Test
-  void givenAEmptyCaseSubmissionError_whenWriteCaseSubmissionErrorToCsvIsInvoked_shouldGenerateFileWithHeader() {
+  void givenNoErrorRecordsMatchTheReportDateAndSendEmptyFileFeatureFlagIsFalse_whenGenerateReportIsInvoked_shouldNotGenerateAReport()
+      throws Exception {
 
-    LocalDateTime createdDate = LocalDateTime.now().minusDays(5);
-    testDataUtil.createCaseSubmissionErrorData(createdDate);
+    // Given - records that don't match the report date
+    Instant createdTimestamp = LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC);
+    testDataUtil.createDrcProcessingStatusData(createdTimestamp);
+    // Given - feature flag to send an empty report is false
+    FeatureProperties features = new FeatureProperties(false, false);
 
-    try {
-      FailureReportDto failureReportDto = caseSubmissionErrorService.generateReport(LocalDateTime.now().minusDays(1));
-      softly.assertThat(failureReportDto).isNull();
+    // When the report is generated
+    CaseSubmissionErrorService service = new CaseSubmissionErrorService(csvFileService, drcProcessingStatusRepository, features);
+    FailureReportDto failureReportDto = service.generateReport(LocalDate.now().minusDays(1));
 
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+    // Then - no file is created
+    softly.assertThat(failureReportDto).isNull();
+    Mockito.verify(csvFileService, Mockito.never()).writeCaseSubmissionErrorsToCsv(Mockito.any(),  Mockito.any());
+  }
+
+  @Test
+  void givenNoErrorRecordsMatchTheReportDateAndSendEmptyFileFeatureFlagIsTrue_whenGenerateReportIsInvoked_shouldGenerateAReport()
+      throws Exception {
+
+    // Given - records that don't match the report date
+    Instant createdTimestamp = LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC);
+    testDataUtil.createDrcProcessingStatusData(createdTimestamp);
+    // Given - feature flag to send an empty report is false
+    FeatureProperties features = new FeatureProperties(false, true);
+
+    // Expect the CsvFileService to be called to write the file
+    Mockito.when(csvFileService.writeCaseSubmissionErrorsToCsv(Mockito.any(),  Mockito.any()))
+        .thenReturn(new FailureReportDto(new File("results.csv"), 1));
+
+    // When the report is generated
+    CaseSubmissionErrorService service = new CaseSubmissionErrorService(csvFileService, drcProcessingStatusRepository, features);
+    service.generateReport(LocalDate.now().minusDays(1));
+
+    // Then - verify the file would have been generated
+    Mockito.verify(csvFileService).writeCaseSubmissionErrorsToCsv(Mockito.any(),  Mockito.any());
   }
 
 }
