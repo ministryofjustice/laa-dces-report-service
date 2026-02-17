@@ -41,8 +41,8 @@ class DrcProcessingStatusRepositoryTest {
     List<DrcProcessingStatusEntity> list = repository.findErrorsCreatedWithinRange(START_TIMESTAMP, END_TIMESTAMP);
     // then
     assertThat(list).hasSize(2);
-    assertThat(list.get(0).getId()).isEqualTo(2L);
-    assertThat(list.get(1).getId()).isEqualTo(5L);
+    assertThat(list.get(0).getMaatId()).isEqualTo(2L);
+    assertThat(list.get(1).getMaatId()).isEqualTo(5L);
   }
 
   private void givenRecord(long id, int ackResponseStatus, String statusMessage, Instant creationTimestamp) {

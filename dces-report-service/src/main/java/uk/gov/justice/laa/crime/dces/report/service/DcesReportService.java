@@ -105,7 +105,7 @@ public class DcesReportService {
         FailureReportDto failureReportDto = caseSubmissionErrorService.generateReport(reportDate);
 
         if (failureReportDto != null) {
-            sendEmailReport(failureReportDto.getReportFile(), caseSubmissionErrorService.getType(), failureReportDto.getFailuresCount() + " case submission error found for " + reportTitle, reportDate,
+            sendEmailReport(failureReportDto.getReportFile(), caseSubmissionErrorService.getType(), failureReportDto.getFailuresCount() + " case submission errors found for " + reportTitle, reportDate,
                     LocalDate.now());
             log.info("{} Report generated and sent successfully", reportTitle);
         } else {

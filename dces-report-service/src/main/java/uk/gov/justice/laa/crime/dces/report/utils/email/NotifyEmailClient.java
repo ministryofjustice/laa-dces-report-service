@@ -21,7 +21,7 @@ public final class NotifyEmailClient implements EmailClient {
     @Override
     public void send(EmailObject emailObject) throws EmailClientException, EmailObjectInvalidException {
         NotifyEmailObject mail = (NotifyEmailObject) emailObject;
-        log.info("attempt to send email...");
+        log.info("attempt to send email to {} recipient(s)...", mail.getEmailAddresses().size());
         mail.validate();
         try {
             sendToMultipleRecipients(mail);
@@ -30,7 +30,7 @@ public final class NotifyEmailClient implements EmailClient {
             log.error("sending email failed with error : {}", message);
             throw new EmailClientException(message, e);
         }
-        log.info("email sent successfully");
+        log.info("all emails sent successfully");
 
     }
 
@@ -40,6 +40,7 @@ public final class NotifyEmailClient implements EmailClient {
         NotificationClientException exceptionStack = new NotificationClientException("");
         for (String emailAddress : mail.getEmailAddresses()) {
             try {
+                log.info("sending email to recipient {}", emailAddress);
                 client.sendEmail(
                         mail.getTemplateId(),
                         emailAddress,
@@ -47,9 +48,10 @@ public final class NotifyEmailClient implements EmailClient {
                         mail.getReference(),
                         mail.getEmailReplyToId()
                 );
+                log.info("email sent successfully");
             } catch (NotificationClientException sendingException) {
                 if (sendingException.getHttpResult() == HttpStatus.SC_BAD_REQUEST) {
-                    log.error("failed sending email to recipient with error: {}", sendingException.getMessage());
+                    log.error("failed sending email with error: {}", sendingException.getMessage());
                     exceptionStack.addSuppressed(sendingException);
                     continue;
                 }

@@ -57,10 +57,10 @@ public class CaseSubmissionErrorService {
     List<DrcProcessingStatusDto> caseSubmissionErrors = getCaseSubmissionErrorsForDate(startTimestamp, endTimestamp);
 
     if (caseSubmissionErrors.isEmpty() && !feature.sendEmptyFailuresReport()) {
-      log.info("No case submission error found and feature flag to send empty reports is absent/set to false, so not generating the report");
+      log.info("No case submission errors found and feature flag to send empty reports is absent/set to false, so not generating the report");
       return null;
     } else {
-      log.info("{} repeat case submission error and generating the case submission report", caseSubmissionErrors.size());
+      log.info("{} case submission errors found, generating the report", caseSubmissionErrors.size());
       return csvFileService.writeCaseSubmissionErrorsToCsv(caseSubmissionErrors, String.format(FILE_NAME_TEMPLATE, LocalDate.now()));
     }
   }

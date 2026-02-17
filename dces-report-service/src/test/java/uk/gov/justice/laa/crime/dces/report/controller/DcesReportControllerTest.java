@@ -1,7 +1,7 @@
 package uk.gov.justice.laa.crime.dces.report.controller;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
-import java.nio.file.Files;
+import java.time.Instant;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -10,23 +10,21 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
-import uk.gov.justice.laa.crime.dces.report.service.ContributionFilesService;
-import uk.gov.justice.laa.crime.dces.report.service.FdcFilesService;
+import uk.gov.justice.laa.crime.dces.report.model.DrcProcessingStatusEntity;
+import uk.gov.justice.laa.crime.dces.report.repository.DrcProcessingStatusRepository;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailClientException;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Locale;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
@@ -45,15 +43,13 @@ class DcesReportControllerTest {
     private static final LocalDate fdcReportDate = LocalDate.of(2023, 6, 10);
 
     @Autowired
-    ContributionFilesService contributionsFileService;
-    @Autowired
-    FdcFilesService fdcFilesService;
-
-    @Autowired
     DcesReportController controller;
 
     @MockitoBean
     NotifyEmailClient mockEmailClient;
+
+    @Autowired
+    DrcProcessingStatusRepository drcProcessingStatusRepository;
 
     @BeforeAll
     void setup() {
@@ -128,10 +124,16 @@ class DcesReportControllerTest {
                 .hasMessageContaining(expectedMessage);
     }
 
-    private boolean searchInFile(File file, String toSearchFor) throws IOException {
-        System.out.println(Files.readString(file.toPath()));
-        return Optional.of(Files.readString(file.toPath()))
-                .orElse("")
-                .contains(toSearchFor);
+    @Test
+    void givenValidPeriod_whenGetSubmissionErrorReportIsInvoked_thenReportIsGeneratedAndEmailed() throws Exception {
+        // given - one matching record exists
+        DrcProcessingStatusEntity drcProcessingStatusEntity = DrcProcessingStatusEntity.builder()
+            .concorContributionId(1L).maatId(123L).ackResponseStatus(200).statusMessage("Error")
+            .drcProcessingTimestamp(Instant.now().minusSeconds(5)).creationTimestamp(Instant.now()).build();
+        drcProcessingStatusRepository.saveAndFlush(drcProcessingStatusEntity);
+        // when
+        controller.getCaseSubmissionErrorReport("TestTitle", LocalDate.now());
+        // then - a report is generated and emailed
+        Mockito.verify(mockEmailClient).send(any(EmailObject.class));
     }
 }
