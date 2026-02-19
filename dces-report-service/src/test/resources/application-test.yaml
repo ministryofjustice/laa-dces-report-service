@@ -44,3 +44,6 @@ emailClient:
 
 sentry:
   environment: development
+
+feature:
+  enable-report-controller: true

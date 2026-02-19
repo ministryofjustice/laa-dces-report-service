@@ -35,9 +35,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  *                           This enables the daily reports.
  * @param sendEmptyFailuresReport  initialize the `feature.send-empty-failures-report` (`FEATURE_SENDEMPTYFAILURESREPORT`) feature flag.
  *                           This enables the daily failures report to be sent even if there are no failures to report (just as an is-alive check).
+ * @param enableReportController  initialize the `feature.enable-report-controller` (`FEATURE_ENABLEREPORTCONTROLLER`) feature flag.
+ *                           This enables the endpoints exposed by DcesReportController.
  */
 @ConfigurationProperties(prefix = "feature")
 public record FeatureProperties(
-    boolean runDailyReport,   /* feature.run-daily-report */
-    boolean sendEmptyFailuresReport /* feature.send-empty-failures-report */
+    boolean runDailyReport,          /* feature.run-daily-report */
+    boolean sendEmptyFailuresReport, /* feature.send-empty-failures-report */
+    boolean enableReportController   /* feature.enable-report-controller */
 ) {}
