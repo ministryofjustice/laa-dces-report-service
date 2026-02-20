@@ -103,7 +103,7 @@ public class CaseSubmissionErrorServiceTest {
     Instant createdTimestamp = LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC);
     testDataUtil.createDrcProcessingStatusData(createdTimestamp);
     // Given - feature flag to send an empty report is false
-    FeatureProperties features = new FeatureProperties(false, false);
+    FeatureProperties features = new FeatureProperties(false, false, false);
 
     // When the report is generated
     CaseSubmissionErrorService service = new CaseSubmissionErrorService(csvFileService, drcProcessingStatusRepository, features);
@@ -122,7 +122,7 @@ public class CaseSubmissionErrorServiceTest {
     Instant createdTimestamp = LocalDateTime.now().minusDays(5).toInstant(ZoneOffset.UTC);
     testDataUtil.createDrcProcessingStatusData(createdTimestamp);
     // Given - feature flag to send an empty report is false
-    FeatureProperties features = new FeatureProperties(false, true);
+    FeatureProperties features = new FeatureProperties(false, true, false);
 
     // Expect the CsvFileService to be called to write the file
     Mockito.when(csvFileService.writeCaseSubmissionErrorsToCsv(Mockito.any(),  Mockito.any()))
