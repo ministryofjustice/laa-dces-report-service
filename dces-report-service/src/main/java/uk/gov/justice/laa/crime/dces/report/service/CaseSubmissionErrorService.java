@@ -2,8 +2,8 @@ package uk.gov.justice.laa.crime.dces.report.service;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import uk.gov.justice.laa.crime.dces.report.config.FeatureProperties;
 import uk.gov.justice.laa.crime.dces.report.dto.DrcProcessingStatusDto;
@@ -16,7 +16,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Slf4j
-@RequiredArgsConstructor
 @Service
 public class CaseSubmissionErrorService {
 
@@ -29,8 +28,21 @@ public class CaseSubmissionErrorService {
 
   private final FeatureProperties feature;
 
+  private final int reportCutoffHour;
+
+  public CaseSubmissionErrorService(CSVFileService csvFileService,
+      DrcProcessingStatusRepository drcProcessingStatusRepository, FeatureProperties feature,
+      @Value("${reports.caseSubmissionError.reportCutoffHour}")
+      int reportCutoffHour) {
+    this.csvFileService = csvFileService;
+    this.drcProcessingStatusRepository = drcProcessingStatusRepository;
+    this.feature = feature;
+    this.reportCutoffHour = reportCutoffHour;
+  }
+
   public List<DrcProcessingStatusDto> getCaseSubmissionErrorsForDate(Instant startTimestamp, Instant endTimestamp) {
 
+    log.info("Finding case submission errors for date range: {} to {}", startTimestamp, endTimestamp);
     List<DrcProcessingStatusEntity> entities = drcProcessingStatusRepository.findErrorsCreatedWithinRange(startTimestamp, endTimestamp);
 
     return entities.stream().map(this::mapEntityToDto).toList();
@@ -52,8 +64,8 @@ public class CaseSubmissionErrorService {
   public FailureReportDto generateReport(LocalDate reportDate) throws IOException {
     // Convert the reportDate into start and end timestamps
     // records will be selected where created >= startTimestamp and < endTimestamp
-    Instant startTimestamp = reportDate.atStartOfDay(ZoneOffset.UTC).toInstant();
-    Instant endTimestamp = reportDate.plusDays(1).atStartOfDay(ZoneOffset.UTC).toInstant();
+    Instant startTimestamp = getStartTimestamp(reportDate);
+    Instant endTimestamp = getEndTimestamp(reportDate);
     List<DrcProcessingStatusDto> caseSubmissionErrors = getCaseSubmissionErrorsForDate(startTimestamp, endTimestamp);
 
     if (caseSubmissionErrors.isEmpty() && !feature.sendEmptyFailuresReport()) {
@@ -67,5 +79,15 @@ public class CaseSubmissionErrorService {
 
   public String getType() {
     return REPORT_TYPE;
+  }
+
+  private Instant getStartTimestamp(LocalDate reportDate) {
+    // Subtract 1 day, reset time to 00:00, then add reportCutoffHour number of hours
+    return reportDate.minusDays(1).atStartOfDay(ZoneOffset.UTC).plusHours(reportCutoffHour).toInstant();
+  }
+
+  private Instant getEndTimestamp(LocalDate reportDate) {
+    // Reset time to 00:00, then add reportCutoffHour number of hours
+    return reportDate.atStartOfDay(ZoneOffset.UTC).plusHours(reportCutoffHour).toInstant();
   }
 }

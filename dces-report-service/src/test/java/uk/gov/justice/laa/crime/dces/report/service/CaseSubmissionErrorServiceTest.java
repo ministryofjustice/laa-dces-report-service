@@ -80,7 +80,7 @@ public class CaseSubmissionErrorServiceTest {
   void givenErrorRecordsMatchingTheReportDate_whenGenerateReportIsInvoked_shouldGenerateReportSuccessfully() {
 
     Instant createdTimestamp = TestDataUtil.toInstant(2025, 1, 1, 11, 10, 5, ZoneOffset.UTC).plusMillis(123);
-    LocalDate reportDate = LocalDate.of(2025, 1, 1);
+    LocalDate reportDate = LocalDate.of(2025, 1, 2);
 
     String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "1234,1,1,Invalid Outcome,2025-01-01T11:10:05Z";
 
@@ -106,8 +106,8 @@ public class CaseSubmissionErrorServiceTest {
     FeatureProperties features = new FeatureProperties(false, false, false);
 
     // When the report is generated
-    CaseSubmissionErrorService service = new CaseSubmissionErrorService(csvFileService, drcProcessingStatusRepository, features);
-    FailureReportDto failureReportDto = service.generateReport(LocalDate.now().minusDays(1));
+    CaseSubmissionErrorService service = new CaseSubmissionErrorService(csvFileService, drcProcessingStatusRepository, features, 1);
+    FailureReportDto failureReportDto = service.generateReport(LocalDate.now());
 
     // Then - no file is created
     softly.assertThat(failureReportDto).isNull();
@@ -129,8 +129,8 @@ public class CaseSubmissionErrorServiceTest {
         .thenReturn(new FailureReportDto(new File("results.csv"), 1));
 
     // When the report is generated
-    CaseSubmissionErrorService service = new CaseSubmissionErrorService(csvFileService, drcProcessingStatusRepository, features);
-    service.generateReport(LocalDate.now().minusDays(1));
+    CaseSubmissionErrorService service = new CaseSubmissionErrorService(csvFileService, drcProcessingStatusRepository, features, 1);
+    service.generateReport(LocalDate.now());
 
     // Then - verify the file would have been generated
     Mockito.verify(csvFileService).writeCaseSubmissionErrorsToCsv(Mockito.any(),  Mockito.any());

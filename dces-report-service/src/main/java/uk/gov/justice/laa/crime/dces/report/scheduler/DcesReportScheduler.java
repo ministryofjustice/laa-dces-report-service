@@ -16,7 +16,6 @@ import uk.gov.service.notify.NotificationClientException;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Configuration
 @Slf4j
@@ -76,7 +75,14 @@ public class DcesReportScheduler {
             case CONTRIBUTION -> reportService.sendContributionsReport(reportPeriod.getDescription(), fromDate, toDate);
             case FDC -> reportService.sendFdcReport(reportPeriod.getDescription(), fromDate, toDate);
             case FAILURES -> reportService.sendFailuresReport(reportPeriod.getDescription(), toDate);
-            case CASE_SUBMISSION_ERROR -> reportService.sendCaseSubmissionErrorReport(reportPeriod.getDescription(), fromDate);
+            /*
+            NOTE: Contributions and FDCs are sent to Advantis (DRC) in the evening around 20:30 but the acknowledgment replies
+                  are processed and sent back around 03:00 the following day.  The reports are scheduled to run around 06:00
+                  in the morning, so the fromDate/endDates for the above daily reports need to be today -1 to capture when the
+                  requests were sent, and the fromDate for the Case Submission Error report needs to be today's date to
+                  capture when Advantis sends back acknowledgment replies.
+             */
+            case CASE_SUBMISSION_ERROR -> reportService.sendCaseSubmissionErrorReport(reportPeriod.getDescription(), LocalDate.now());
         }
 
         log.info("Successfully finished {} {} Report", reportType, reportPeriod);

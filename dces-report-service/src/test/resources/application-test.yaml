@@ -47,3 +47,7 @@ sentry:
 
 feature:
   enable-report-controller: true
+
+reports:
+  caseSubmissionError:
+    reportCutoffHour: 6
