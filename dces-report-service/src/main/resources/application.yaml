@@ -99,4 +99,4 @@ sentry:
 
 reports:
   caseSubmissionError:
-    reportCutoffHour: ${DCES_CASE_SUBMISSION_ERROR_REPORT_CUTOFF_HOUR:-6}
+    reportCutoffHour: ${DCES_CASE_SUBMISSION_ERROR_REPORT_CUTOFF_HOUR:6}
