@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import static uk.gov.justice.laa.crime.dces.report.service.MailerService.sendEmail;
@@ -105,8 +104,9 @@ public class DcesReportService {
         FailureReportDto failureReportDto = caseSubmissionErrorService.generateReport(reportDate);
 
         if (failureReportDto != null) {
-            sendEmailReport(failureReportDto.getReportFile(), caseSubmissionErrorService.getType(), failureReportDto.getFailuresCount() + " case submission errors found for " + reportTitle, reportDate,
-                    LocalDate.now());
+            sendEmailReport(failureReportDto.getReportFile(), caseSubmissionErrorService.getType(),
+                failureReportDto.getFailuresCount() + " case submission errors found for " + reportTitle,
+                reportDate, reportDate);
             log.info("{} Report generated and sent successfully", reportTitle);
         } else {
             log.info("No Case Submission Error report found and feature flag to send empty reports is absent/set to false, so not sending the case submission error report email");
