@@ -2,6 +2,7 @@ package uk.gov.justice.laa.crime.dces.report.controller;
 
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.InjectSoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
@@ -19,6 +20,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import uk.gov.justice.laa.crime.dces.report.enums.ReportType;
 import uk.gov.justice.laa.crime.dces.report.model.DrcProcessingStatusEntity;
 import uk.gov.justice.laa.crime.dces.report.repository.DrcProcessingStatusRepository;
+import uk.gov.justice.laa.crime.dces.report.utils.TestDataUtil;
 import uk.gov.justice.laa.crime.dces.report.utils.email.EmailObject;
 import uk.gov.justice.laa.crime.dces.report.utils.email.NotifyEmailClient;
 import uk.gov.justice.laa.crime.dces.report.utils.email.exception.EmailClientException;
@@ -127,12 +129,13 @@ class DcesReportControllerTest {
     @Test
     void givenValidPeriod_whenGetSubmissionErrorReportIsInvoked_thenReportIsGeneratedAndEmailed() throws Exception {
         // given - one matching record exists
+        Instant creationTimestamp = TestDataUtil.toInstant(2026, 3, 2, 3, 0, 2, ZoneOffset.UTC);
         DrcProcessingStatusEntity drcProcessingStatusEntity = DrcProcessingStatusEntity.builder()
             .concorContributionId(1L).maatId(123L).ackResponseStatus(200).statusMessage("Error")
-            .drcProcessingTimestamp(Instant.now().minusSeconds(5)).creationTimestamp(Instant.now()).build();
+            .drcProcessingTimestamp(creationTimestamp.minusSeconds(5)).creationTimestamp(creationTimestamp).build();
         drcProcessingStatusRepository.saveAndFlush(drcProcessingStatusEntity);
         // when
-        controller.getCaseSubmissionErrorReport("TestTitle", LocalDate.now());
+        controller.getCaseSubmissionErrorReport("TestTitle", LocalDate.of(2026, 3, 2));
         // then - a report is generated and emailed
         Mockito.verify(mockEmailClient).send(any(EmailObject.class));
     }
