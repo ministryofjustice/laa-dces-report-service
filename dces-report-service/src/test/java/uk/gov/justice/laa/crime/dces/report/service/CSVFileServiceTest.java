@@ -139,6 +139,32 @@ class CSVFileServiceTest {
     }
 
     @Test
+    void givenCaseSubmissionErrorWithCsvBreakingCharacters_whenWriteCaseSubmissionErrorsToCsvIsInvoked_shouldQuoteStatusMessageOnly() {
+        DrcProcessingStatusDto drcProcessingStatusDto = DrcProcessingStatusDto.builder()
+                .id(1L)
+                .maatId(1234L)
+                .concorContributionId(1L)
+                .fdcId(null)
+                .statusMessage("Status has comma, and quote \"here\"")
+                .drcProcessingTimestamp(TestDataUtil.toInstant(2025, 1, 1, 0, 0, 0, ZoneOffset.UTC))
+                .creationTimestamp(TestDataUtil.toInstant(2025, 1, 1, 0, 0, 5, ZoneOffset.UTC))
+                .build();
+
+        String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER
+                + "1234,1,,\"Status has comma, and quote \"\"here\"\"\",2025-01-01T00:00:05Z"
+                + System.lineSeparator();
+
+        try {
+            FailureReportDto f = csvFileService.writeCaseSubmissionErrorsToCsv(List.of(drcProcessingStatusDto), "Test");
+            String output = Files.readString(f.getReportFile().toPath());
+            softly.assertThat(output).isEqualTo(expectedData);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
     void givenAEmptyCaseSubmissionError_whenWriteCaseSubmissionErrorsToCsvIsInvoked_shouldGenerateFileWithHeader() {
 
         String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "### There is no data to report for the specified date range. ####";

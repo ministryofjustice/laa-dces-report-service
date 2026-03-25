@@ -35,6 +35,7 @@ public class CSVFileService {
 
     public static final String CSV_FIELD_FORMAT = "%s,";
     public static final String EMPTY_CHARACTER = "";
+    private static final String DOUBLE_QUOTE = "\"";
 
     private static final String CONTRIBUTIONS_HEADING = "Contributions Report";
 
@@ -202,6 +203,22 @@ public class CSVFileService {
       return getCsvFieldValue(Objects.nonNull(instant) ? DateUtils.convertInstantToString(instant) : null);
     }
 
+    private String sanitiseStatusMessage(String value) {
+        if (value == null) {
+            return EMPTY_CHARACTER;
+        }
+        boolean requiresQuoting =
+                value.indexOf(',') >= 0 ||
+                        value.indexOf('"') >= 0 ||
+                        value.indexOf('\n') >= 0 ||
+                        value.indexOf('\r') >= 0;
+
+        if (!requiresQuoting) {
+            return value;
+        }
+        return DOUBLE_QUOTE + value.replace(DOUBLE_QUOTE, DOUBLE_QUOTE + DOUBLE_QUOTE) + DOUBLE_QUOTE;
+    }
+
     private File createCsvFile(String fileName) throws IOException {
         FileAttribute<Set<PosixFilePermission>> attr = PosixFilePermissions.asFileAttribute(PosixFilePermissions.fromString(FILE_PERMISSIONS));
         return Files.createTempFile(fileName, ".csv", attr).toFile();
@@ -230,8 +247,7 @@ public class CSVFileService {
       builder.append(getCsvFieldValue(status.getMaatId()));
       builder.append(getCsvFieldValue(status.getConcorContributionId()));
       builder.append(getCsvFieldValue(status.getFdcId()));
-      builder.append(getCsvFieldValue(status.getStatusMessage()));
-      builder.append(getCsvFieldValue(status.getCreationTimestamp()));
+      builder.append(String.format(CSV_FIELD_FORMAT, sanitiseStatusMessage(status.getStatusMessage())));      builder.append(getCsvFieldValue(status.getCreationTimestamp()));
       // a trailing comma is added by the last field which needs to be removed
       builder.deleteCharAt(builder.length() - 1);
       builder.append(System.lineSeparator());
