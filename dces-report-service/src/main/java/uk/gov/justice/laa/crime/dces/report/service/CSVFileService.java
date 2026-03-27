@@ -247,7 +247,8 @@ public class CSVFileService {
       builder.append(getCsvFieldValue(status.getMaatId()));
       builder.append(getCsvFieldValue(status.getConcorContributionId()));
       builder.append(getCsvFieldValue(status.getFdcId()));
-      builder.append(String.format(CSV_FIELD_FORMAT, sanitiseStatusMessage(status.getStatusMessage())));      builder.append(getCsvFieldValue(status.getCreationTimestamp()));
+      builder.append(String.format(CSV_FIELD_FORMAT, sanitiseStatusMessage(status.getStatusMessage())));
+      builder.append(getCsvFieldValue(status.getCreationTimestamp()));
       // a trailing comma is added by the last field which needs to be removed
       builder.deleteCharAt(builder.length() - 1);
       builder.append(System.lineSeparator());
