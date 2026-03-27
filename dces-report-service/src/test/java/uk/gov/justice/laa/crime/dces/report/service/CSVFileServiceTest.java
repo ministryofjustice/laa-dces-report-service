@@ -165,6 +165,38 @@ class CSVFileServiceTest {
     }
 
     @Test
+    void givenCaseSubmissionErrorWithNullStatusMessage_whenWriteCaseSubmissionErrorsToCsvIsInvoked_shouldKeepEmptyColumn() {
+        String statusMessage = null;
+        String expectedRow = "1234,1,,,2025-01-01T00:00:05Z";
+
+        assertCaseSubmissionErrorRow(statusMessage, expectedRow);
+    }
+
+    @Test
+    void givenCaseSubmissionErrorWithQuoteOnlyStatusMessage_whenWriteCaseSubmissionErrorsToCsvIsInvoked_shouldQuoteAndEscapeStatusMessage() {
+        String statusMessage = "Status with \"quote\"";
+        String expectedRow = "1234,1,,\"Status with \"\"quote\"\"\",2025-01-01T00:00:05Z";
+
+        assertCaseSubmissionErrorRow(statusMessage, expectedRow);
+    }
+
+    @Test
+    void givenCaseSubmissionErrorWithNewlineStatusMessage_whenWriteCaseSubmissionErrorsToCsvIsInvoked_shouldQuoteStatusMessage() {
+        String statusMessage = "line 1\nline 2";
+        String expectedRow = "1234,1,,\"line 1\nline 2\",2025-01-01T00:00:05Z";
+
+        assertCaseSubmissionErrorRow(statusMessage, expectedRow);
+    }
+
+    @Test
+    void givenCaseSubmissionErrorWithCarriageReturnStatusMessage_whenWriteCaseSubmissionErrorsToCsvIsInvoked_shouldQuoteStatusMessage() {
+        String statusMessage = "line 1\rline 2";
+        String expectedRow = "1234,1,,\"line 1\rline 2\",2025-01-01T00:00:05Z";
+
+        assertCaseSubmissionErrorRow(statusMessage, expectedRow);
+    }
+
+    @Test
     void givenAEmptyCaseSubmissionError_whenWriteCaseSubmissionErrorsToCsvIsInvoked_shouldGenerateFileWithHeader() {
 
         String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + "### There is no data to report for the specified date range. ####";
@@ -174,6 +206,28 @@ class CSVFileServiceTest {
             String output = Files.readString(f.getReportFile().toPath());
             softly.assertThat(output).contains(expectedData);
 
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void assertCaseSubmissionErrorRow(String statusMessage, String expectedDataRow) {
+        DrcProcessingStatusDto drcProcessingStatusDto = DrcProcessingStatusDto.builder()
+                .id(1L)
+                .maatId(1234L)
+                .concorContributionId(1L)
+                .fdcId(null)
+                .statusMessage(statusMessage)
+                .drcProcessingTimestamp(TestDataUtil.toInstant(2025, 1, 1, 0, 0, 0, ZoneOffset.UTC))
+                .creationTimestamp(TestDataUtil.toInstant(2025, 1, 1, 0, 0, 5, ZoneOffset.UTC))
+                .build();
+
+        String expectedData = CASE_SUBMISSION_ERROR_COLUMNS_HEADER + expectedDataRow + System.lineSeparator();
+
+        try {
+            FailureReportDto f = csvFileService.writeCaseSubmissionErrorsToCsv(List.of(drcProcessingStatusDto), "Test");
+            String output = Files.readString(f.getReportFile().toPath());
+            softly.assertThat(output).isEqualTo(expectedData);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
