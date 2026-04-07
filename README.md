@@ -128,7 +128,6 @@ Possible values for `nameSpace` are:
 
 - laa-dces-report-service-dev
 - laa-dces-report-service-uat
-- laa-dces-report-service-staging
 - laa-dces-report-service-prod
 
 Check response from command below, you will need that for the following step
