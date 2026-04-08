@@ -228,7 +228,7 @@ workflows:
             branches:
               only:
                 - main
-          context: SonarCloud
+          context: SonarCloud Crime
 
       - scan_app:
           requires:
@@ -275,7 +275,7 @@ workflows:
             branches:
               ignore:
                 - main
-          context: SonarCloud
+          context: SonarCloud Crime
 
       - scan_app:
           requires:
