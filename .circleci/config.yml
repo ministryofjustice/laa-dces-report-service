@@ -28,12 +28,6 @@ executors:
 # COMMANDS
 # ------------------
 commands:
-  checkout_and_decrypt:
-    steps:
-      - checkout
-      - run: echo "${GIT_CRYPT_KEY}" | base64 -d > git-crypt.key
-      - run: git-crypt unlock git-crypt.key
-
   deploy-to:
     description: >
       Deploy image to the specified environment
@@ -45,7 +39,6 @@ commands:
         description: CircleCI Service account token
         type: string
     steps:
-      - checkout_and_decrypt
       - run:
           name: Authenticate with cluster
           command: |

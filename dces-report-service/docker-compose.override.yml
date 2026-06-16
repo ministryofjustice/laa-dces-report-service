@@ -1,18 +1,8 @@
-version: "3.2"
-
 services:
   app:
     environment:
       - HOST_ENV=local
-      - SENTRY_DSN=
-      - MAATCDAPI_BASEURL=
-      - MAATCDAPI_OAUTH2_CLIENTID=
-      - MAATCDAPI_OAUTH2_CLIENTSECRET=
-      - MAATCDAPI_OAUTH2_SCOPE=
-      - MAATCDAPI_OAUTH2_TOKENURI=
       - DECS_ADAPTOR_RESOURCE_SERVER_ISSUER_URI=
-      - NOTIFY_KEY=
-      - NOTIFY_TEMPLATEID=
       - NOTIFY_RECIPIENT=test@example.com
       - DCES_CRON_ENABLED=true
       - DCES_CRON_CONTRIBUTIONS_MONTHLY=0 0 9-18 * * ?
@@ -21,6 +11,7 @@ services:
       - DCES_CRON_FDC_DAILY=0 6 9-18 * * ?
       - LAA_DCES_REPORT_SERVICE_SERVICE_PORT_HTTP=8089
       - FEATURE_RUNDAILYREPORT=false
+    env_file: app.env
 
     ports:
       - "8081:8081"

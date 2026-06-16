@@ -4,27 +4,13 @@ This is a Java based Spring Boot application hosted on [MOJ Cloud Platform](http
 
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-### Decrypting docker-compose.override.yml
+### Modifying docker-compose.override.yml
 
-The `docker-compose.override.yml` is encrypted using [git-crypt](https://github.com/AGWA/git-crypt).
+The `docker-compose.override.yml` and some other files used to be encrypted using `git-crypt`.
+However, the use of `git-crypt` is now deprecated and has since been removed from this repository.
 
-To run the app locally you need to be able to decrypt this file.
-
-You will first need to create a GPG key. See [Create a GPG Key](https://docs.publishing.service.gov.uk/manual/create-a-gpg-key.html) for details on how to do this with `GPGTools` (GUI) or `gpg` (command line).
-You can install either from a terminal or just download the UI version.
-
-```
-brew update
-brew install gpg
-brew install git-crypt
-```
-
-Once you have done this, a team member who already has access can add your key by running `git-crypt add-gpg-user USER_ID`\* and creating a pull request to this repo.
-
-Once this has been merged you can decrypt your local copy of the repository by running `git-crypt unlock`.
-
-\*`USER_ID` can be your key ID, a full fingerprint, an email address, or anything else that uniquely identifies a public key to GPG (see "HOW TO SPECIFY A USER ID" in the gpg man page).
-The apps should then startup cleanly if you run
+If you make local changes to `docker-compose.override.yml`, be sure not to commit them.
+In fact, it may make sense to remove `docker-compose.override.yml` and add it to `.gitignore`.
 
 ### Application Set up
 
