@@ -190,6 +190,7 @@ jobs:
   deploy-dev:
     executor: cloud-platform-executor
     steps:
+      - checkout
       - deploy-to:
           environment: dev
           token: ${CIRCLE_CI_TOKEN_DEV}
@@ -197,6 +198,7 @@ jobs:
   deploy-uat:
     executor: cloud-platform-executor
     steps:
+      - checkout
       - deploy-to:
           environment: uat
           token: ${CIRCLE_CI_TOKEN_UAT}
@@ -204,6 +206,7 @@ jobs:
   deploy-prod:
     executor: cloud-platform-executor
     steps:
+      - checkout
       - deploy-to:
           environment: prod
           token: ${CIRCLE_CI_TOKEN_PROD}
