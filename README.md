@@ -12,6 +12,24 @@ However, the use of `git-crypt` is now deprecated and has since been removed fro
 If you make local changes to `docker-compose.override.yml`, be sure not to commit them.
 In fact, it may make sense to remove `docker-compose.override.yml` and add it to `.gitignore`.
 
+### Obtaining environment variables for running locally
+
+To run the app locally, you will need to download the appropriate environment variables from the team vault in 1Password. These environment variables are stored as a .env file, which docker-compose uses when starting up the service. If you don't see the team vault, speak to your tech lead to get access.
+
+To begin with, make sure that you have the 1Password CLI installed:
+
+```sh
+op --version
+```
+
+If the command is not found, [follow the steps on the 1Password developer docs to get the CLI set-up](https://developer.1password.com/docs/cli/get-started/).
+
+Once you're ready to run the application:
+
+```sh
+./start-local.sh
+```
+
 ### Application Set up
 
 Clone Repository
