@@ -4,14 +4,6 @@ This is a Java based Spring Boot application hosted on [MOJ Cloud Platform](http
 
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-### Modifying docker-compose.override.yml
-
-The `docker-compose.override.yml` and some other files used to be encrypted using `git-crypt`.
-However, the use of `git-crypt` is now deprecated and has since been removed from this repository.
-
-If you make local changes to `docker-compose.override.yml`, be sure not to commit them.
-In fact, it may make sense to remove `docker-compose.override.yml` and add it to `.gitignore`.
-
 ### Obtaining environment variables for running locally
 
 To run the app locally, you will need to download the appropriate environment variables from the team vault in 1Password. These environment variables are stored as a .env file, which docker-compose uses when starting up the service. If you don't see the team vault, speak to your tech lead to get access.
