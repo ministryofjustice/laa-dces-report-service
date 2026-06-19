@@ -8,16 +8,19 @@ VAULT="LAA Crime Apps"
 DOCUMENT="EnvironmentVariables-DCESReportService-App"
 APP_ENV_FILE="./app.env"
 
-function remove_env_file()
+function cleanup()
 {
-    echo "Removing .env file"
+    echo "Stopping Docker containers..."
+    docker-compose down || true
+
+    echo "Removing app.env file"
     rm -f "$APP_ENV_FILE"
 }
 
-trap remove_env_file EXIT
+trap cleanup EXIT
 
 echo "Signing into 1Password..."
-eval $(op signin --account ministryofjustice)
+export OP_SESSION_ministryofjustice="$(op signin --account ministryofjustice --raw)"
 
 echo "Fetching latest .env file from 1Password..."
 op document get "$DOCUMENT" --vault "$VAULT" --output "$APP_ENV_FILE" --force
