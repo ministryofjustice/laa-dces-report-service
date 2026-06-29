@@ -80,7 +80,7 @@ jobs:
           command: ./gradlew clean build
       - run:
           name: Run Sonar
-          command: ./gradlew sonar -Dsonar.scm.disabled=true
+          command: ./gradlew sonar
       - save_cache:
           paths:
             - ~/.gradle/wrapper
