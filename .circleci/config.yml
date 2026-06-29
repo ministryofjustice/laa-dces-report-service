@@ -28,12 +28,6 @@ executors:
 # COMMANDS
 # ------------------
 commands:
-  checkout_and_decrypt:
-    steps:
-      - checkout
-      - run: echo "${GIT_CRYPT_KEY}" | base64 -d > git-crypt.key
-      - run: git-crypt unlock git-crypt.key
-
   deploy-to:
     description: >
       Deploy image to the specified environment
@@ -45,7 +39,6 @@ commands:
         description: CircleCI Service account token
         type: string
     steps:
-      - checkout_and_decrypt
       - run:
           name: Authenticate with cluster
           command: |
@@ -87,7 +80,7 @@ jobs:
           command: ./gradlew clean build
       - run:
           name: Run Sonar
-          command: ./gradlew sonar
+          command: ./gradlew sonar -Dsonar.scm.disabled=true
       - save_cache:
           paths:
             - ~/.gradle/wrapper
@@ -197,6 +190,7 @@ jobs:
   deploy-dev:
     executor: cloud-platform-executor
     steps:
+      - checkout
       - deploy-to:
           environment: dev
           token: ${CIRCLE_CI_TOKEN_DEV}
@@ -204,6 +198,7 @@ jobs:
   deploy-uat:
     executor: cloud-platform-executor
     steps:
+      - checkout
       - deploy-to:
           environment: uat
           token: ${CIRCLE_CI_TOKEN_UAT}
@@ -211,6 +206,7 @@ jobs:
   deploy-prod:
     executor: cloud-platform-executor
     steps:
+      - checkout
       - deploy-to:
           environment: prod
           token: ${CIRCLE_CI_TOKEN_PROD}

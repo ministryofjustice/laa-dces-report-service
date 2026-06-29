@@ -4,27 +4,23 @@ This is a Java based Spring Boot application hosted on [MOJ Cloud Platform](http
 
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-### Decrypting docker-compose.override.yml
+### Obtaining environment variables for running locally
 
-The `docker-compose.override.yml` is encrypted using [git-crypt](https://github.com/AGWA/git-crypt).
+To run the app locally, you will need to download the appropriate environment variables from the team vault in 1Password. These environment variables are stored as a .env file, which docker-compose uses when starting up the service. If you don't see the team vault, speak to your tech lead to get access.
 
-To run the app locally you need to be able to decrypt this file.
+To begin with, make sure that you have the 1Password CLI installed:
 
-You will first need to create a GPG key. See [Create a GPG Key](https://docs.publishing.service.gov.uk/manual/create-a-gpg-key.html) for details on how to do this with `GPGTools` (GUI) or `gpg` (command line).
-You can install either from a terminal or just download the UI version.
-
-```
-brew update
-brew install gpg
-brew install git-crypt
+```sh
+op --version
 ```
 
-Once you have done this, a team member who already has access can add your key by running `git-crypt add-gpg-user USER_ID`\* and creating a pull request to this repo.
+If the command is not found, [follow the steps on the 1Password developer docs to get the CLI set-up](https://developer.1password.com/docs/cli/get-started/).
 
-Once this has been merged you can decrypt your local copy of the repository by running `git-crypt unlock`.
+Once you're ready to run the application:
 
-\*`USER_ID` can be your key ID, a full fingerprint, an email address, or anything else that uniquely identifies a public key to GPG (see "HOW TO SPECIFY A USER ID" in the gpg man page).
-The apps should then startup cleanly if you run
+```sh
+./start-local.sh
+```
 
 ### Application Set up
 

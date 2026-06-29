@@ -40,3 +40,6 @@ out/
 ### VS Code ###
 .vscode/
 *.java-version
+
+# Local environment variables for testing
+*.env
